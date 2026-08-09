@@ -1,0 +1,240 @@
+// Схема JST ART. SEO-поля продублированы плоскими полями в Artwork/Collection/BlogPost —
+// осознанное решение вместо общей "SEO"-модели: проще запросы, проще индикатор "здоровья" в админке.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ArtworkStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+enum Orientation {
+  LANDSCAPE
+  PORTRAIT
+  SQUARE
+}
+
+enum OrderStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  PAID
+  SHIPPED
+  CANCELLED
+}
+
+enum OrderItemVariant {
+  ORIGINAL
+  PRINT
+}
+
+enum AdminRole {
+  OWNER
+  EDITOR
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         AdminRole @default(EDITOR)
+  twoFactorSecret String?
+  twoFactorEnabled Boolean @default(false)
+  failedLoginAttempts Int  @default(0)
+  lockedUntil  DateTime?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String   @default("")
+  position    Int      @default(0)
+
+  // SEO
+  seoTitle       String  @default("")
+  seoDescription String  @default("")
+  ogImage        String  @default("")
+  canonicalUrl   String  @default("")
+
+  artworks  Artwork[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([position])
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  artworks ArtworkTag[]
+}
+
+model Artwork {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  description String        @default("") // краткое описание
+  story       String        @default("") // история/легенда картины
+  year        Int?
+  medium      String        @default("Oil on canvas")
+  widthCm     Float
+  heightCm    Float
+  orientation Orientation   @default(LANDSCAPE)
+  dominantColor String      @default("") // для фильтра по цвету, HEX
+
+  status              ArtworkStatus @default(AVAILABLE)
+  priceOriginalCents  Int
+  pricePrintCents     Int?
+  currency            String        @default("KRW")
+
+  collectionId String?
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  tags         ArtworkTag[]
+  images       ArtworkImage[]
+
+  position    Int      @default(0)
+  featured    Boolean  @default(false) // показывать на главной
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+
+  // SEO
+  seoTitle       String @default("")
+  seoDescription String @default("")
+  altText        String @default("")
+  ogTitle        String @default("")
+  ogDescription  String @default("")
+  ogImage        String @default("")
+  canonicalUrl   String @default("")
+
+  views      Int @default(0)
+  buyClicks  Int @default(0)
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, position])
+  @@index([collectionId])
+  @@index([status])
+}
+
+model ArtworkImage {
+  id        String  @id @default(cuid())
+  artworkId String
+  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+
+  url       String
+  format    String  // webp | avif | original
+  width     Int
+  height    Int
+  isPrimary Boolean @default(false)
+  position  Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([artworkId])
+}
+
+model ArtworkTag {
+  artworkId String
+  tagId     String
+  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([artworkId, tagId])
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String   @default("")
+  contentHtml String   @default("") // санитизируется DOMPurify перед сохранением и перед рендером
+  coverImage  String   @default("")
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+
+  // SEO
+  seoTitle       String @default("")
+  seoDescription String @default("")
+  ogImage        String @default("")
+  canonicalUrl   String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, publishedAt])
+}
+
+model Exhibition {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  location    String   @default("")
+  startDate   DateTime
+  endDate     DateTime?
+  imageUrl    String   @default("")
+  pressUrl    String   @default("")
+  position    Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([position])
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  customerName  String
+  email         String
+  phone         String  @default("")
+  address       String  @default("")
+  message       String  @default("")
+  status        OrderStatus @default(NEW)
+  totalCents    Int
+  currency      String      @default("KRW")
+  items         OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id            String            @id @default(cuid())
+  orderId       String
+  order         Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  artworkId     String?
+  artwork       Artwork?          @relation(fields: [artworkId], references: [id], onDelete: SetNull)
+  titleSnapshot String            // сохраняем название на момент заказа, даже если картину удалят
+  variant       OrderItemVariant
+  quantity      Int               @default(1)
+  unitPriceCents Int
+
+  @@index([orderId])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
