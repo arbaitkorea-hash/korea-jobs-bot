@@ -1,12 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import type { NextAuthRequest } from "next-auth";
 import { auth } from "@/auth";
+import { LOCALES, DEFAULT_LOCALE, type AppLocale } from "@/lib/i18n/config";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login"];
+
+/** Пути, которые не относятся к языковым версиям сайта. */
+const NON_LOCALIZED = ["/admin", "/api", "/sitemap.xml", "/robots.txt", "/icon.png", "/apple-icon.png"];
 
 export default auth((request: NextAuthRequest) => {
   const { pathname } = request.nextUrl;
 
+  // 1. Защита админки
   if (pathname.startsWith("/admin") && !PUBLIC_ADMIN_PATHS.includes(pathname)) {
     if (!request.auth?.user) {
       const loginUrl = new URL("/admin/login", request.url);
@@ -15,8 +20,50 @@ export default auth((request: NextAuthRequest) => {
     }
   }
 
+  // 2. Языковой префикс для публичных страниц
+  const isNonLocalized = NON_LOCALIZED.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+
+  if (!isNonLocalized) {
+    const hasLocale = LOCALES.some(
+      (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
+    );
+
+    if (!hasLocale) {
+      const locale = detectLocale(request);
+      const target = new URL(`/${locale}${pathname === "/" ? "" : pathname}`, request.url);
+      target.search = request.nextUrl.search;
+      // 307: временный редирект. Постоянный (308) закрепил бы у поисковика
+      // "/" → "/ru" даже для англоязычного посетителя, а язык мы выбираем
+      // по Accept-Language и он у разных пользователей разный.
+      return applySecurityHeaders(NextResponse.redirect(target, 307));
+    }
+  }
+
   return applySecurityHeaders(NextResponse.next());
 });
+
+/** Выбор языка по заголовку Accept-Language с откатом на русский. */
+function detectLocale(request: NextRequest): AppLocale {
+  const header = request.headers.get("accept-language");
+  if (!header) return DEFAULT_LOCALE;
+
+  const ranked = header
+    .split(",")
+    .map((part) => {
+      const [tag, q] = part.trim().split(";q=");
+      return { tag: tag.trim().toLowerCase(), q: q ? Number(q) : 1 };
+    })
+    .sort((a, b) => b.q - a.q);
+
+  for (const { tag } of ranked) {
+    const base = tag.split("-")[0];
+    const match = LOCALES.find((locale) => locale === base);
+    if (match) return match;
+  }
+  return DEFAULT_LOCALE;
+}
 
 /**
  * CSP без nonce/strict-dynamic — намеренный выбор. Next.js App Router вставляет

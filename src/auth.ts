@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validation";
 import { rateLimit } from "@/lib/rate-limit";
+import { logAudit } from "@/lib/audit";
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_DURATION_MS = 15 * 60 * 1000;
@@ -29,17 +30,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           request.headers.get("x-real-ip") ??
           "unknown";
         const { ok } = rateLimit(`login:${ip}`, 10, 10 * 60 * 1000);
-        if (!ok) return null;
+        if (!ok) {
+          await logAudit({
+            event: "RATE_LIMIT",
+            severity: "critical",
+            ip,
+            actor: parsed.data.email,
+            detail: "Превышен лимит попыток входа в админку",
+          });
+          return null;
+        }
 
         const user = await prisma.adminUser.findUnique({ where: { email: parsed.data.email } });
         if (!user) {
           // Постоянное время ответа независимо от существования пользователя —
           // не даём отличить "нет такого email" от "неверный пароль" по таймингу.
           await bcrypt.compare(parsed.data.password, "$2b$12$invalidsaltinvalidsaltinvalidsaltinval");
+          await logAudit({
+            event: "LOGIN_FAILED",
+            severity: "warning",
+            ip,
+            actor: parsed.data.email,
+            detail: "Неизвестный email",
+          });
           return null;
         }
 
         if (user.lockedUntil && user.lockedUntil > new Date()) {
+          await logAudit({
+            event: "LOGIN_LOCKED",
+            severity: "critical",
+            ip,
+            actor: user.email,
+            detail: `Попытка входа в заблокированный аккаунт до ${user.lockedUntil.toISOString()}`,
+          });
           return null;
         }
 
@@ -47,12 +71,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!valid) {
           const attempts = user.failedLoginAttempts + 1;
+          const locked = attempts >= MAX_FAILED_ATTEMPTS;
           await prisma.adminUser.update({
             where: { id: user.id },
             data: {
               failedLoginAttempts: attempts,
-              lockedUntil: attempts >= MAX_FAILED_ATTEMPTS ? new Date(Date.now() + LOCK_DURATION_MS) : null,
+              lockedUntil: locked ? new Date(Date.now() + LOCK_DURATION_MS) : null,
             },
+          });
+          await logAudit({
+            event: locked ? "LOGIN_LOCKED" : "LOGIN_FAILED",
+            severity: locked ? "critical" : "warning",
+            ip,
+            actor: user.email,
+            detail: `Неверный пароль, попытка ${attempts}/${MAX_FAILED_ATTEMPTS}`,
           });
           return null;
         }
@@ -61,6 +93,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { id: user.id },
           data: { failedLoginAttempts: 0, lockedUntil: null, lastLoginAt: new Date() },
         });
+        await logAudit({ event: "LOGIN_SUCCESS", ip, actor: user.email });
 
         return { id: user.id, email: user.email, name: user.name, role: user.role };
       },

@@ -4,23 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition, type DragEvent } from "react";
 import { GripVertical, Trash2 } from "lucide-react";
-import { SeoHealthBadge } from "@/components/admin/seo-health-badge";
-import { deleteArtwork, reorderArtworks } from "@/app/admin/(dashboard)/artworks/actions";
-import { formatPrice } from "@/lib/utils";
+import { computeSeoHealth } from "@/lib/seo-health";
+import { LOCALES, type AppLocale } from "@/lib/i18n/config";
+import { deleteArtwork, reorderArtworks } from "@/app/(admin)/admin/(dashboard)/artworks/actions";
+import { formatPrice, cn } from "@/lib/utils";
 
 export type ArtworkRow = {
   id: string;
-  slug: string;
   title: string;
-  status: string;
   published: boolean;
+  status: string;
   priceOriginalCents: number;
   currency: string;
-  seoTitle: string;
-  seoDescription: string;
-  altText: string;
   thumbUrl?: string;
+  /** Заполненность SEO по каждому языку — «светофор» из ТЗ. */
+  seoByLocale: Record<AppLocale, { slug: string; title: string; seoTitle: string; seoDescription: string; altText: string }>;
 };
+
+const DOT = { green: "bg-emerald-600", yellow: "bg-amber-500", red: "bg-red-600" };
 
 export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
   const [items, setItems] = useState(initialItems);
@@ -40,7 +41,7 @@ export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Удалить картину без возможности восстановления?")) return;
+    if (!confirm("Удалить работу без возможности восстановления?")) return;
     setItems((prev) => prev.filter((i) => i.id !== id));
     await deleteArtwork(id);
   }
@@ -57,21 +58,35 @@ export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
           className="flex items-center gap-4 py-4"
         >
           <GripVertical size={16} className="cursor-grab text-fg-muted" />
+
           {item.thumbUrl && (
             <div className="relative h-14 w-12 shrink-0 overflow-hidden bg-bg-elevated">
               <Image src={item.thumbUrl} alt="" fill className="object-cover" sizes="48px" />
             </div>
           )}
-          <div className="flex-1">
+
+          <div className="min-w-0 flex-1">
             <Link href={`/admin/artworks/${item.id}`} className="hover:underline">
               {item.title}
             </Link>
-            <div className="mt-1 flex items-center gap-3 text-xs text-fg-muted">
+            <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-fg-muted">
               <span>{item.published ? "Опубликовано" : "Черновик"}</span>
-              <span>{formatPrice(item.priceOriginalCents, item.currency)}</span>
-              <SeoHealthBadge seoTitle={item.seoTitle} seoDescription={item.seoDescription} slug={item.slug} altText={item.altText} />
+              <span>{formatPrice(item.priceOriginalCents, item.currency, "ru")}</span>
+              <span className="flex items-center gap-2">
+                SEO:
+                {LOCALES.map((locale) => {
+                  const health = computeSeoHealth(item.seoByLocale[locale]);
+                  return (
+                    <span key={locale} className="inline-flex items-center gap-1" title={`${locale.toUpperCase()}: ${health}`}>
+                      <span className={cn("h-2 w-2 rounded-full", DOT[health])} aria-hidden />
+                      {locale.toUpperCase()}
+                    </span>
+                  );
+                })}
+              </span>
             </div>
           </div>
+
           <button
             type="button"
             onClick={() => handleDelete(item.id)}

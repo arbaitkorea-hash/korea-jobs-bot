@@ -1,5 +1,11 @@
-// Схема JST ART. SEO-поля продублированы плоскими полями в Artwork/Collection/BlogPost —
-// осознанное решение вместо общей "SEO"-модели: проще запросы, проще индикатор "здоровья" в админке.
+// Схема JST ART (v2, мультиязычная).
+//
+// Ключевое решение: переводимые поля вынесены в отдельные таблицы *Translation
+// с уникальным slug на каждый язык. Это даёт отдельные URL вида
+// /ru/gallery/zakat-nad-ozerom и /en/gallery/sunset-over-the-lake, которые Google
+// и Naver индексируют как самостоятельные страницы — ради этого весь проект и делается.
+// Непереводимые данные (размеры, цена, статус, изображения) живут в основной таблице,
+// чтобы не дублироваться между языками.
 
 generator client {
   provider = "prisma-client-js"
@@ -10,10 +16,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Locale {
+  RU
+  EN
+  KO
+}
+
 enum ArtworkStatus {
   AVAILABLE
   RESERVED
   SOLD
+}
+
+enum Technique {
+  OIL
+  ACRYLIC
+  MIXED
 }
 
 enum Orientation {
@@ -42,87 +60,99 @@ enum AdminRole {
 }
 
 model AdminUser {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String
-  name         String
-  role         AdminRole @default(EDITOR)
-  twoFactorSecret String?
-  twoFactorEnabled Boolean @default(false)
-  failedLoginAttempts Int  @default(0)
-  lockedUntil  DateTime?
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  passwordHash        String
+  name                String
+  role                AdminRole @default(EDITOR)
+  twoFactorSecret     String?
+  twoFactorEnabled    Boolean   @default(false)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+/// Журнал подозрительной активности (п. 14 аудита безопасности).
+model AuditLog {
+  id        String   @id @default(cuid())
+  event     String // LOGIN_FAILED | LOGIN_SUCCESS | LOGIN_LOCKED | RATE_LIMIT | SUSPICIOUS_ORDER | UPLOAD_REJECTED
+  severity  String   @default("info") // info | warning | critical
+  ipHash    String   @default("") // хеш IP, не сам IP — минимизация персональных данных
+  actor     String   @default("") // email админа, если применимо
+  detail    String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([event, createdAt])
+  @@index([severity, createdAt])
 }
 
 model Collection {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  description String   @default("")
-  position    Int      @default(0)
+  id       String @id @default(cuid())
+  position Int    @default(0)
 
-  // SEO
-  seoTitle       String  @default("")
-  seoDescription String  @default("")
-  ogImage        String  @default("")
-  canonicalUrl   String  @default("")
+  ogImage String @default("")
 
-  artworks  Artwork[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  translations CollectionTranslation[]
+  artworks     Artwork[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([position])
 }
 
-model Tag {
-  id   String @id @default(cuid())
-  name String @unique
-  slug String @unique
+model CollectionTranslation {
+  id           String     @id @default(cuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  locale       Locale
 
-  artworks ArtworkTag[]
+  slug        String
+  title       String
+  description String @default("")
+
+  seoTitle       String @default("")
+  seoDescription String @default("")
+  keywords       String @default("") // через запятую
+  hashtags       String @default("") // через запятую
+  canonicalUrl   String @default("")
+
+  @@unique([collectionId, locale])
+  @@unique([locale, slug])
 }
 
 model Artwork {
-  id          String        @id @default(cuid())
-  slug        String        @unique
-  title       String
-  description String        @default("") // краткое описание
-  story       String        @default("") // история/легенда картины
-  year        Int?
-  medium      String        @default("Oil on canvas")
-  widthCm     Float
-  heightCm    Float
-  orientation Orientation   @default(LANDSCAPE)
-  dominantColor String      @default("") // для фильтра по цвету, HEX
+  id String @id @default(cuid())
 
-  status              ArtworkStatus @default(AVAILABLE)
-  priceOriginalCents  Int
-  pricePrintCents     Int?
-  currency            String        @default("KRW")
+  // Непереводимые характеристики работы
+  year          Int?
+  technique     Technique     @default(OIL)
+  widthCm       Float
+  heightCm      Float
+  orientation   Orientation   @default(LANDSCAPE)
+  dominantColor String        @default("") // HEX, для фильтра по цвету
+  status        ArtworkStatus @default(AVAILABLE)
+
+  priceOriginalCents Int
+  pricePrintCents    Int?
+  currency           String @default("KRW")
 
   collectionId String?
   collection   Collection? @relation(fields: [collectionId], references: [id])
-  tags         ArtworkTag[]
   images       ArtworkImage[]
+  translations ArtworkTranslation[]
 
-  position    Int      @default(0)
-  featured    Boolean  @default(false) // показывать на главной
-  published   Boolean  @default(false)
+  position    Int       @default(0)
+  featured    Boolean   @default(false) // показывать на главной
+  published   Boolean   @default(false)
   publishedAt DateTime?
 
-  // SEO
-  seoTitle       String @default("")
-  seoDescription String @default("")
-  altText        String @default("")
-  ogTitle        String @default("")
-  ogDescription  String @default("")
-  ogImage        String @default("")
-  canonicalUrl   String @default("")
+  ogImage String @default("")
 
-  views      Int @default(0)
-  buyClicks  Int @default(0)
+  views     Int @default(0)
+  buyClicks Int @default(0)
 
   orderItems OrderItem[]
 
@@ -132,6 +162,31 @@ model Artwork {
   @@index([published, position])
   @@index([collectionId])
   @@index([status])
+  @@index([technique])
+}
+
+model ArtworkTranslation {
+  id        String  @id @default(cuid())
+  artworkId String
+  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  locale    Locale
+
+  slug        String
+  title       String
+  description String @default("")
+  story       String @default("") // история/легенда картины
+
+  seoTitle       String @default("")
+  seoDescription String @default("")
+  altText        String @default("")
+  ogTitle        String @default("")
+  ogDescription  String @default("")
+  keywords       String @default("")
+  hashtags       String @default("")
+  canonicalUrl   String @default("")
+
+  @@unique([artworkId, locale])
+  @@unique([locale, slug])
 }
 
 model ArtworkImage {
@@ -140,7 +195,7 @@ model ArtworkImage {
   artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
 
   url       String
-  format    String  // webp | avif | original
+  format    String
   width     Int
   height    Int
   isPrimary Boolean @default(false)
@@ -151,30 +206,14 @@ model ArtworkImage {
   @@index([artworkId])
 }
 
-model ArtworkTag {
-  artworkId String
-  tagId     String
-  artwork   Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
-  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([artworkId, tagId])
-}
-
 model BlogPost {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  excerpt     String   @default("")
-  contentHtml String   @default("") // санитизируется DOMPurify перед сохранением и перед рендером
-  coverImage  String   @default("")
-  published   Boolean  @default(false)
+  id String @id @default(cuid())
+
+  coverImage  String    @default("")
+  published   Boolean   @default(false)
   publishedAt DateTime?
 
-  // SEO
-  seoTitle       String @default("")
-  seoDescription String @default("")
-  ogImage        String @default("")
-  canonicalUrl   String @default("")
+  translations BlogPostTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -182,59 +221,93 @@ model BlogPost {
   @@index([published, publishedAt])
 }
 
-model Exhibition {
-  id          String   @id @default(cuid())
+model BlogPostTranslation {
+  id         String   @id @default(cuid())
+  blogPostId String
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  locale     Locale
+
+  slug        String
   title       String
-  description String   @default("")
-  location    String   @default("")
-  startDate   DateTime
-  endDate     DateTime?
-  imageUrl    String   @default("")
-  pressUrl    String   @default("")
-  position    Int      @default(0)
+  excerpt     String @default("")
+  contentHtml String @default("") // санитизируется DOMPurify при сохранении и при рендере
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  seoTitle       String @default("")
+  seoDescription String @default("")
+  keywords       String @default("")
+  hashtags       String @default("")
+  canonicalUrl   String @default("")
 
-  @@index([position])
+  @@unique([blogPostId, locale])
+  @@unique([locale, slug])
 }
 
+/// Ключевые слова и хэштеги уровня сайта, отдельно на каждый язык.
+model SiteKeywords {
+  locale    Locale   @id
+  keywords  String   @default("")
+  hashtags  String   @default("")
+  updatedAt DateTime @updatedAt
+}
+
+/// Заказ. Персональные данные покупателя хранятся зашифрованными (AES-256-GCM,
+/// см. src/lib/crypto.ts) — п. 13 аудита безопасности. Для поиска дублей и
+/// антифрод-проверок рядом лежат необратимые хеши, а не открытые значения.
 model Order {
-  id            String      @id @default(cuid())
-  customerName  String
-  email         String
-  phone         String  @default("")
-  address       String  @default("")
-  message       String  @default("")
-  status        OrderStatus @default(NEW)
-  totalCents    Int
-  currency      String      @default("KRW")
-  items         OrderItem[]
+  id String @id @default(cuid())
+
+  customerNameEnc String
+  emailEnc        String
+  phoneEnc        String @default("")
+  addressEnc      String @default("")
+  messageEnc      String @default("")
+
+  emailHash String @default("") // SHA-256, для антифрода и поиска повторов
+  ipHash    String @default("") // SHA-256 от IP, сам IP не храним
+
+  riskScore Int    @default(0)
+  riskFlags String @default("") // через запятую: MANY_FROM_IP, DISPOSABLE_EMAIL, ...
+
+  status     OrderStatus @default(NEW)
+  totalCents Int
+  currency   String      @default("KRW")
+  locale     Locale      @default(RU)
+  items      OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([status, createdAt])
+  @@index([emailHash])
+  @@index([ipHash, createdAt])
 }
 
 model OrderItem {
-  id            String            @id @default(cuid())
-  orderId       String
-  order         Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  artworkId     String?
-  artwork       Artwork?          @relation(fields: [artworkId], references: [id], onDelete: SetNull)
-  titleSnapshot String            // сохраняем название на момент заказа, даже если картину удалят
-  variant       OrderItemVariant
-  quantity      Int               @default(1)
+  id             String           @id @default(cuid())
+  orderId        String
+  order          Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  artworkId      String?
+  artwork        Artwork?         @relation(fields: [artworkId], references: [id], onDelete: SetNull)
+  titleSnapshot  String // название на момент заказа, сохраняется даже если картину удалят
+  variant        OrderItemVariant
+  quantity       Int              @default(1)
   unitPriceCents Int
 
   @@index([orderId])
 }
 
 model ContactMessage {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  message   String
+  id String @id @default(cuid())
+
+  nameEnc    String
+  emailEnc   String
+  messageEnc String
+
+  emailHash String @default("")
+  ipHash    String @default("")
+  locale    Locale @default(RU)
+
   createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }

@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "siteTitle": "JST ART — Original Oil and Acrylic Paintings by Jung Sen Tek",
+    "siteDescription": "Original oil and acrylic paintings by artist Jung Sen Tek. Landscapes of light and silence. Buy originals and fine-art prints with worldwide shipping.",
+    "titleSuffix": "JST ART"
+  },
+  "nav": {
+    "gallery": "Gallery",
+    "collections": "Collections",
+    "about": "About",
+    "blog": "Journal",
+    "shipping": "Payment & Shipping",
+    "contact": "Contact",
+    "cart": "Cart",
+    "menu": "Menu",
+    "toggleTheme": "Toggle theme",
+    "language": "Language"
+  },
+  "home": {
+    "heroCta": "View this work",
+    "storyTitle": "Silence that has a colour",
+    "storyLead": "There is a moment just before dawn when the world has not begun to make noise. The water lies perfectly still, the air is cold and clear, and it seems that if you held your breath you could hear the sun rise.",
+    "storyBody": "Those are the minutes I paint. Not a landscape, but a state of being: light that does not last, and the silence it lives in. Every work is born slowly — layer after layer, over weeks — until the paint begins to glow the way that morning did.",
+    "storyCta": "More about the artist",
+    "galleryTitle": "Selected works",
+    "gallerySubtitle": "Originals in oil and acrylic. Each work exists as a single piece.",
+    "galleryCta": "View full gallery",
+    "shippingTitle": "Payment & Shipping",
+    "shippingSubtitle": "Clear terms, no fine print.",
+    "shippingPaymentTitle": "Payment",
+    "shippingPaymentBody": "Bank transfer or card. After you place a request we contact you, confirm the work is still available and send an invoice. You pay only after confirmation.",
+    "shippingDeliveryTitle": "Delivery",
+    "shippingDeliveryBody": "Within Korea — 2–5 business days. International shipping — 7–21 days depending on destination. Every shipment includes tracking.",
+    "shippingPackagingTitle": "Packaging",
+    "shippingPackagingBody": "Originals are packed by hand: protective frame, rigid box, cushioned corners. Prints ship in a hard tube or a flat mailer with reinforced corners.",
+    "shippingCta": "Full terms",
+    "contactTitle": "Get in touch",
+    "contactSubtitle": "A question about a work, availability of an original, or a collaboration — write to us and we reply within 1–2 days."
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Original works in oil and acrylic.",
+    "countLabel": "works",
+    "empty": "No works match these filters.",
+    "filters": {
+      "collection": "Collection",
+      "technique": "Technique",
+      "orientation": "Orientation",
+      "priceFrom": "Price from",
+      "priceTo": "Price to",
+      "sort": "Sort",
+      "all": "All",
+      "any": "Any",
+      "apply": "Apply",
+      "reset": "Reset",
+      "sortDefault": "Default",
+      "sortNewest": "Newest first",
+      "sortPriceAsc": "Price: low to high",
+      "sortPriceDesc": "Price: high to low",
+      "landscape": "Landscape",
+      "portrait": "Portrait",
+      "square": "Square",
+      "search": "Search",
+      "searchPlaceholder": "title, subject, technique…"
+    },
+    "resultsFor": "Results for"
+  },
+  "technique": {
+    "OIL": "Oil",
+    "ACRYLIC": "Acrylic",
+    "MIXED": "Mixed media"
+  },
+  "artwork": {
+    "original": "Original",
+    "print": "Print",
+    "addToCart": "Add to cart",
+    "added": "Added",
+    "buyNow": "Buy now",
+    "sold": "Sold",
+    "reserved": "Reserved",
+    "soldNote": "This work has been sold. We can discuss a similar piece — get in touch.",
+    "storyTitle": "The story behind this work",
+    "related": "From the same collection",
+    "dimensions": "Dimensions",
+    "cm": "cm",
+    "inStock": "Available"
+  },
+  "collections": {
+    "title": "Collections",
+    "subtitle": "Curated groups of works.",
+    "worksCount": "works",
+    "empty": "Collections are coming soon."
+  },
+  "about": {
+    "title": "About the artist",
+    "role": "Artist, JST ART",
+    "body": [
+      "Jung Sen Tek lives and works in Korea, in a studio overlooking the water. He has painted in oil and acrylic for more than fifteen years — almost always from life, or from the memory of one particular morning.",
+      "What interests him is not the view but the state: that brief interval when the light has not yet become daylight and the world holds its balance. For those fifteen minutes he returns to the same place for years.",
+      "Every work is built in layers, over weeks or months. Transparent glazes are laid one over another until the colour begins to glow from within rather than sit on the surface.",
+      "Solo and group exhibitions have been held in Seoul and Busan. Works are held in private collections in Korea, Russia and Europe."
+    ]
+  },
+  "blog": {
+    "title": "Journal",
+    "subtitle": "On art, painting technique and the stories behind the works.",
+    "empty": "No published articles yet.",
+    "readMore": "Read"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "toGallery": "Go to gallery",
+    "quantity": "Qty",
+    "remove": "Remove",
+    "total": "Total",
+    "checkout": "Checkout"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "intro": "This is a purchase request — we will contact you to confirm availability and payment method.",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Shipping address",
+    "comment": "Comment",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "yourOrder": "Your order",
+    "error": "Could not send the order. Please try again.",
+    "successTitle": "Thank you for your request!",
+    "successBody": "We will contact you shortly to confirm your order.",
+    "backToGallery": "Back to gallery"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Questions about works, availability of originals, shipping or collaboration — write to us and we reply within 1–2 days.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send",
+    "submitting": "Sending…",
+    "success": "Message sent, thank you!",
+    "error": "Could not send the message."
+  },
+  "shipping": {
+    "title": "Payment & Shipping",
+    "paymentTitle": "Payment methods",
+    "paymentBody": "We accept bank transfer and card payment. The process is simple: you place a request through the site, we confirm the work is available and send an invoice with payment details. Payment is made only after confirmation — this protects you from paying for a work that has already been sold.",
+    "deliveryTitle": "Delivery times and destinations",
+    "deliveryBody": "Within South Korea delivery takes 2–5 business days. International shipping takes 7 to 21 business days depending on the destination country and customs processing. The exact cost is calculated after your request, based on the size of the work and the delivery address.",
+    "packagingTitle": "Packaging",
+    "packagingBody": "Originals are packed by hand: the work is secured in a protective frame, placed in a rigid cardboard box with cushioned corners and a moisture barrier. Prints ship in a hard tube or a flat mailer with reinforced corners.",
+    "trackingTitle": "Tracking",
+    "trackingBody": "Every shipment receives a tracking number, which we send to your email on the day of dispatch.",
+    "customsTitle": "Customs and duties",
+    "customsBody": "International shipments may be subject to import duties and taxes in the destination country. These are not included in the price of the work or shipping and are payable by the recipient according to local regulations."
+  },
+  "policies": {
+    "returnsTitle": "Returns",
+    "privacyTitle": "Privacy",
+    "returnsBody": [
+      "If a work arrives damaged in transit, contact us within 48 hours with photographs of the packaging and the damage. We will arrange a return or replacement at our expense.",
+      "An original may be returned for other reasons within 14 days of receipt, provided it is in its original condition and packaging. Return shipping costs are covered by the buyer in this case.",
+      "Prints are produced to order and are therefore non-returnable, except in cases of printing defects or damage during shipping."
+    ],
+    "privacyBody": [
+      "We collect only the data required to process a request: name, email, phone and delivery address. Nothing beyond that is requested or stored.",
+      "Customer personal data is stored encrypted in the database. Even with access to a copy of the database, it cannot be read without a separate encryption key.",
+      "Data is not shared with third parties, with the exception of delivery services — and only to the extent required to ship the order (recipient name, address, phone).",
+      "Visitor IP addresses are not stored in plain form: an irreversible hash is used for spam and fraud protection, from which the original address cannot be recovered.",
+      "You may request deletion of your data at any time — write to us via the contact page and we will remove it from the database."
+    ]
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "info": "Information",
+    "follow": "Follow",
+    "rights": "All rights reserved."
+  },
+  "common": {
+    "breadcrumb": "Breadcrumb",
+    "close": "Close",
+    "zoomImage": "Enlarge image",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The work may have been withdrawn from sale, or the address contains a typo.",
+    "goHome": "Go to homepage"
+  }
+}

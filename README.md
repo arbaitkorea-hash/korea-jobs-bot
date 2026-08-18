@@ -1,113 +1,120 @@
 # JST ART
 
-Сайт-портфолио и интернет-магазин картин художника Jung Sen Tek. Next.js (App Router) +
-TypeScript + Tailwind CSS + PostgreSQL/Prisma + NextAuth.
+Мультиязычный сайт-портфолио и интернет-магазин картин художника Jung Sen Tek.
+Next.js 16 (App Router) + TypeScript + Tailwind + PostgreSQL/Prisma + NextAuth.
 
-Дизайн-система и обоснование палитры — [`DESIGN.md`](./DESIGN.md).
-Аудит безопасности — [`SECURITY.md`](./SECURITY.md).
+- Дизайн-система и три варианта палитры — [`DESIGN.md`](./DESIGN.md)
+- SEO: реализация, семантическое ядро RU/EN/KO, хэштеги — [`SEO.md`](./SEO.md)
+- Аудит безопасности по 15 пунктам — [`SECURITY.md`](./SECURITY.md)
 
-## Структура проекта
+## Языки
+
+Три полноценные языковые версии с раздельными URL: `/ru`, `/en`, `/ko`.
+Это не переключение текста на клиенте — у каждого языка свои адреса, свои
+`slug` у работ и статей, свои meta-теги и связка через `hreflang`. Именно так
+Google и Naver индексируют версии как самостоятельные страницы.
+
+```
+/ru/gallery/zakat-nad-ozerom
+/en/gallery/sunset-over-the-lake
+/ko/gallery/hosu-wiui-noeul     ← одна работа, три разных URL
+```
+
+Язык первого захода определяется по заголовку `Accept-Language`, дальше
+переключатель в шапке сохраняет текущую страницу (на карточке работы — с
+подстановкой правильного slug, а не подменой префикса).
+
+## Структура
 
 ```
 src/
   app/
-    (site)/            публичный сайт (общий layout с шапкой/подвалом)
-      page.tsx          главная
-      gallery/           галерея + страница картины [slug]
-      collections/       коллекции + страница коллекции [slug]
-      about/             о художнике
-      blog/              блог + статья [slug]
-      exhibitions/       выставки и пресса
-      contact/           контакты
-      cart/, checkout/   корзина и оформление заказа (localStorage-корзина)
-      policies/          доставка / возврат / конфиденциальность
-    admin/
-      login/             страница входа (вне защищённого layout)
-      (dashboard)/       вся защищённая админка (проверка сессии в layout.tsx)
-        artworks/        CRUD картин + drag-and-drop порядок + SEO-редактор
-        collections/     CRUD коллекций
-        blog/            CRUD статей + WYSIWYG
-        orders/          список заказов, смена статуса
-        analytics/       просмотры / клики "Купить"
-    api/
-      auth/[...nextauth]/  NextAuth route handler
-      orders/, contact/    приём заявок (rate limit + zod + honeypot)
-      admin/upload/        загрузка изображений (sharp → WebP, только для админов)
-      media/[filename]/    отдача загруженных файлов из storage/uploads
-    sitemap.ts, robots.ts  динамические sitemap.xml / robots.txt
-  components/
-    admin/    формы и виджеты админки (SEO-панель, аплоадер, список с DnD)
-    artwork/  карточка картины, зум, добавление в корзину
-    layout/   шапка, подвал, переключатель темы
-    seo/      JSON-LD
-    ui/       Button, Container, FadeIn — базовые примитивы дизайн-системы
+    (public)/[lang]/       публичный сайт, свой root layout
+      page.tsx              главная: hero → сторителлинг → работы → оплата/доставка → контакты
+      gallery/              галерея (фильтры: коллекция, техника, ориентация, цена, поиск)
+      gallery/[slug]/       карточка работы
+      collections/          коллекции + страница коллекции
+      about/ blog/ shipping/ contact/ cart/ checkout/ policies/
+    (admin)/admin/         админка, свой root layout (не индексируется)
+      login/
+      (dashboard)/
+        artworks/           CRUD работ: вкладки RU/EN/KO, SEO на каждый язык, drag-and-drop
+        collections/ blog/  то же для коллекций и статей
+        keywords/           семантическое ядро и хэштеги уровня сайта
+        orders/             заявки со статусами и оценкой риска
+        messages/           обращения с формы контактов
+        analytics/          просмотры, клики, журнал безопасности
+    api/                   auth, orders, contact, admin/upload, media
+    sitemap.ts robots.ts   мультиязычные, с hreflang-альтернативами
   lib/
-    prisma.ts          синглтон Prisma Client
-    validation.ts       все Zod-схемы (клиенту не доверяем)
-    rate-limit.ts       in-memory rate limiter
-    storage.ts          обработка/сохранение загруженных изображений
-    jsonld.ts            генераторы JSON-LD (VisualArtwork/Product/Person/…)
-    cart-context.tsx     корзина на клиенте (localStorage)
-  auth.ts               конфигурация NextAuth (credentials + bcrypt)
-  proxy.ts               защита /admin/* + security-заголовки (Next.js 16 "proxy",
-                          бывший middleware.ts — теперь на Node.js runtime)
+    i18n/                  локали, словари ru/en/ko, контекст альтернатив
+    data/                  выборки с учётом языка (artworks, collections, blog)
+    crypto.ts              AES-256-GCM для персональных данных
+    fraud.ts audit.ts      антифрод и журнал безопасности
+    jsonld.ts seo.ts       структурированные данные и hreflang
+    validation.ts          все схемы Zod
+  auth.ts                  NextAuth (credentials + bcrypt + блокировка перебора)
+  proxy.ts                 языковой роутинг + защита /admin + заголовки безопасности
 prisma/
-  schema.prisma          вся схема БД (картины, коллекции, заказы, блог, SEO-поля)
-  seed.ts                демо-данные + первый админ
-storage/uploads/         локальное хранилище картинок для разработки (см. ниже)
+  schema.prisma            переводы вынесены в таблицы *Translation
+  seed.ts                  демо-данные сразу на трёх языках
 ```
 
 ## Локальный запуск
 
 1. `npm install`
-2. Скопировать `.env.example` → `.env`, заполнить `DATABASE_URL` (нужен PostgreSQL —
-   локальный, Supabase или Neon) и `AUTH_SECRET` (`openssl rand -base64 32`).
+2. Скопировать `.env.example` → `.env` и заполнить. Обязательные переменные:
+   `DATABASE_URL`, `AUTH_SECRET`, `ENCRYPTION_KEY`, `NEXT_PUBLIC_SITE_URL`.
+   Секреты генерируются командой `openssl rand -base64 32`.
 3. `npx prisma migrate dev` — создаст таблицы.
-4. `npm run db:seed` — создаст демо-картины, коллекции и первого админа
-   (`admin@jst-art.example.com`, пароль — из `SEED_ADMIN_PASSWORD` в `.env`).
-5. `npm run dev` — сайт на http://localhost:3000, админка — http://localhost:3000/admin/login.
+4. `npm run db:seed` — демо-работы на трёх языках и первый администратор
+   (`admin@jst-art.example.com`, пароль из `SEED_ADMIN_PASSWORD`).
+5. `npm run dev` → http://localhost:3000 (редиректит на язык браузера),
+   админка — http://localhost:3000/admin/login
 
-## Деплой (Vercel + Supabase/Neon), простыми словами
+## Деплой (Vercel + Supabase/Neon)
 
-1. **База данных.** Зарегистрироваться на [Supabase](https://supabase.com) или
-   [Neon](https://neon.tech) (у обоих есть бесплатный тариф) → создать проект →
-   скопировать строку подключения (Connection string, режим "pooled"/"transaction" —
-   для serverless-функций Vercel это важно, иначе БД быстро упрётся в лимит
-   подключений).
-2. **Репозиторий.** Запушить код в GitHub (уже сделано, если вы читаете это в
-   склонированном репозитории).
-3. **Vercel.** Зайти на [vercel.com](https://vercel.com) → "Add New Project" →
-   выбрать репозиторий → Vercel сам определит Next.js.
-4. **Переменные окружения** в настройках проекта на Vercel (Settings → Environment
-   Variables) — добавить те же ключи, что в `.env`:
-   - `DATABASE_URL` — строка подключения из шага 1
-   - `AUTH_SECRET` — сгенерировать новый, отдельный от локального (`openssl rand -base64 32`)
-   - `NEXT_PUBLIC_SITE_URL` — итоговый домен, например `https://jst-art.com`
-   - `SEED_ADMIN_PASSWORD` — только для первого сида, после можно убрать
-5. **Применить миграции на прод-БД** — самый простой способ: локально указать
-   `DATABASE_URL` прод-базы во временной переменной окружения и выполнить:
+1. **База.** Создать проект в [Supabase](https://supabase.com) или
+   [Neon](https://neon.tech), скопировать строку подключения. Для Vercel берите
+   режим **pooled / transaction** — иначе serverless-функции упрутся в лимит
+   подключений.
+2. **Vercel.** Add New → Project → выбрать репозиторий и нужную ветку.
+3. **Переменные окружения** в настройках проекта — те же, что в `.env`.
+   `AUTH_SECRET` и `ENCRYPTION_KEY` сгенерировать **новые**, не переиспользуя
+   локальные. Копию `ENCRYPTION_KEY` сохранить отдельно: без него ранее
+   сохранённые заказы не расшифровать.
+4. **Миграции на прод-базу** — локально, указав прод-`DATABASE_URL`:
    ```bash
    npx prisma migrate deploy
-   npm run db:seed
+   npm run db:seed        # только при первом запуске
    ```
-6. **Деплой** — Vercel задеплоит автоматически при пуше в основную ветку.
-7. **HTTPS** — уже включён по умолчанию на домене `*.vercel.app`; для своего
-   домена — добавить его в Vercel (Settings → Domains), сертификат Vercel
-   выпускает и обновляет сам.
-8. **Загрузка изображений на проде** — важно: файловая система на Vercel
-   эфемерна (сбрасывается между деплоями), поэтому `storage/uploads/`
-   подходит только для локальной разработки. Перед реальным продакшен-запуском
-   подключите бесплатное S3-совместимое хранилище — проще всего Supabase
-   Storage (он уже есть, если БД на Supabase) — и замените реализацию
-   `saveImage()` в `src/lib/storage.ts` на загрузку в бакет вместо диска;
-   остальной код (админка, `/api/admin/upload`) менять не нужно.
+5. **HTTPS** включается Vercel автоматически, в том числе для своего домена.
+6. **Хранилище картин.** Файловая система на Vercel эфемерна — папка
+   `storage/uploads` подходит только для разработки. Перед реальным запуском
+   подключите Supabase Storage (или Cloudinary) и замените реализацию
+   `saveImage()` в `src/lib/storage.ts`; остальной код менять не нужно.
+7. **Поисковики.** Подать `sitemap.xml` в Google Search Console и, отдельно,
+   в Naver Search Advisor — Naver сам сайт не находит. Подробности в `SEO.md`.
 
-## Что дальше (не входит в MVP, но заложено в архитектуру)
+## Команды
 
-- Реальная оплата — сейчас "Оформить заказ" создаёт заявку в БД, админ видит
-  её в `/admin/orders` и связывается с покупателем. Интеграцию платёжного
-  шлюза можно добавить в `src/app/api/orders/route.ts`, не меняя остальной код.
-- Мультиязычность (EN/KO) — живого i18n-роутинга нет; когда появятся `/en` и
-  `/ko`, добавить `alternates.languages` обратно в `src/app/layout.tsx`
-  (там же оставлен комментарий, что и почему).
-- 2FA для админки — поля `twoFactorSecret`/`twoFactorEnabled` уже есть в схеме.
+```bash
+npm run dev         # разработка
+npm run build       # прод-сборка
+npm run lint        # eslint
+npm run db:migrate  # prisma migrate dev
+npm run db:deploy   # prisma migrate deploy (прод)
+npm run db:seed     # демо-данные
+npm run db:studio   # просмотр БД
+```
+
+## Что не входит в текущую версию
+
+- **Онлайн-оплата.** «Оформить заказ» создаёт заявку, владелец видит её в
+  `/admin/orders` и связывается с покупателем. Платёжный шлюз подключается в
+  `src/app/api/orders/route.ts`, не затрагивая остальной код.
+- **Страница выставок.** Была в первой версии; спецификация v2 переопределила
+  структуру сайта без неё, поэтому раздел убран. Возвращается добавлением
+  модели и страницы по образцу коллекций.
+- **2FA для админки.** Поля в схеме готовы, TOTP-флоу не реализован.
+- **Фильтр по цвету.** Поле `dominantColor` заполняется, в UI галереи не выведено.

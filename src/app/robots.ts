@@ -1,15 +1,25 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/lib/site-config";
+import { absoluteUrl } from "@/lib/seo";
+import { LOCALES } from "@/lib/i18n/config";
 
 export default function robots(): MetadataRoute.Robots {
+  // Корзина и оформление заказа есть в каждой языковой версии — закрываем все.
+  const localizedPrivate = LOCALES.flatMap((locale) => [
+    `/${locale}/cart`,
+    `/${locale}/checkout`,
+  ]);
+
   return {
     rules: [
       {
+        // Naver использует собственных ботов (Yeti), но правила читает из
+        // того же robots.txt — отдельная секция не нужна, достаточно "*".
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api", "/checkout", "/cart"],
+        disallow: ["/admin", "/api", ...localizedPrivate],
       },
     ],
-    sitemap: `${siteConfig.url}/sitemap.xml`,
+    sitemap: absoluteUrl("/sitemap.xml"),
+    host: absoluteUrl(""),
   };
 }

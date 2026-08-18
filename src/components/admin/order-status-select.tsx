@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import type { OrderStatus } from "@prisma/client";
-import { updateOrderStatus } from "@/app/admin/(dashboard)/orders/actions";
+import { updateOrderStatus } from "@/app/(admin)/admin/(dashboard)/orders/actions";
 
 const LABELS: Record<OrderStatus, string> = {
   NEW: "Новый",

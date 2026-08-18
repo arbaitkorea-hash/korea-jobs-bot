@@ -4,9 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
+import type { AppLocale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 export function AddToCartForm({
+  locale,
+  dict,
   artworkId,
   slug,
   title,
@@ -16,6 +20,8 @@ export function AddToCartForm({
   pricePrintCents,
   available,
 }: {
+  locale: AppLocale;
+  dict: Dictionary;
   artworkId: string;
   slug: string;
   title: string;
@@ -33,49 +39,52 @@ export function AddToCartForm({
   const price = variant === "original" ? priceOriginalCents : (pricePrintCents ?? 0);
 
   function handleAdd() {
-    add({
-      artworkId,
-      slug,
-      title,
-      imageUrl,
-      currency,
-      priceCents: price,
-      variant,
-    });
+    add({ artworkId, slug, title, imageUrl, currency, priceCents: price, variant });
     setAdded(true);
   }
 
   if (!available) {
-    return <p className="text-fg-muted">Эта картина продана. Можно заказать похожую работу через контакты.</p>;
+    return <p className="text-fg-muted">{dict.artwork.soldNote}</p>;
   }
+
+  const pill = "rounded-full border px-4 py-2 transition-colors";
 
   return (
     <div className="space-y-4">
       {pricePrintCents != null && (
-        <div className="flex gap-2 text-sm">
+        <div className="flex flex-wrap gap-2 text-sm">
           <button
             type="button"
             onClick={() => setVariant("original")}
-            className={`rounded-full border px-4 py-2 ${variant === "original" ? "border-fg" : "border-border text-fg-muted"}`}
+            aria-pressed={variant === "original"}
+            className={cn(pill, variant === "original" ? "border-fg" : "border-border text-fg-muted")}
           >
-            Оригинал — {formatPrice(priceOriginalCents, currency)}
+            {dict.artwork.original} — {formatPrice(priceOriginalCents, currency, locale)}
           </button>
           <button
             type="button"
             onClick={() => setVariant("print")}
-            className={`rounded-full border px-4 py-2 ${variant === "print" ? "border-fg" : "border-border text-fg-muted"}`}
+            aria-pressed={variant === "print"}
+            className={cn(pill, variant === "print" ? "border-fg" : "border-border text-fg-muted")}
           >
-            Принт — {formatPrice(pricePrintCents, currency)}
+            {dict.artwork.print} — {formatPrice(pricePrintCents, currency, locale)}
           </button>
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button type="button" onClick={handleAdd}>
-          {added ? "Добавлено ✓" : "В корзину"}
+          {added ? `${dict.artwork.added} ✓` : dict.artwork.addToCart}
         </Button>
-        <Button type="button" variant="secondary" onClick={() => { handleAdd(); router.push("/checkout"); }}>
-          Купить сейчас
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            handleAdd();
+            router.push(`/${locale}/checkout`);
+          }}
+        >
+          {dict.artwork.buyNow}
         </Button>
       </div>
     </div>

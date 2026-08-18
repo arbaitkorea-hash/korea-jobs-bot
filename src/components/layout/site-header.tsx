@@ -6,37 +6,40 @@ import { usePathname } from "next/navigation";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { useCart } from "@/lib/cart-context";
+import type { AppLocale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/gallery", label: "Галерея" },
-  { href: "/collections", label: "Коллекции" },
-  { href: "/about", label: "О художнике" },
-  { href: "/blog", label: "Блог" },
-  { href: "/exhibitions", label: "Выставки" },
-  { href: "/contact", label: "Контакты" },
-];
-
-export function SiteHeader() {
+export function SiteHeader({ locale, dict }: { locale: AppLocale; dict: Dictionary }) {
   const pathname = usePathname();
   const { count } = useCart();
   const [open, setOpen] = useState(false);
 
+  const nav = [
+    { href: `/${locale}/gallery`, label: dict.nav.gallery },
+    { href: `/${locale}/collections`, label: dict.nav.collections },
+    { href: `/${locale}/about`, label: dict.nav.about },
+    { href: `/${locale}/blog`, label: dict.nav.blog },
+    { href: `/${locale}/shipping`, label: dict.nav.shipping },
+    { href: `/${locale}/contact`, label: dict.nav.contact },
+  ];
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur-sm">
-      <Container className="flex h-20 items-center justify-between">
-        <Link href="/" className="font-serif text-xl tracking-wide">
+      <Container className="flex h-20 items-center justify-between gap-4">
+        <Link href={`/${locale}`} className="font-serif text-xl tracking-wide whitespace-nowrap">
           JST&nbsp;ART
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex">
-          {NAV.map((item) => (
+        <nav className="hidden items-center gap-6 xl:flex">
+          {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "text-sm text-fg-muted transition-colors hover:text-fg",
+                "text-sm text-fg-muted transition-colors hover:text-fg whitespace-nowrap",
                 pathname?.startsWith(item.href) && "text-fg",
               )}
             >
@@ -45,11 +48,12 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher locale={locale} label={dict.nav.language} />
+          <ThemeToggle label={dict.nav.toggleTheme} />
           <Link
-            href="/cart"
-            aria-label="Корзина"
+            href={`/${locale}/cart`}
+            aria-label={dict.nav.cart}
             className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-fg-muted transition-colors hover:text-fg hover:border-fg"
           >
             <ShoppingBag size={16} />
@@ -61,8 +65,9 @@ export function SiteHeader() {
           </Link>
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border lg:hidden"
-            aria-label="Меню"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border xl:hidden"
+            aria-label={dict.nav.menu}
+            aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
             {open ? <X size={16} /> : <Menu size={16} />}
@@ -71,9 +76,9 @@ export function SiteHeader() {
       </Container>
 
       {open && (
-        <nav className="border-t border-border lg:hidden">
+        <nav className="border-t border-border xl:hidden">
           <Container className="flex flex-col gap-4 py-6">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

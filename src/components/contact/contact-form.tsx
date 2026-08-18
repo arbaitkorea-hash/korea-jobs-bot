@@ -2,41 +2,47 @@
 
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import type { AppLocale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
-export function ContactForm() {
+export function ContactForm({ locale, dict }: { locale: AppLocale; dict: Dictionary }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
     setStatus("loading");
     setError("");
 
-    const form = new FormData(e.currentTarget);
+    const data = new FormData(form);
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: form.get("name"),
-        email: form.get("email"),
-        message: form.get("message"),
-        website: form.get("website"),
+        name: data.get("name"),
+        email: data.get("email"),
+        message: data.get("message"),
+        website: data.get("website"),
+        locale,
       }),
     });
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error || "Не удалось отправить сообщение.");
+      const body = await res.json().catch(() => ({}));
+      setError(body.error || dict.contact.error);
       setStatus("error");
       return;
     }
 
+    form.reset();
     setStatus("success");
-    e.currentTarget.reset();
   }
 
   if (status === "success") {
-    return <p className="rounded border border-border p-6 text-fg-muted">Сообщение отправлено, спасибо!</p>;
+    return (
+      <p className="rounded border border-border p-6 text-fg-muted">{dict.contact.success}</p>
+    );
   }
 
   return (
@@ -44,22 +50,50 @@ export function ContactForm() {
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <div>
-        <label htmlFor="name" className="block text-sm text-fg-muted">Имя</label>
-        <input id="name" name="name" required minLength={2} maxLength={100} className="mt-1 w-full rounded border border-border bg-bg-elevated px-3 py-2" />
+        <label htmlFor="contact-name" className="block text-sm text-fg-muted">
+          {dict.contact.name}
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          required
+          minLength={2}
+          maxLength={100}
+          className="mt-1 w-full rounded border border-border bg-bg-elevated px-3 py-2"
+        />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm text-fg-muted">Email</label>
-        <input id="email" name="email" type="email" required maxLength={200} className="mt-1 w-full rounded border border-border bg-bg-elevated px-3 py-2" />
+        <label htmlFor="contact-email" className="block text-sm text-fg-muted">
+          {dict.contact.email}
+        </label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          required
+          maxLength={200}
+          className="mt-1 w-full rounded border border-border bg-bg-elevated px-3 py-2"
+        />
       </div>
       <div>
-        <label htmlFor="message" className="block text-sm text-fg-muted">Сообщение</label>
-        <textarea id="message" name="message" required minLength={10} maxLength={2000} rows={5} className="mt-1 w-full rounded border border-border bg-bg-elevated px-3 py-2" />
+        <label htmlFor="contact-message" className="block text-sm text-fg-muted">
+          {dict.contact.message}
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          required
+          minLength={10}
+          maxLength={2000}
+          rows={5}
+          className="mt-1 w-full rounded border border-border bg-bg-elevated px-3 py-2"
+        />
       </div>
 
       {error && <p className="text-sm text-danger">{error}</p>}
 
       <Button type="submit" disabled={status === "loading"}>
-        {status === "loading" ? "Отправка…" : "Отправить"}
+        {status === "loading" ? dict.contact.submitting : dict.contact.submit}
       </Button>
     </form>
   );
