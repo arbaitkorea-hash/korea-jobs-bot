@@ -1,0 +1,27 @@
+# Секреты — никогда не коммитить
+.env
+.env.*
+!.env.example
+
+# База данных
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Инструменты агентов
+.agents/
+.claude/
+skills-lock.json
+
+# ОС и редакторы
+.DS_Store
+.idea/
+.vscode/
