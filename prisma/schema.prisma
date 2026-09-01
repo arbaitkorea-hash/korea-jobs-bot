@@ -40,6 +40,17 @@ enum Orientation {
   SQUARE
 }
 
+/// Цветовая «семья» работы. Точный HEX для фильтра бесполезен — никто не ищет
+/// картину по #B5652F. Семья вычисляется из dominantColor при сохранении и
+/// индексируется, потому что вычислять оттенок в SQL на каждый запрос дорого.
+enum ColorFamily {
+  WARM // красный, оранжевый, жёлтый
+  EARTH // охра, коричневый, песочный
+  GREEN
+  BLUE
+  NEUTRAL // серый, белый, чёрный
+}
+
 enum OrderStatus {
   NEW
   CONTACTED
@@ -132,7 +143,8 @@ model Artwork {
   widthCm       Float
   heightCm      Float
   orientation   Orientation   @default(LANDSCAPE)
-  dominantColor String        @default("") // HEX, для фильтра по цвету
+  dominantColor String        @default("") // HEX, определяется из файла при загрузке
+  colorFamily   ColorFamily?  // производное от dominantColor, для фильтра в галерее
   status        ArtworkStatus @default(AVAILABLE)
 
   priceOriginalCents Int
@@ -163,6 +175,39 @@ model Artwork {
   @@index([collectionId])
   @@index([status])
   @@index([technique])
+  @@index([colorFamily])
+}
+
+/// Выставки и упоминания в прессе. Раздел был в первой версии сайта; вторая
+/// спецификация его не перечисляла, но для доверия к художнику это сильный
+/// сигнал — и для посетителя, и для поисковика (подтверждение экспертности).
+model Exhibition {
+  id        String   @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime?
+  imageUrl  String   @default("")
+  pressUrl  String   @default("")
+  position  Int      @default(0)
+
+  translations ExhibitionTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([startDate])
+}
+
+model ExhibitionTranslation {
+  id           String     @id @default(cuid())
+  exhibitionId String
+  exhibition   Exhibition @relation(fields: [exhibitionId], references: [id], onDelete: Cascade)
+  locale       Locale
+
+  title       String
+  location    String @default("")
+  description String @default("")
+
+  @@unique([exhibitionId, locale])
 }
 
 model ArtworkTranslation {

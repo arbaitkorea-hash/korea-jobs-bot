@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma";
-import type { Orientation, Prisma, Technique } from "@prisma/client";
+import type { ColorFamily, Orientation, Prisma, Technique } from "@prisma/client";
 import { LOCALES, toPrismaLocale, fromPrismaLocale, type AppLocale } from "@/lib/i18n/config";
 
 export type GalleryFilters = {
   collection?: string;
   technique?: Technique;
+  colorFamily?: ColorFamily;
   orientation?: Orientation;
   minPrice?: number;
   maxPrice?: number;
@@ -34,6 +35,8 @@ export type ArtworkView = {
   widthCm: number;
   heightCm: number;
   orientation: Orientation;
+  /** HEX преобладающего цвета — им подкрашиваем авто-обложку для соцсетей. */
+  dominantColor: string;
   status: string;
   priceOriginalCents: number;
   pricePrintCents: number | null;
@@ -86,6 +89,7 @@ function toView(artwork: ArtworkWithRelations, locale: AppLocale): ArtworkView |
     widthCm: artwork.widthCm,
     heightCm: artwork.heightCm,
     orientation: artwork.orientation,
+    dominantColor: artwork.dominantColor,
     status: artwork.status,
     priceOriginalCents: artwork.priceOriginalCents,
     pricePrintCents: artwork.pricePrintCents,
@@ -130,6 +134,7 @@ export async function getGalleryArtworks(
       ? { collection: { translations: { some: { locale: target, slug: filters.collection } } } }
       : {}),
     ...(filters.technique ? { technique: filters.technique } : {}),
+    ...(filters.colorFamily ? { colorFamily: filters.colorFamily } : {}),
     ...(filters.orientation ? { orientation: filters.orientation } : {}),
     ...(filters.minPrice || filters.maxPrice
       ? {

@@ -9,7 +9,8 @@ export type AuditEvent =
   | "RATE_LIMIT"
   | "SUSPICIOUS_ORDER"
   | "UPLOAD_REJECTED"
-  | "CSRF_BLOCKED";
+  | "CSRF_BLOCKED"
+  | "BULK_CREATE";
 
 type Severity = "info" | "warning" | "critical";
 

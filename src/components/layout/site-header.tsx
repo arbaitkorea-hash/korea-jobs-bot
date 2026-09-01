@@ -21,6 +21,7 @@ export function SiteHeader({ locale, dict }: { locale: AppLocale; dict: Dictiona
     { href: `/${locale}/gallery`, label: dict.nav.gallery },
     { href: `/${locale}/collections`, label: dict.nav.collections },
     { href: `/${locale}/about`, label: dict.nav.about },
+    { href: `/${locale}/exhibitions`, label: dict.nav.exhibitions },
     { href: `/${locale}/blog`, label: dict.nav.blog },
     { href: `/${locale}/shipping`, label: dict.nav.shipping },
     { href: `/${locale}/contact`, label: dict.nav.contact },

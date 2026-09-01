@@ -37,7 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = artwork.seoTitle || artwork.title;
   const description = artwork.seoDescription || artwork.description;
-  const ogImage = artwork.ogImage || artwork.images[0]?.url;
+  // Картинку в openGraph подставляем, только если её задали руками в админке.
+  // Иначе поле оставляем пустым — тогда работает opengraph-image.tsx рядом,
+  // который рисует фирменную карточку с названием и ценой.
+  const ogImage = artwork.ogImage;
 
   return {
     title,
@@ -49,7 +52,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: artwork.ogTitle || title,
       description: artwork.ogDescription || description,
-      images: ogImage ? [ogImage] : undefined,
+      // Явный ключ images: undefined перекрыл бы файловую обложку, поэтому
+      // при пустом значении ключа в объекте вообще не должно быть.
+      ...(ogImage ? { images: [ogImage] } : {}),
       type: "website",
     },
   };

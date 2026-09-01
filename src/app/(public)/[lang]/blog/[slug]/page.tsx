@@ -37,7 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : buildAlternates(lang, "/blog", post.slugByLocale),
     openGraph: {
       type: "article",
-      ...(post.coverImage ? { images: [post.coverImage] } : {}),
+      // Обложку не дублируем: карточку соцсети возьмёт из opengraph-image.tsx,
+      // где та же обложка уже подложена под заголовок статьи.
     },
   };
 }

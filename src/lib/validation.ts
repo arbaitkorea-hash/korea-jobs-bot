@@ -123,6 +123,87 @@ export const blogPostAdminSchema = z.object({
   }),
 });
 
+/**
+ * Пакетное создание работ. Ограничение в 60 строк — не формальность:
+ * это верхняя граница объёма записи в БД за один запрос, чтобы одна вкладка
+ * не могла подвесить базу длинной серией транзакций.
+ */
+export const bulkArtworksSchema = z
+  .array(
+    z.object({
+      title: z.string().trim().min(1, "нужно название").max(200),
+      widthCm: z.number().positive("ширина должна быть больше нуля").max(1000),
+      heightCm: z.number().positive("высота должна быть больше нуля").max(1000),
+      priceOriginalCents: z.number().int().min(0).max(1_000_000_000_00),
+      technique: z.enum(["OIL", "ACRYLIC", "MIXED"]),
+      year: z.number().int().min(1900).max(2100).nullable(),
+      collectionId: z.string().max(64).nullable(),
+      dominantColor: z
+        .string()
+        .regex(/^(#[0-9a-fA-F]{6})?$/, "цвет должен быть в формате #RRGGBB")
+        .default(""),
+      image: z.object({
+        // Принимаем только пути, которые сами же и выдали при загрузке:
+        // произвольный URL позволил бы подставить чужую картинку.
+        url: z.string().regex(/^\/api\/media\/[0-9a-f-]{36}-full\.webp$/, "недопустимый путь к файлу"),
+        width: z.number().int().positive(),
+        height: z.number().int().positive(),
+      }),
+    }),
+  )
+  .min(1)
+  .max(60, "За один раз можно создать не больше 60 работ");
+
+/**
+ * Выставка. У неё нет slug'а и SEO-полей: все выставки живут на одной
+ * странице, поэтому индексируется список, а не каждая запись отдельно.
+ */
+export const exhibitionTranslationSchema = z.object({
+  title: z.string().trim().max(200).optional().default(""),
+  location: z.string().trim().max(200).optional().default(""),
+  description: z.string().trim().max(2000).optional().default(""),
+});
+
+export const exhibitionAdminSchema = z
+  .object({
+    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "дата в формате ГГГГ-ММ-ДД"),
+    endDate: z
+      .string()
+      .regex(/^(\d{4}-\d{2}-\d{2})?$/, "дата в формате ГГГГ-ММ-ДД")
+      .optional()
+      .default(""),
+    // Обложка попадает в next/image, а тот для чужого домена отдаёт ошибку
+    // рендера. Поэтому принимаем только путь, выданный нашим загрузчиком.
+    imageUrl: z
+      .string()
+      .trim()
+      .regex(/^(\/api\/media\/[0-9a-f-]{36}-(?:full|thumb)\.webp)?$/, "недопустимый путь к файлу")
+      .optional()
+      .default(""),
+    // Ссылка на публикацию уходит в атрибут href, поэтому разрешаем только
+    // http(s): javascript:-схема здесь превратилась бы в XSS по клику.
+    pressUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .refine((v) => v === "" || /^https?:\/\//i.test(v), "ссылка должна начинаться с http:// или https://")
+      .optional()
+      .default(""),
+    translations: z.object({
+      ru: exhibitionTranslationSchema,
+      en: exhibitionTranslationSchema,
+      ko: exhibitionTranslationSchema,
+    }),
+  })
+  .refine((v) => v.translations.ru.title.trim().length > 0, {
+    message: "Нужно название хотя бы на русском",
+    path: ["translations", "ru", "title"],
+  })
+  .refine((v) => !v.endDate || v.endDate >= v.startDate, {
+    message: "Дата окончания раньше даты начала",
+    path: ["endDate"],
+  });
+
 export const siteKeywordsSchema = z.object({
   ru: z.object({ keywords: z.string().max(2000), hashtags: z.string().max(2000) }),
   en: z.object({ keywords: z.string().max(2000), hashtags: z.string().max(2000) }),

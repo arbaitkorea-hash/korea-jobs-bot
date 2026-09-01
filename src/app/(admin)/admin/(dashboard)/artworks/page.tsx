@@ -51,9 +51,14 @@ export default async function AdminArtworksPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="font-serif text-3xl">Работы</h1>
-        <Link href="/admin/artworks/new">
-          <Button>Добавить работу</Button>
-        </Link>
+        <div className="flex gap-3">
+          <Link href="/admin/artworks/bulk">
+            <Button variant="secondary">Загрузить много</Button>
+          </Link>
+          <Link href="/admin/artworks/new">
+            <Button>Добавить работу</Button>
+          </Link>
+        </div>
       </div>
 
       {rows.length === 0 ? (

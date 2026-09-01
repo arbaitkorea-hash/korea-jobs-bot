@@ -22,6 +22,7 @@ export function GalleryFilters({
     current.q ||
       current.collection ||
       current.technique ||
+      current.color ||
       current.orientation ||
       current.minPrice ||
       current.maxPrice ||
@@ -62,6 +63,18 @@ export function GalleryFilters({
           <option value="OIL">{dict.technique.OIL}</option>
           <option value="ACRYLIC">{dict.technique.ACRYLIC}</option>
           <option value="MIXED">{dict.technique.MIXED}</option>
+        </select>
+      </label>
+
+      <label className="flex flex-col">
+        <span className="text-fg-muted">{f.color}</span>
+        <select name="color" defaultValue={current.color ?? ""} className={field}>
+          <option value="">{f.all}</option>
+          <option value="WARM">{dict.colorFamily.WARM}</option>
+          <option value="EARTH">{dict.colorFamily.EARTH}</option>
+          <option value="GREEN">{dict.colorFamily.GREEN}</option>
+          <option value="BLUE">{dict.colorFamily.BLUE}</option>
+          <option value="NEUTRAL">{dict.colorFamily.NEUTRAL}</option>
         </select>
       </label>
 

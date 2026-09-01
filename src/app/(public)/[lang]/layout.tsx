@@ -41,7 +41,9 @@ export async function generateMetadata({
       siteName: siteConfig.name,
       title: dict.meta.siteTitle,
       description: dict.meta.siteDescription,
-      images: [siteConfig.defaultOgImage],
+      // Картинку здесь не задаём: явное значение в layout перекрывает
+      // файловую обложку opengraph-image.tsx на вложенных страницах,
+      // и все разделы получили бы одну статичную заглушку.
     },
     twitter: {
       card: "summary_large_image",

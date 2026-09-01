@@ -9,6 +9,7 @@
     "collections": "Collections",
     "about": "About",
     "blog": "Journal",
+    "exhibitions": "Exhibitions",
     "shipping": "Payment & Shipping",
     "contact": "Contact",
     "cart": "Cart",
@@ -61,7 +62,8 @@
       "portrait": "Portrait",
       "square": "Square",
       "search": "Search",
-      "searchPlaceholder": "title, subject, technique…"
+      "searchPlaceholder": "title, subject, technique…",
+      "color": "Colour"
     },
     "resultsFor": "Results for"
   },
@@ -106,6 +108,14 @@
     "subtitle": "On art, painting technique and the stories behind the works.",
     "empty": "No published articles yet.",
     "readMore": "Read"
+  },
+  "exhibitions": {
+    "title": "Exhibitions & Press",
+    "subtitle": "Solo and group exhibitions, publications and press mentions.",
+    "empty": "No announcements yet — stay tuned.",
+    "now": "On view",
+    "upcoming": "Upcoming",
+    "press": "Press coverage"
   },
   "cart": {
     "title": "Cart",
@@ -185,5 +195,12 @@
     "notFoundTitle": "Page not found",
     "notFoundBody": "The work may have been withdrawn from sale, or the address contains a typo.",
     "goHome": "Go to homepage"
+  },
+  "colorFamily": {
+    "WARM": "Warm",
+    "EARTH": "Earth tones",
+    "GREEN": "Greens",
+    "BLUE": "Blues",
+    "NEUTRAL": "Neutrals"
   }
 }

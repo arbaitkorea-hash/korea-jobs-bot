@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { PrismaClient, type Locale, type Technique } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { colorFamilyOf } from "../src/lib/color";
 import sharp from "sharp";
 
 const prisma = new PrismaClient();
@@ -342,6 +343,61 @@ const artworks: {
   },
 ];
 
+const exhibitions = [
+  {
+    color: "#8C6A4A",
+    startDate: "2025-09-12",
+    endDate: "2025-10-05",
+    pressUrl: "",
+    tr: {
+      RU: {
+        title: "Персональная выставка «Свет на воде»",
+        location: "Галерея Insa, Сеул",
+        description:
+          "Двадцать четыре работы маслом, написанные на побережье Канвондо за два года. Центральная тема — как один и тот же берег меняется от рассвета к закату.",
+      },
+      EN: {
+        title: "Solo exhibition “Light on Water”",
+        location: "Insa Gallery, Seoul",
+        description:
+          "Twenty-four oil paintings made along the Gangwon coast over two years, following one shoreline from dawn to dusk.",
+      },
+      KO: {
+        title: "개인전 «물 위의 빛»",
+        location: "인사갤러리, 서울",
+        description:
+          "2년간 강원도 해안에서 그린 유화 24점. 같은 해안이 새벽부터 해질녘까지 어떻게 변하는지를 담았습니다.",
+      },
+    },
+  },
+  {
+    color: "#4A6B5C",
+    startDate: "2024-05-18",
+    endDate: "2024-06-09",
+    pressUrl: "",
+    tr: {
+      RU: {
+        title: "Групповая выставка «Пейзаж без границ»",
+        location: "Культурный центр Мапхо, Сеул",
+        description:
+          "Совместный проект восьми художников из Кореи, России и Японии о том, как национальная школа живописи меняет взгляд на одну и ту же природу.",
+      },
+      EN: {
+        title: "Group show “Landscape Without Borders”",
+        location: "Mapo Art Center, Seoul",
+        description:
+          "Eight painters from Korea, Russia and Japan on how a national school of painting reshapes the same nature.",
+      },
+      KO: {
+        title: "단체전 «경계 없는 풍경»",
+        location: "마포아트센터, 서울",
+        description:
+          "한국·러시아·일본 작가 8인이 같은 자연을 각자의 회화 전통으로 바라본 공동 프로젝트입니다.",
+      },
+    },
+  },
+];
+
 const blogPost = {
   color: "#3E5C6B",
   tr: {
@@ -472,6 +528,7 @@ async function main() {
             ? ("LANDSCAPE" as const)
             : ("PORTRAIT" as const),
       dominantColor: a.color,
+      colorFamily: colorFamilyOf(a.color),
       priceOriginalCents: a.priceOriginalCents,
       pricePrintCents: a.pricePrintCents,
       collectionId: collectionIds.get(a.collectionKey)!,
@@ -551,6 +608,35 @@ async function main() {
       update: payload,
       create: { ...payload, blogPostId: post.id, locale },
     });
+  }
+
+  // Выставки
+  for (const [index, e] of exhibitions.entries()) {
+    const existing = await prisma.exhibitionTranslation.findFirst({
+      where: { locale: "RU", title: e.tr.RU.title },
+    });
+    const poster = await makePlaceholder(e.color, 1200, 900);
+
+    const core = {
+      startDate: new Date(`${e.startDate}T00:00:00.000Z`),
+      endDate: new Date(`${e.endDate}T00:00:00.000Z`),
+      imageUrl: poster.url,
+      pressUrl: e.pressUrl,
+      position: index,
+    };
+
+    const exhibition = existing
+      ? await prisma.exhibition.update({ where: { id: existing.exhibitionId }, data: core })
+      : await prisma.exhibition.create({ data: core });
+
+    for (const locale of LOCALES) {
+      const t = e.tr[locale];
+      await prisma.exhibitionTranslation.upsert({
+        where: { exhibitionId_locale: { exhibitionId: exhibition.id, locale } },
+        update: t,
+        create: { ...t, exhibitionId: exhibition.id, locale },
+      });
+    }
   }
 
   // Семантическое ядро уровня сайта

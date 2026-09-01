@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import type { Orientation, Technique } from "@prisma/client";
+import type { ColorFamily, Orientation, Technique } from "@prisma/client";
 import { isAppLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getGalleryArtworks } from "@/lib/data/artworks";
@@ -11,6 +11,29 @@ import { Container } from "@/components/ui/container";
 import { buildAlternates } from "@/lib/seo";
 
 export const revalidate = 3600;
+
+/**
+ * Значения фильтров приходят из строки запроса, то есть от кого угодно.
+ * Приводить их к enum'у Prisma простым `as` нельзя: `?color=HACK` уходил бы
+ * в запрос и валил страницу пятисоткой. Неизвестное значение просто
+ * игнорируем — галерея показывает всё, как без фильтра.
+ */
+function pickEnum<T extends string>(value: string | undefined, allowed: readonly T[]): T | undefined {
+  return allowed.includes(value as T) ? (value as T) : undefined;
+}
+
+const TECHNIQUES = ["OIL", "ACRYLIC", "MIXED"] as const satisfies readonly Technique[];
+const COLORS = ["WARM", "EARTH", "GREEN", "BLUE", "NEUTRAL"] as const satisfies readonly ColorFamily[];
+const ORIENTATIONS = ["LANDSCAPE", "PORTRAIT", "SQUARE"] as const satisfies readonly Orientation[];
+const SORTS = ["newest", "price-asc", "price-desc"] as const;
+
+/** Цену в форме вводят в валюте, а храним в копейках/вонах. */
+function priceToCents(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) return undefined;
+  return Math.round(parsed * 100);
+}
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -40,11 +63,12 @@ export default async function GalleryPage({ params, searchParams }: Props) {
     getGalleryArtworks(lang, {
       q: sp.q,
       collection: sp.collection,
-      technique: sp.technique as Technique | undefined,
-      orientation: sp.orientation as Orientation | undefined,
-      minPrice: sp.minPrice ? Number(sp.minPrice) * 100 : undefined,
-      maxPrice: sp.maxPrice ? Number(sp.maxPrice) * 100 : undefined,
-      sort: sp.sort as "newest" | "price-asc" | "price-desc" | undefined,
+      technique: pickEnum(sp.technique, TECHNIQUES),
+      colorFamily: pickEnum(sp.color, COLORS),
+      orientation: pickEnum(sp.orientation, ORIENTATIONS),
+      minPrice: priceToCents(sp.minPrice),
+      maxPrice: priceToCents(sp.maxPrice),
+      sort: pickEnum(sp.sort, SORTS),
     }),
     getCollections(lang),
   ]);

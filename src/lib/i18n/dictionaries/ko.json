@@ -9,6 +9,7 @@
     "collections": "컬렉션",
     "about": "작가 소개",
     "blog": "저널",
+    "exhibitions": "전시",
     "shipping": "결제·배송",
     "contact": "문의",
     "cart": "장바구니",
@@ -61,7 +62,8 @@
       "portrait": "세로형",
       "square": "정사각형",
       "search": "검색",
-      "searchPlaceholder": "제목, 주제, 기법…"
+      "searchPlaceholder": "제목, 주제, 기법…",
+      "color": "색감"
     },
     "resultsFor": "검색 결과"
   },
@@ -106,6 +108,14 @@
     "subtitle": "예술과 회화 기법, 작품에 담긴 이야기.",
     "empty": "아직 게시된 글이 없습니다.",
     "readMore": "읽기"
+  },
+  "exhibitions": {
+    "title": "전시 및 언론",
+    "subtitle": "개인전과 단체전, 출판물 및 언론 보도.",
+    "empty": "아직 예정된 전시가 없습니다.",
+    "now": "전시 중",
+    "upcoming": "예정",
+    "press": "언론 보도"
   },
   "cart": {
     "title": "장바구니",
@@ -185,5 +195,12 @@
     "notFoundTitle": "페이지를 찾을 수 없습니다",
     "notFoundBody": "작품이 판매 종료되었거나 주소가 잘못되었을 수 있습니다.",
     "goHome": "홈으로"
+  },
+  "colorFamily": {
+    "WARM": "따뜻한 색",
+    "EARTH": "흙빛",
+    "GREEN": "초록 계열",
+    "BLUE": "푸른 계열",
+    "NEUTRAL": "무채색"
   }
 }

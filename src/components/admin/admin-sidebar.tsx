@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin", label: "Обзор" },
   { href: "/admin/artworks", label: "Работы" },
   { href: "/admin/collections", label: "Коллекции" },
+  { href: "/admin/exhibitions", label: "Выставки" },
   { href: "/admin/blog", label: "Блог" },
   { href: "/admin/keywords", label: "Ключевые слова" },
   { href: "/admin/orders", label: "Заказы" },

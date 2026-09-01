@@ -3,6 +3,7 @@ import { LOCALES, DEFAULT_LOCALE, type AppLocale } from "@/lib/i18n/config";
 import { getArtworkSitemapEntries } from "@/lib/data/artworks";
 import { getCollectionSitemapEntries } from "@/lib/data/collections";
 import { getBlogSitemapEntries } from "@/lib/data/blog";
+import { getExhibitionsUpdatedAt } from "@/lib/data/exhibitions";
 import { absoluteUrl } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -14,6 +15,7 @@ const STATIC_PATHS: { path: string; priority: number; changeFrequency: "daily" |
   { path: "/collections", priority: 0.7, changeFrequency: "weekly" },
   { path: "/about", priority: 0.6, changeFrequency: "monthly" },
   { path: "/blog", priority: 0.6, changeFrequency: "weekly" },
+  { path: "/exhibitions", priority: 0.6, changeFrequency: "monthly" },
   { path: "/shipping", priority: 0.5, changeFrequency: "monthly" },
   { path: "/contact", priority: 0.4, changeFrequency: "yearly" },
   { path: "/policies/returns", priority: 0.2, changeFrequency: "yearly" },
@@ -36,10 +38,11 @@ function languagesFor(build: (locale: AppLocale) => string | null) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [artworks, collections, posts] = await Promise.all([
+  const [artworks, collections, posts, exhibitionsUpdatedAt] = await Promise.all([
     getArtworkSitemapEntries(),
     getCollectionSitemapEntries(),
     getBlogSitemapEntries(),
+    getExhibitionsUpdatedAt(),
   ]);
 
   const entries: MetadataRoute.Sitemap = [];
@@ -49,6 +52,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of LOCALES) {
       entries.push({
         url: absoluteUrl(`/${locale}${path}`),
+        // У выставок нет собственных URL, но есть дата правки — отдаём её,
+        // чтобы бот перечитывал страницу после добавления новой выставки.
+        ...(path === "/exhibitions" && exhibitionsUpdatedAt
+          ? { lastModified: exhibitionsUpdatedAt }
+          : {}),
         changeFrequency,
         priority,
         alternates: { languages },

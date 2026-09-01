@@ -25,6 +25,8 @@ export type StoredImage = {
   width: number;
   height: number;
   format: "webp";
+  /** Преобладающий цвет в HEX — для фильтра по цвету и подложки при загрузке. */
+  dominantColor: string;
 };
 
 export async function saveImage(buffer: Buffer): Promise<StoredImage> {
@@ -57,11 +59,36 @@ export async function saveImage(buffer: Buffer): Promise<StoredImage> {
   await writeFile(path.join(UPLOAD_DIR, fullName), fullBuffer.data);
   await writeFile(path.join(UPLOAD_DIR, thumbName), thumbBuffer);
 
+  const dominantColor = await extractDominantColor(buffer);
+
   return {
     url: `/api/media/${fullName}`,
     thumbUrl: `/api/media/${thumbName}`,
     width: fullBuffer.info.width,
     height: fullBuffer.info.height,
     format: "webp",
+    dominantColor,
   };
+}
+
+/**
+ * Преобладающий цвет работы. Берём среднее по картинке, ужатой до 1 пикселя, —
+ * для живописи это даёт «настроение» полотна точнее, чем самый частый цвет:
+ * у пейзажа самым частым может оказаться небо, а не общий тон.
+ */
+async function extractDominantColor(buffer: Buffer): Promise<string> {
+  try {
+    const { data } = await sharp(buffer)
+      .resize(1, 1, { fit: "fill" })
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const hex = [data[0], data[1], data[2]]
+      .map((c) => c.toString(16).padStart(2, "0"))
+      .join("");
+    return `#${hex.toUpperCase()}`;
+  } catch {
+    return "";
+  }
 }

@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { artworkAdminSchema } from "@/lib/validation";
 import { LOCALES, toPrismaLocale, type AppLocale } from "@/lib/i18n/config";
 import type { UploadedImage } from "@/components/admin/image-uploader";
+import { colorFamilyOf } from "@/lib/color";
 
 export type ArtworkTranslationInput = {
   slug: string;
@@ -89,6 +90,7 @@ export async function saveArtwork(id: string | null, input: ArtworkFormInput) {
     heightCm: data.heightCm,
     orientation: data.orientation,
     dominantColor: data.dominantColor,
+    colorFamily: colorFamilyOf(data.dominantColor),
     status: data.status,
     priceOriginalCents: data.priceOriginalCents,
     pricePrintCents: data.pricePrintCents ?? null,

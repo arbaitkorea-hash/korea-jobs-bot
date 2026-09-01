@@ -23,6 +23,9 @@ export function SiteFooter({ locale, dict }: { locale: AppLocale; dict: Dictiona
           <Link href={`/${locale}/about`} className="text-fg-muted hover:text-fg">
             {dict.nav.about}
           </Link>
+          <Link href={`/${locale}/exhibitions`} className="text-fg-muted hover:text-fg">
+            {dict.nav.exhibitions}
+          </Link>
           <Link href={`/${locale}/blog`} className="text-fg-muted hover:text-fg">
             {dict.nav.blog}
           </Link>

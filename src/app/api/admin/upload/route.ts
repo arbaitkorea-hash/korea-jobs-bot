@@ -18,7 +18,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { ok } = rateLimit(`upload:${getClientIp(request)}`, 30, 10 * 60 * 1000);
+  // Лимит рассчитан на пакетную загрузку: одна партия — до 60 работ, и
+  // владелец может залить две подряд, не упершись в 429. Планка всё равно
+  // низкая по сравнению со стоимостью конвертации, а доступ — только по сессии.
+  const { ok } = rateLimit(`upload:${getClientIp(request)}`, 130, 10 * 60 * 1000);
   if (!ok) {
     return NextResponse.json({ error: "Слишком много загрузок. Попробуйте позже." }, { status: 429 });
   }
