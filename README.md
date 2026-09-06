@@ -40,7 +40,8 @@ src/
     (admin)/admin/         админка, свой root layout (не индексируется)
       login/
       (dashboard)/
-        artworks/           CRUD работ: вкладки RU/EN/KO, SEO на каждый язык, drag-and-drop
+        artworks/           CRUD работ: вкладки RU/EN/KO, SEO на каждый язык, drag-and-drop,
+                            звезда «на главную» прямо в списке
         artworks/bulk/      массовая загрузка: перетащить пачку фото, общие параметры на всю партию
         exhibitions/        выставки: даты, место, ссылка на прессу, тексты на трёх языках
         collections/ blog/  то же для коллекций и статей
@@ -57,6 +58,7 @@ src/
     og.tsx                 генерация OG-карточек, подмножества шрифтов
     color.ts slugify.ts    цветовые семьи по HSL, транслитерация RU/KO в slug
     currency.ts            валюта по стране посетителя и пересчёт цены
+    seo-copy.ts            формула meta title/description с зацепкой и призывом
     dimensions.ts          ориентация и порядок сторон по пропорциям фотографии
     crypto.ts              AES-256-GCM для персональных данных
     fraud.ts audit.ts      антифрод и журнал безопасности
@@ -117,6 +119,7 @@ npm run db:migrate  # prisma migrate dev
 npm run db:deploy   # prisma migrate deploy (прод)
 npm run db:seed     # демо-данные (для разработки)
 npm run db:import   # реальный каталог работ из prisma/catalog.json
+                    # (флаг -- --refresh-seo пересобирает заголовки по новой формуле)
 npm run db:studio   # просмотр БД
 ```
 

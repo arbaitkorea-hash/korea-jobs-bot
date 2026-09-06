@@ -23,6 +23,7 @@ export function SeoFieldsPanel({
   basePath,
   showAlt = true,
   showOg = true,
+  onAutofill,
 }: {
   locale: AppLocale;
   values: SeoValues;
@@ -31,6 +32,8 @@ export function SeoFieldsPanel({
   basePath: string;
   showAlt?: boolean;
   showOg?: boolean;
+  /** Заполнить title/description/ключевые слова по данным работы. */
+  onAutofill?: () => void;
 }) {
   const url = `${siteConfig.url}/${locale}${basePath}/${values.slug || "…"}`;
 
@@ -44,7 +47,25 @@ export function SeoFieldsPanel({
 
   return (
     <div className="space-y-5 rounded border border-border p-6">
-      <h3 className="font-serif text-lg">SEO — {locale.toUpperCase()}</h3>
+      <div className="flex items-baseline justify-between gap-3">
+        <h3 className="font-serif text-lg">SEO — {locale.toUpperCase()}</h3>
+        {onAutofill && (
+          <button
+            type="button"
+            onClick={onAutofill}
+            className="text-sm underline underline-offset-4 hover:text-accent"
+          >
+            Собрать по работе
+          </button>
+        )}
+      </div>
+      {onAutofill && (
+        <p className="-mt-3 text-xs text-fg-muted">
+          Соберёт заголовок и описание по формуле «название + техника + размер + купить»
+          и подставит первую фразу описания как зацепку для выдачи. Всё написанное
+          вручную будет заменено.
+        </p>
+      )}
 
       <div>
         <label className="block text-sm text-fg-muted">Slug (URL)</label>

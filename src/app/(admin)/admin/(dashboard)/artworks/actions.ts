@@ -178,6 +178,20 @@ export async function deleteArtwork(id: string) {
   }
 }
 
+/**
+ * «Избранное» — это блок на главной. Переключатель стоит прямо в списке работ:
+ * ради одной галочки открывать карточку и сохранять всю форму — лишний труд,
+ * а состав главной художник меняет часто.
+ */
+export async function toggleFeatured(id: string, featured: boolean) {
+  await requireSession();
+  await prisma.artwork.update({ where: { id }, data: { featured } });
+
+  revalidatePath("/admin/artworks");
+  for (const locale of LOCALES) revalidatePath(`/${locale}`);
+  return { ok: true };
+}
+
 export async function reorderArtworks(orderedIds: string[]) {
   await requireSession();
   await prisma.$transaction(

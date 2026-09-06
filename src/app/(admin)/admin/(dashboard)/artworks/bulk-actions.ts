@@ -9,6 +9,7 @@ import { slugify, uniqueSlug } from "@/lib/slugify";
 import { logAudit } from "@/lib/audit";
 import { colorFamilyOf } from "@/lib/color";
 import { alignSidesToPhoto } from "@/lib/dimensions";
+import { buildArtworkSeo } from "@/lib/seo-copy";
 
 export type BulkArtworkRow = {
   title: string;
@@ -90,15 +91,29 @@ export async function createArtworksBulk(rows: BulkArtworkRow[]) {
 
       for (const locale of LOCALES) {
         const slug = uniqueSlug(base, takenByLocale.get(locale)!);
+
+        // Русский заполняем из формы, остальные языки оставляем пустыми:
+        // копировать русский текст в EN/KO нельзя — для поисковика это
+        // дубли, которые вредят обеим версиям. Зато для русского сразу
+        // собираем SEO по формуле: половина работы по выдаче уже сделана.
+        const seo =
+          locale === "ru"
+            ? buildArtworkSeo("ru", {
+                title: row.title,
+                technique: row.technique,
+                widthCm: sides.widthCm,
+                heightCm: sides.heightCm,
+                year: row.year,
+              })
+            : null;
+
         await tx.artworkTranslation.create({
           data: {
             artworkId: artwork.id,
             locale: toPrismaLocale(locale),
             slug,
-            // Русский заполняем из формы, остальные языки оставляем пустыми:
-            // копировать русский текст в EN/KO нельзя — для поисковика это
-            // дубли, которые вредят обеим версиям.
             title: locale === "ru" ? row.title : "",
+            ...(seo ?? {}),
           },
         });
       }

@@ -3,16 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition, type DragEvent } from "react";
-import { GripVertical, Trash2 } from "lucide-react";
+import { GripVertical, Star, Trash2 } from "lucide-react";
 import { computeSeoHealth } from "@/lib/seo-health";
 import { LOCALES, type AppLocale } from "@/lib/i18n/config";
-import { deleteArtwork, reorderArtworks } from "@/app/(admin)/admin/(dashboard)/artworks/actions";
+import {
+  deleteArtwork,
+  reorderArtworks,
+  toggleFeatured,
+} from "@/app/(admin)/admin/(dashboard)/artworks/actions";
 import { formatPrice, cn } from "@/lib/utils";
 
 export type ArtworkRow = {
   id: string;
   title: string;
   published: boolean;
+  featured: boolean;
   status: string;
   priceOriginalCents: number;
   currency: string;
@@ -40,6 +45,17 @@ export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
     });
   }
 
+  const featuredCount = items.filter((i) => i.featured).length;
+
+  /** Оптимистично: звезда должна загораться сразу, а не после ответа сервера. */
+  async function handleFeatured(id: string, next: boolean) {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, featured: next } : i)));
+    const result = await toggleFeatured(id, next);
+    if (!result?.ok) {
+      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, featured: !next } : i)));
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("Удалить работу без возможности восстановления?")) return;
     setItems((prev) => prev.filter((i) => i.id !== id));
@@ -47,7 +63,14 @@ export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
   }
 
   return (
-    <ul className="divide-y divide-border">
+    <>
+      <p className="mb-4 text-sm text-fg-muted">
+        Звезда — работа попадает в блок «Избранные работы» на главной. Сейчас отмечено{" "}
+        <span className={featuredCount === 0 ? "text-amber-600" : "text-fg"}>{featuredCount}</span>;
+        на главной показываются первые шесть в порядке этого списка.
+      </p>
+
+      <ul className="divide-y divide-border">
       {items.map((item, index) => (
         <li
           key={item.id}
@@ -89,6 +112,20 @@ export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
 
           <button
             type="button"
+            onClick={() => handleFeatured(item.id, !item.featured)}
+            aria-pressed={item.featured}
+            aria-label={item.featured ? "Убрать из избранного" : "Показать на главной"}
+            title={item.featured ? "Убрать из избранного" : "Показать на главной"}
+            className={cn(
+              "transition-colors",
+              item.featured ? "text-amber-500" : "text-fg-muted hover:text-amber-500",
+            )}
+          >
+            <Star size={16} fill={item.featured ? "currentColor" : "none"} />
+          </button>
+
+          <button
+            type="button"
             onClick={() => handleDelete(item.id)}
             aria-label="Удалить"
             className="text-fg-muted hover:text-danger"
@@ -97,7 +134,8 @@ export function ArtworkList({ initialItems }: { initialItems: ArtworkRow[] }) {
           </button>
         </li>
       ))}
-      {isPending && <p className="pt-2 text-xs text-fg-muted">Сохранение порядка…</p>}
-    </ul>
+        {isPending && <p className="pt-2 text-xs text-fg-muted">Сохранение порядка…</p>}
+      </ul>
+    </>
   );
 }

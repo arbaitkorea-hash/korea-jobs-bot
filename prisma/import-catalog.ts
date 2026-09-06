@@ -15,6 +15,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { slugify, uniqueSlug } from "../src/lib/slugify";
 import { orientationFromSides } from "../src/lib/dimensions";
+import { buildArtworkSeo } from "../src/lib/seo-copy";
 
 const prisma = new PrismaClient();
 
@@ -37,19 +38,12 @@ type CatalogRow = {
 const LOCALES: Locale[] = ["RU", "EN", "KO"];
 const KEY: Record<Locale, "ru" | "en" | "ko"> = { RU: "ru", EN: "en", KO: "ko" };
 
-const TECHNIQUE_WORD: Record<"ru" | "en" | "ko", Record<Technique, string>> = {
-  ru: { OIL: "холст, масло", ACRYLIC: "холст, акрил", MIXED: "смешанная техника" },
-  en: { OIL: "oil on canvas", ACRYLIC: "acrylic on canvas", MIXED: "mixed media" },
-  ko: { OIL: "캔버스에 유화", ACRYLIC: "캔버스에 아크릴", MIXED: "혼합 기법" },
-};
-
-const CM: Record<"ru" | "en" | "ko", string> = { ru: "см", en: "cm", ko: "cm" };
-
-const SEO_TAIL: Record<"ru" | "en" | "ko", string> = {
-  ru: "Оригинал художника Jung Sen Tek с доставкой.",
-  en: "An original by Jung Sen Tek, shipped worldwide.",
-  ko: "정성택 작가의 원화, 배송 가능합니다.",
-};
+/**
+ * По умолчанию скрипт заполняет только пустые поля — то, что владелец написал
+ * сам, трогать нельзя. Флаг --refresh-seo нужен, когда меняется сама формула
+ * заголовков: тогда title и description для выдачи пересобираются у всех работ.
+ */
+const REFRESH_SEO = process.argv.includes("--refresh-seo");
 
 async function main() {
   const raw = await readFile(path.join(process.cwd(), "prisma", "catalog.json"), "utf8");
@@ -96,17 +90,28 @@ async function main() {
       const key = KEY[locale];
       const title = row.title[key];
 
+      const description = row.description?.[key] ?? "";
+
+      // Заголовок и описание для выдачи собирает тот же генератор, что и
+      // кнопка «Собрать по работе» в админке, — чтобы у всех работ формула
+      // была одна, независимо от того, откуда работа появилась.
+      const generated = buildArtworkSeo(key, {
+        title,
+        description,
+        technique: row.technique,
+        widthCm: row.widthCm,
+        heightCm: row.heightCm,
+        year: row.year,
+      });
+
       const texts = {
         title,
-        description: row.description?.[key] ?? "",
+        description,
         altText: row.altText?.[key] ?? "",
-        keywords: row.keywords?.[key] ?? "",
-        hashtags: row.hashtags?.[key] ?? "",
-        // Заголовок и описание для поисковой выдачи собираются из фактов о
-        // работе: название, техника, размер. Придумывать их отдельно смысла
-        // нет — именно эти слова человек и вводит в поиск.
-        seoTitle: `${title} — ${TECHNIQUE_WORD[key][row.technique]}, ${row.widthCm}×${row.heightCm} ${CM[key]} | JST ART`,
-        seoDescription: `${row.description?.[key] ?? title} ${SEO_TAIL[key]}`.trim(),
+        keywords: row.keywords?.[key] || generated.keywords,
+        hashtags: row.hashtags?.[key] || generated.hashtags,
+        seoTitle: generated.seoTitle,
+        seoDescription: generated.seoDescription,
       };
 
       const current = await prisma.artworkTranslation.findUnique({
@@ -119,9 +124,10 @@ async function main() {
         // который к тому времени уже может быть в индексе поисковика.
         const patch: Record<string, string> = {};
         for (const [field, value] of Object.entries(texts)) {
-          if (value && !(current as unknown as Record<string, string>)[field]?.trim()) {
-            patch[field] = value;
-          }
+          if (!value) continue;
+          const isFormulaField = field === "seoTitle" || field === "seoDescription";
+          const isEmpty = !(current as unknown as Record<string, string>)[field]?.trim();
+          if (isEmpty || (REFRESH_SEO && isFormulaField)) patch[field] = value;
         }
         if (Object.keys(patch).length > 0) {
           await prisma.artworkTranslation.update({

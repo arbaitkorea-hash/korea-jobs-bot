@@ -39,6 +39,7 @@ export default async function AdminArtworksPage() {
       id: a.id,
       title: ruTitle || fallback || "(без названия)",
       published: a.published,
+      featured: a.featured,
       status: a.status,
       priceOriginalCents: a.priceOriginalCents,
       currency: a.currency,

@@ -7,6 +7,7 @@ import { LocaleTabs } from "@/components/admin/locale-tabs";
 import { ImageUploader, type UploadedImage } from "@/components/admin/image-uploader";
 import { LOCALES, type AppLocale } from "@/lib/i18n/config";
 import { computeSeoHealth } from "@/lib/seo-health";
+import { buildArtworkSeo } from "@/lib/seo-copy";
 import {
   saveArtwork,
   type ArtworkFormInput,
@@ -292,6 +293,20 @@ export function ArtworkForm({
         <SeoFieldsPanel
           locale={activeLocale}
           basePath="/gallery"
+          onAutofill={() =>
+            setTranslation(
+              activeLocale,
+              buildArtworkSeo(activeLocale, {
+                title: values.translations[activeLocale].title,
+                description: values.translations[activeLocale].description,
+                technique: values.technique,
+                widthCm: values.widthCm,
+                heightCm: values.heightCm,
+                year: values.year,
+                status: values.status,
+              }),
+            )
+          }
           values={{
             slug: t.slug,
             seoTitle: t.seoTitle,
