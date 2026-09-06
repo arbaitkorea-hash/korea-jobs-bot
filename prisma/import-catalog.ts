@@ -18,6 +18,8 @@ import { orientationFromSides } from "../src/lib/dimensions";
 
 const prisma = new PrismaClient();
 
+type Localized = { ru: string; en: string; ko: string };
+
 type CatalogRow = {
   file: string;
   widthCm: number;
@@ -25,11 +27,29 @@ type CatalogRow = {
   technique: Technique;
   year: number;
   price: number;
-  title: { ru: string; en: string; ko: string };
+  title: Localized;
+  description?: Localized;
+  altText?: Localized;
+  keywords?: Localized;
+  hashtags?: Localized;
 };
 
 const LOCALES: Locale[] = ["RU", "EN", "KO"];
 const KEY: Record<Locale, "ru" | "en" | "ko"> = { RU: "ru", EN: "en", KO: "ko" };
+
+const TECHNIQUE_WORD: Record<"ru" | "en" | "ko", Record<Technique, string>> = {
+  ru: { OIL: "холст, масло", ACRYLIC: "холст, акрил", MIXED: "смешанная техника" },
+  en: { OIL: "oil on canvas", ACRYLIC: "acrylic on canvas", MIXED: "mixed media" },
+  ko: { OIL: "캔버스에 유화", ACRYLIC: "캔버스에 아크릴", MIXED: "혼합 기법" },
+};
+
+const CM: Record<"ru" | "en" | "ko", string> = { ru: "см", en: "cm", ko: "cm" };
+
+const SEO_TAIL: Record<"ru" | "en" | "ko", string> = {
+  ru: "Оригинал художника Jung Sen Tek с доставкой.",
+  en: "An original by Jung Sen Tek, shipped worldwide.",
+  ko: "정성택 작가의 원화, 배송 가능합니다.",
+};
 
 async function main() {
   const raw = await readFile(path.join(process.cwd(), "prisma", "catalog.json"), "utf8");
@@ -73,24 +93,48 @@ async function main() {
     else created += 1;
 
     for (const locale of LOCALES) {
-      const title = row.title[KEY[locale]];
+      const key = KEY[locale];
+      const title = row.title[key];
+
+      const texts = {
+        title,
+        description: row.description?.[key] ?? "",
+        altText: row.altText?.[key] ?? "",
+        keywords: row.keywords?.[key] ?? "",
+        hashtags: row.hashtags?.[key] ?? "",
+        // Заголовок и описание для поисковой выдачи собираются из фактов о
+        // работе: название, техника, размер. Придумывать их отдельно смысла
+        // нет — именно эти слова человек и вводит в поиск.
+        seoTitle: `${title} — ${TECHNIQUE_WORD[key][row.technique]}, ${row.widthCm}×${row.heightCm} ${CM[key]} | JST ART`,
+        seoDescription: `${row.description?.[key] ?? title} ${SEO_TAIL[key]}`.trim(),
+      };
+
       const current = await prisma.artworkTranslation.findUnique({
         where: { artworkId_locale: { artworkId: artwork.id, locale } },
       });
 
       if (current) {
-        // Название обновляем, тексты и slug не трогаем: их мог поменять владелец,
-        // а slug — это уже проиндексированный адрес страницы.
-        await prisma.artworkTranslation.update({
-          where: { artworkId_locale: { artworkId: artwork.id, locale } },
-          data: { title },
-        });
+        // Заполняем только пустые поля: то, что владелец уже написал сам,
+        // трогать нельзя. Slug не меняем никогда — это адрес страницы,
+        // который к тому времени уже может быть в индексе поисковика.
+        const patch: Record<string, string> = {};
+        for (const [field, value] of Object.entries(texts)) {
+          if (value && !(current as unknown as Record<string, string>)[field]?.trim()) {
+            patch[field] = value;
+          }
+        }
+        if (Object.keys(patch).length > 0) {
+          await prisma.artworkTranslation.update({
+            where: { artworkId_locale: { artworkId: artwork.id, locale } },
+            data: patch,
+          });
+        }
         continue;
       }
 
       const slug = uniqueSlug(slugify(title), taken.get(locale)!);
       await prisma.artworkTranslation.create({
-        data: { artworkId: artwork.id, locale, slug, title },
+        data: { artworkId: artwork.id, locale, slug, ...texts },
       });
     }
   }

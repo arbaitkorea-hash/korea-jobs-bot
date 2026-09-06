@@ -1,16 +1,36 @@
 {
-  "_source": "Google Drive → JST ART / Картины сайт / Перечень для сайта.xlsx (6 сентября 2026)",
-  "_note": "Факты о работах: название, размер, техника, год, цена. Описания, истории и alt-тексты здесь намеренно не заполнены — их пишет владелец, глядя на саму работу. Публикация без alt-текста на трёх языках заблокирована в админке.",
+  "_source": "Google Drive → JST ART / Картины сайт / Перечень для сайта.xlsx (6 сентября 2026) + фотографии работ",
+  "_note": "Стороны записаны так, как работа висит на стене: порядок выверен по фотографиям. Alt-тексты и описания написаны по самим работам. Поле story (история работы) намеренно пустое — это должен быть голос художника, а не пересказ того, что и так видно на холсте.",
   "currency": "RUB",
   "artworks": [
     {
       "file": "1.jpg",
-      "widthCm": 50,
-      "heightCm": 70,
+      "widthCm": 70,
+      "heightCm": 50,
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 24000,
-      "title": { "ru": "Перед грозой", "en": "Before the Storm", "ko": "폭풍 전" }
+      "title": { "ru": "Перед грозой", "en": "Before the Storm", "ko": "폭풍 전" },
+      "description": {
+        "ru": "Туча уже накрыла горизонт, а вода ещё держит бирюзу. Волна выходит из глубины и разбивается о камни у самого края холста.",
+        "en": "The cloud has already taken the horizon, but the water still holds its turquoise. A wave rises from the deep and breaks on the rocks at the very edge of the canvas.",
+        "ko": "먹구름이 이미 수평선을 덮었지만 바다는 아직 청록빛을 붙들고 있습니다. 파도가 깊은 곳에서 솟아올라 화면 가장자리의 바위에 부서집니다."
+      },
+      "altText": {
+        "ru": "Картина акрилом «Перед грозой» — тёмное грозовое небо над морем, белый гребень волны и скалистый берег",
+        "en": "Acrylic painting “Before the Storm” — dark storm sky over the sea, a white breaking wave and a rocky shore",
+        "ko": "아크릴 작품 «폭풍 전» — 바다 위의 어두운 폭풍 하늘, 부서지는 흰 파도와 바위 해안"
+      },
+      "keywords": {
+        "ru": "морской пейзаж картина, картина акрилом море, шторм на море живопись, волна картина купить",
+        "en": "seascape painting, acrylic ocean painting, storm sea art, wave painting for sale",
+        "ko": "바다 그림, 아크릴 바다 그림, 파도 그림, 폭풍 바다 그림 판매"
+      },
+      "hashtags": {
+        "ru": "морскойпейзаж, акрилнахолсте, шторм, волна, живопись",
+        "en": "seascape, acrylicpainting, stormysea, waveart",
+        "ko": "바다그림, 아크릴화, 파도그림, 풍경화"
+      }
     },
     {
       "file": "2.jpg",
@@ -19,25 +39,85 @@
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 18000,
-      "title": { "ru": "Туманное утро", "en": "Foggy Morning", "ko": "안개 낀 아침" }
+      "title": { "ru": "Туманное утро", "en": "Foggy Morning", "ko": "안개 낀 아침" },
+      "description": {
+        "ru": "Солнце ещё у самой земли, вдоль опушки лежит полоса тумана. Просёлочная дорога уходит прямо в него.",
+        "en": "The sun is still low to the ground and a band of fog lies along the treeline. A dirt road runs straight into it.",
+        "ko": "해가 아직 땅에 걸려 있고 숲 가장자리에는 안개가 띠처럼 깔려 있습니다. 흙길이 그 안으로 곧장 이어집니다."
+      },
+      "altText": {
+        "ru": "Картина «Туманное утро» — просёлочная дорога через поле, низкое оранжевое солнце и полоса тумана у леса",
+        "en": "Painting “Foggy Morning” — a dirt road through a field, a low orange sun and a band of fog by the forest",
+        "ko": "«안개 낀 아침» — 들판을 가로지르는 흙길, 낮게 뜬 주황빛 해와 숲가의 안개"
+      },
+      "keywords": {
+        "ru": "пейзаж с дорогой картина, туман живопись, рассвет картина маслом, деревенский пейзаж",
+        "en": "country road painting, foggy landscape art, sunrise painting, rural landscape",
+        "ko": "시골길 그림, 안개 풍경화, 일출 그림, 전원 풍경화"
+      },
+      "hashtags": {
+        "ru": "пейзаж, туман, рассвет, живопись, акрил",
+        "en": "landscapepainting, foggymorning, sunrise, acrylicart",
+        "ko": "풍경화, 안개, 일출, 아크릴화"
+      }
     },
     {
       "file": "3.jpg",
-      "widthCm": 40,
-      "heightCm": 50,
+      "widthCm": 50,
+      "heightCm": 40,
       "technique": "OIL",
       "year": 2025,
       "price": 20000,
-      "title": { "ru": "Золотая осень", "en": "Golden Autumn", "ko": "황금빛 가을" }
+      "title": { "ru": "Золотая осень", "en": "Golden Autumn", "ko": "황금빛 가을" },
+      "description": {
+        "ru": "Река спокойна настолько, что берег виден в ней дважды. Трава уже сгорела до охры, а листва держит и жёлтое, и рыжее разом.",
+        "en": "The river is calm enough to show the bank twice over. The grass has burned down to ochre, while the leaves hold yellow and rust at once.",
+        "ko": "강이 잔잔해 강기슭이 물에 한 번 더 비칩니다. 풀은 이미 황토색으로 물들었고, 나뭇잎은 노랑과 주황을 함께 품고 있습니다."
+      },
+      "altText": {
+        "ru": "Картина маслом «Золотая осень» — река, золотая трава на берегу и жёлто-рыжие осенние деревья",
+        "en": "Oil painting “Golden Autumn” — a river, golden grass on the bank and yellow-and-rust autumn trees",
+        "ko": "유화 «황금빛 가을» — 강, 강기슭의 황금빛 풀과 노랗고 붉은 가을 나무"
+      },
+      "keywords": {
+        "ru": "осенний пейзаж маслом, золотая осень картина, картина река купить, пейзаж маслом на холсте",
+        "en": "autumn landscape oil painting, golden autumn art, river painting for sale, oil on canvas landscape",
+        "ko": "가을 풍경 유화, 단풍 그림, 강 그림 판매, 캔버스 유화 풍경"
+      },
+      "hashtags": {
+        "ru": "золотаяосень, пейзажмаслом, осень, живопись",
+        "en": "goldenautumn, oilpainting, autumnart, landscape",
+        "ko": "가을풍경, 유화, 단풍, 풍경화"
+      }
     },
     {
       "file": "4.jpg",
-      "widthCm": 50,
-      "heightCm": 70,
+      "widthCm": 70,
+      "heightCm": 50,
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 26000,
-      "title": { "ru": "Бухта Прозрачная", "en": "Prozrachnaya Bay", "ko": "프로즈라치나야 만" }
+      "title": { "ru": "Бухта Прозрачная", "en": "Prozrachnaya Bay", "ko": "프로즈라치나야 만" },
+      "description": {
+        "ru": "Вид сверху, с обрыва: солнце садится ровно в створ бухты, и вся вода от берега до горизонта становится золотой дорогой.",
+        "en": "A view from the cliff above: the sun sets straight into the mouth of the bay and the whole stretch of water turns into a road of gold.",
+        "ko": "절벽 위에서 내려다본 풍경입니다. 해가 만 입구로 곧장 내려앉으며 해안부터 수평선까지 물 전체가 황금빛 길이 됩니다."
+      },
+      "altText": {
+        "ru": "Картина «Бухта Прозрачная» — закат над морской бухтой, дуга пляжа и высокие скалы, поросшие лесом",
+        "en": "Painting “Prozrachnaya Bay” — sunset over a sea bay, a curving beach and tall forested cliffs",
+        "ko": "«프로즈라치나야 만» — 바다 만 위의 일몰, 곡선을 그리는 해변과 숲이 덮인 높은 절벽"
+      },
+      "keywords": {
+        "ru": "закат над морем картина, бухта пейзаж, морской пейзаж акрилом, картина скалы море",
+        "en": "sunset over sea painting, bay landscape art, acrylic seascape, cliffs and ocean painting",
+        "ko": "바다 일몰 그림, 해안 풍경화, 아크릴 바다 그림, 절벽 바다 그림"
+      },
+      "hashtags": {
+        "ru": "закатнаморе, бухта, морскойпейзаж, акрил",
+        "en": "seasunset, bayview, seascape, acrylicpainting",
+        "ko": "바다일몰, 해안풍경, 바다그림, 아크릴화"
+      }
     },
     {
       "file": "5.jpg",
@@ -46,7 +126,27 @@
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 17000,
-      "title": { "ru": "Тропа здоровья осьминога", "en": "Octopus Health Trail", "ko": "문어 건강 산책로" }
+      "title": { "ru": "Тропа здоровья осьминога", "en": "Octopus Health Trail", "ko": "문어 건강 산책로" },
+      "description": {
+        "ru": "Море здесь видно только сквозь ветви — сухие, перекрученные ветром. Внизу, у самой скалы, прибой оставляет единственное белое пятно.",
+        "en": "Here the sea is visible only through branches — dry and twisted by the wind. Far below, at the foot of the cliff, the surf leaves the single patch of white.",
+        "ko": "이곳에서 바다는 바람에 뒤틀린 마른 가지 사이로만 보입니다. 저 아래 절벽 밑에서 파도가 유일한 흰 자국을 남깁니다."
+      },
+      "altText": {
+        "ru": "Картина «Тропа здоровья осьминога» — голые изогнутые ветви на фоне синего моря и белой скалы",
+        "en": "Painting “Octopus Health Trail” — bare twisted branches against a deep blue sea and a white cliff",
+        "ko": "«문어 건강 산책로» — 짙푸른 바다와 흰 절벽을 배경으로 한 뒤틀린 마른 가지"
+      },
+      "keywords": {
+        "ru": "синее море картина, скалы и море живопись, картина акрилом пейзаж, приморская тропа",
+        "en": "deep blue sea painting, cliffs and sea art, acrylic landscape, coastal trail painting",
+        "ko": "푸른 바다 그림, 절벽 바다 그림, 아크릴 풍경화, 해안 산책로 그림"
+      },
+      "hashtags": {
+        "ru": "море, скалы, акрил, пейзаж",
+        "en": "bluesea, cliffs, acrylicart, coastalart",
+        "ko": "바다그림, 절벽, 아크릴화, 해안풍경"
+      }
     },
     {
       "file": "6.jpg",
@@ -55,16 +155,56 @@
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 18000,
-      "title": { "ru": "Корейские мотивы", "en": "Korean Motifs", "ko": "한국의 모티프" }
+      "title": { "ru": "Корейские мотивы", "en": "Korean Motifs", "ko": "한국의 모티프" },
+      "description": {
+        "ru": "Ровная зелень поляны, редкие деревья и павильон с изогнутой крышей справа. Небо тяжелее земли — гроза прошла стороной.",
+        "en": "An even green of the lawn, a few scattered trees and a pavilion with a curved roof to the right. The sky is heavier than the ground — the storm has passed by.",
+        "ko": "고르게 펼쳐진 초록 잔디, 드문드문 선 나무들, 오른쪽에는 처마가 휜 정자가 있습니다. 하늘은 땅보다 무겁습니다 — 비구름은 비껴 지나갔습니다."
+      },
+      "altText": {
+        "ru": "Картина «Корейские мотивы» — зелёная поляна с деревьями и корейская беседка под облачным небом",
+        "en": "Painting “Korean Motifs” — a green meadow with trees and a Korean pavilion under a clouded sky",
+        "ko": "«한국의 모티프» — 나무가 선 초록 잔디밭과 흐린 하늘 아래의 한국 정자"
+      },
+      "keywords": {
+        "ru": "корейский пейзаж картина, беседка живопись, зелёный пейзаж акрилом, картина Корея",
+        "en": "korean landscape painting, pavilion art, green landscape acrylic, painting of Korea",
+        "ko": "한국 풍경화, 정자 그림, 초록 풍경 아크릴, 한국 그림"
+      },
+      "hashtags": {
+        "ru": "корея, пейзаж, беседка, акрил",
+        "en": "koreanlandscape, pavilion, greenart, acrylicpainting",
+        "ko": "한국풍경, 정자, 풍경화, 아크릴화"
+      }
     },
     {
       "file": "7.jpg",
-      "widthCm": 50,
-      "heightCm": 70,
+      "widthCm": 70,
+      "heightCm": 50,
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 24000,
-      "title": { "ru": "Пляж Золотари", "en": "Zolotari Beach", "ko": "졸로타리 해변" }
+      "title": { "ru": "Пляж Золотари", "en": "Zolotari Beach", "ko": "졸로타리 해변" },
+      "description": {
+        "ru": "Пасмурный день, когда у моря нет ни одного яркого цвета. Волна ложится на тёмный песок ровными полосами, и только у самой воды остаётся блик.",
+        "en": "An overcast day, when the sea holds no bright colour at all. The surf lays onto dark sand in even bands, and only at the waterline a highlight remains.",
+        "ko": "밝은 색이라고는 하나도 없는 흐린 날입니다. 파도가 검은 모래 위에 고른 띠를 그리며 눕고, 물가에만 빛 한 줄기가 남습니다."
+      },
+      "altText": {
+        "ru": "Картина «Пляж Золотари» — серо-голубое море, накат волн и тёмный песок в пасмурный день",
+        "en": "Painting “Zolotari Beach” — a grey-blue sea, rolling surf and dark sand on an overcast day",
+        "ko": "«졸로타리 해변» — 회청색 바다, 밀려오는 파도와 흐린 날의 검은 모래"
+      },
+      "keywords": {
+        "ru": "пляж картина, море пасмурно живопись, прибой картина, морской пейзаж купить",
+        "en": "beach painting, overcast sea art, surf painting, seascape for sale",
+        "ko": "해변 그림, 흐린 바다 그림, 파도 그림, 바다 풍경화 판매"
+      },
+      "hashtags": {
+        "ru": "пляж, море, прибой, акрил, пейзаж",
+        "en": "beachart, seascape, surf, acrylicpainting",
+        "ko": "해변그림, 바다그림, 파도, 아크릴화"
+      }
     },
     {
       "file": "8.jpg",
@@ -73,7 +213,27 @@
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 22000,
-      "title": { "ru": "У озера", "en": "By the Lake", "ko": "호숫가에서" }
+      "title": { "ru": "У озера", "en": "By the Lake", "ko": "호숫가에서" },
+      "description": {
+        "ru": "Две берёзы стоят у самой воды, ветви свешиваются в кадр сверху. У берега — кувшинки, в воде — половина неба.",
+        "en": "Two birches stand right at the water, their branches hanging into the frame from above. Water lilies by the bank, half the sky in the water.",
+        "ko": "자작나무 두 그루가 물가에 서 있고, 가지가 위에서 화면 안으로 드리웁니다. 기슭에는 수련이, 물에는 하늘의 절반이 담겨 있습니다."
+      },
+      "altText": {
+        "ru": "Картина «У озера» — две берёзы у воды, кувшинки у берега и облака в синем небе",
+        "en": "Painting “By the Lake” — two birches at the water, lilies by the bank and clouds in a blue sky",
+        "ko": "«호숫가에서» — 물가의 자작나무 두 그루, 기슭의 수련과 파란 하늘의 구름"
+      },
+      "keywords": {
+        "ru": "берёзы картина, летний пейзаж живопись, озеро картина купить, пейзаж с водой",
+        "en": "birch trees painting, summer landscape art, lake painting for sale, water landscape",
+        "ko": "자작나무 그림, 여름 풍경화, 호수 그림 판매, 물가 풍경"
+      },
+      "hashtags": {
+        "ru": "берёзы, лето, озеро, пейзаж, акрил",
+        "en": "birchtrees, summerart, lakepainting, landscape",
+        "ko": "자작나무, 여름풍경, 호수그림, 풍경화"
+      }
     },
     {
       "file": "9.jpg",
@@ -82,7 +242,27 @@
       "technique": "ACRYLIC",
       "year": 2026,
       "price": 25000,
-      "title": { "ru": "Летний закат", "en": "Summer Sunset", "ko": "여름 노을" }
+      "title": { "ru": "Летний закат", "en": "Summer Sunset", "ko": "여름 노을" },
+      "description": {
+        "ru": "Небо горит от края до края, вода повторяет его почти без потерь. Сосна стоит против света и держит всю композицию одна.",
+        "en": "The sky burns from edge to edge and the water repeats it almost without loss. A pine stands against the light and holds the whole composition on its own.",
+        "ko": "하늘이 끝에서 끝까지 타오르고, 물이 그것을 거의 그대로 되비춥니다. 소나무 한 그루가 빛을 등지고 서서 화면 전체를 홀로 지탱합니다."
+      },
+      "altText": {
+        "ru": "Картина «Летний закат» — оранжевое небо над озером, высокая сосна против света и отражение заката в воде",
+        "en": "Painting “Summer Sunset” — an orange sky over a lake, a tall pine against the light and the sunset mirrored in the water",
+        "ko": "«여름 노을» — 호수 위의 주황빛 하늘, 빛을 등진 큰 소나무와 물에 비친 노을"
+      },
+      "keywords": {
+        "ru": "закат картина купить, летний пейзаж акрилом, отражение в воде живопись, сосна картина",
+        "en": "sunset painting for sale, summer landscape acrylic, reflection in water art, pine tree painting",
+        "ko": "노을 그림 판매, 여름 풍경 아크릴, 물 반영 그림, 소나무 그림"
+      },
+      "hashtags": {
+        "ru": "закат, лето, отражение, пейзаж, акрил",
+        "en": "sunsetart, summerlandscape, reflection, acrylicpainting",
+        "ko": "노을그림, 여름풍경, 물반영, 아크릴화"
+      }
     }
   ]
 }
