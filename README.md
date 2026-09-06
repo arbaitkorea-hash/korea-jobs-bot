@@ -64,6 +64,8 @@ src/
 prisma/
   schema.prisma            переводы вынесены в таблицы *Translation
   seed.ts                  демо-данные сразу на трёх языках
+  catalog.json             реальный каталог работ (название, размер, техника, год, цена)
+  import-catalog.ts        импорт каталога черновиками, идемпотентный
 ```
 
 ## Локальный запуск
@@ -110,7 +112,8 @@ npm run build       # прод-сборка
 npm run lint        # eslint
 npm run db:migrate  # prisma migrate dev
 npm run db:deploy   # prisma migrate deploy (прод)
-npm run db:seed     # демо-данные
+npm run db:seed     # демо-данные (для разработки)
+npm run db:import   # реальный каталог работ из prisma/catalog.json
 npm run db:studio   # просмотр БД
 ```
 

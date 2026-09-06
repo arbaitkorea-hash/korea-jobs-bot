@@ -1,0 +1,88 @@
+{
+  "_source": "Google Drive → JST ART / Картины сайт / Перечень для сайта.xlsx (6 сентября 2026)",
+  "_note": "Факты о работах: название, размер, техника, год, цена. Описания, истории и alt-тексты здесь намеренно не заполнены — их пишет владелец, глядя на саму работу. Публикация без alt-текста на трёх языках заблокирована в админке.",
+  "currency": "RUB",
+  "artworks": [
+    {
+      "file": "1.jpg",
+      "widthCm": 50,
+      "heightCm": 70,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 24000,
+      "title": { "ru": "Перед грозой", "en": "Before the Storm", "ko": "폭풍 전" }
+    },
+    {
+      "file": "2.jpg",
+      "widthCm": 40,
+      "heightCm": 50,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 18000,
+      "title": { "ru": "Туманное утро", "en": "Foggy Morning", "ko": "안개 낀 아침" }
+    },
+    {
+      "file": "3.jpg",
+      "widthCm": 40,
+      "heightCm": 50,
+      "technique": "OIL",
+      "year": 2025,
+      "price": 20000,
+      "title": { "ru": "Золотая осень", "en": "Golden Autumn", "ko": "황금빛 가을" }
+    },
+    {
+      "file": "4.jpg",
+      "widthCm": 50,
+      "heightCm": 70,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 26000,
+      "title": { "ru": "Бухта Прозрачная", "en": "Prozrachnaya Bay", "ko": "프로즈라치나야 만" }
+    },
+    {
+      "file": "5.jpg",
+      "widthCm": 40,
+      "heightCm": 50,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 17000,
+      "title": { "ru": "Тропа здоровья осьминога", "en": "Octopus Health Trail", "ko": "문어 건강 산책로" }
+    },
+    {
+      "file": "6.jpg",
+      "widthCm": 40,
+      "heightCm": 50,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 18000,
+      "title": { "ru": "Корейские мотивы", "en": "Korean Motifs", "ko": "한국의 모티프" }
+    },
+    {
+      "file": "7.jpg",
+      "widthCm": 50,
+      "heightCm": 70,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 24000,
+      "title": { "ru": "Пляж Золотари", "en": "Zolotari Beach", "ko": "졸로타리 해변" }
+    },
+    {
+      "file": "8.jpg",
+      "widthCm": 50,
+      "heightCm": 60,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 22000,
+      "title": { "ru": "У озера", "en": "By the Lake", "ko": "호숫가에서" }
+    },
+    {
+      "file": "9.jpg",
+      "widthCm": 50,
+      "heightCm": 70,
+      "technique": "ACRYLIC",
+      "year": 2026,
+      "price": 25000,
+      "title": { "ru": "Летний закат", "en": "Summer Sunset", "ko": "여름 노을" }
+    }
+  ]
+}
