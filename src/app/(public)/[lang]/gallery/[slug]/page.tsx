@@ -10,7 +10,7 @@ import {
   incrementArtworkViews,
 } from "@/lib/data/artworks";
 import { Container } from "@/components/ui/container";
-import { ImageZoom } from "@/components/artwork/image-zoom";
+import { ArtworkViewer } from "@/components/artwork/artwork-viewer";
 import { AddToCartForm } from "@/components/artwork/add-to-cart-form";
 import { ArtworkCard } from "@/components/artwork/artwork-card";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -130,13 +130,14 @@ export default async function ArtworkPage({ params }: Props) {
       <article className="grid gap-12 lg:grid-cols-2">
         <figure>
           {primaryImage && (
-            <ImageZoom
+            <ArtworkViewer
               src={primaryImage.url}
               alt={artwork.altText || artwork.title}
               width={primaryImage.width}
               height={primaryImage.height}
-              zoomLabel={dict.common.zoomImage}
-              closeLabel={dict.common.close}
+              widthCm={artwork.widthCm}
+              heightCm={artwork.heightCm}
+              dict={dict}
             />
           )}
           <figcaption className="sr-only">{artwork.altText || artwork.title}</figcaption>

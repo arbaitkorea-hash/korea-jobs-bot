@@ -85,7 +85,16 @@
     "related": "같은 컬렉션의 작품",
     "dimensions": "크기",
     "cm": "cm",
-    "inStock": "구매 가능"
+    "inStock": "구매 가능",
+    "wall": {
+      "viewPhoto": "사진",
+      "viewWall": "벽에 걸면",
+      "wallColor": "벽 색상",
+      "scaleNote": "실제 비율, 인물 키는 170cm",
+      "warm": "따뜻한 화이트",
+      "cool": "차가운 그레이",
+      "dark": "다크"
+    }
   },
   "collections": {
     "title": "컬렉션",

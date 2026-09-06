@@ -85,7 +85,16 @@
     "related": "From the same collection",
     "dimensions": "Dimensions",
     "cm": "cm",
-    "inStock": "Available"
+    "inStock": "Available",
+    "wall": {
+      "viewPhoto": "Photograph",
+      "viewWall": "On the wall",
+      "wallColor": "Wall colour",
+      "scaleNote": "true scale, the figure is 170 cm tall",
+      "warm": "Warm white",
+      "cool": "Cool grey",
+      "dark": "Dark"
+    }
   },
   "collections": {
     "title": "Collections",
