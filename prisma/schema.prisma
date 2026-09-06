@@ -288,6 +288,22 @@ model BlogPostTranslation {
 }
 
 /// Ключевые слова и хэштеги уровня сайта, отдельно на каждый язык.
+/**
+ * Курс пересчёта цены из валюты работы в валюту посетителя.
+ *
+ * Курс задаётся руками в админке, а не тянется из внешнего API: цена картины
+ * не должна прыгать каждый день вслед за биржей, а продавцу важно знать, какую
+ * ровную цифру видит покупатель в Сеуле.
+ */
+model ExchangeRate {
+  base      String // из какой валюты, ISO-4217: RUB
+  quote     String // в какую: KRW, USD
+  rate      Float // сколько единиц quote за одну base
+  updatedAt DateTime @updatedAt
+
+  @@id([base, quote])
+}
+
 model SiteKeywords {
   locale    Locale   @id
   keywords  String   @default("")

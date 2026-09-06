@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { Button } from "@/components/ui/button";
-import { formatPrice, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
@@ -59,7 +60,7 @@ export function AddToCartForm({
             aria-pressed={variant === "original"}
             className={cn(pill, variant === "original" ? "border-fg" : "border-border text-fg-muted")}
           >
-            {dict.artwork.original} — {formatPrice(priceOriginalCents, currency, locale)}
+            {dict.artwork.original} — <Price cents={priceOriginalCents} currency={currency} locale={locale} />
           </button>
           <button
             type="button"
@@ -67,7 +68,7 @@ export function AddToCartForm({
             aria-pressed={variant === "print"}
             className={cn(pill, variant === "print" ? "border-fg" : "border-border text-fg-muted")}
           >
-            {dict.artwork.print} — {formatPrice(pricePrintCents, currency, locale)}
+            {dict.artwork.print} — <Price cents={pricePrintCents} currency={currency} locale={locale} />
           </button>
         </div>
       )}

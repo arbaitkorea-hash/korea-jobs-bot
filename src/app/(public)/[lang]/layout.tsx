@@ -8,6 +8,8 @@ import { ThemeScript } from "@/components/layout/theme-script";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CartProvider } from "@/lib/cart-context";
+import { RatesProvider } from "@/lib/rates-context";
+import { getRates } from "@/lib/data/rates";
 import { AlternatesProvider } from "@/lib/i18n/alternates-context";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationJsonLd, personJsonLd, webSiteJsonLd } from "@/lib/jsonld";
@@ -66,7 +68,7 @@ export default async function PublicRootLayout({
   if (!isAppLocale(lang)) notFound();
 
   const locale: AppLocale = lang;
-  const dict = await getDictionary(locale);
+  const [dict, rates] = await Promise.all([getDictionary(locale), getRates()]);
 
   return (
     <html
@@ -90,11 +92,13 @@ export default async function PublicRootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-bg text-fg">
         <AlternatesProvider>
-          <CartProvider>
-            <SiteHeader locale={locale} dict={dict} />
-            <main className="flex-1">{children}</main>
-            <SiteFooter locale={locale} dict={dict} />
-          </CartProvider>
+          <RatesProvider rates={rates}>
+            <CartProvider>
+              <SiteHeader locale={locale} dict={dict} />
+              <main className="flex-1">{children}</main>
+              <SiteFooter locale={locale} dict={dict} />
+            </CartProvider>
+          </RatesProvider>
         </AlternatesProvider>
       </body>
     </html>

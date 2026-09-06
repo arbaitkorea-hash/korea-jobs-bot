@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
@@ -124,13 +124,13 @@ export function CheckoutView({ locale, dict }: { locale: AppLocale; dict: Dictio
                   {item.title} × {item.quantity}
                 </span>
                 <span className="shrink-0">
-                  {formatPrice(item.priceCents * item.quantity, item.currency, locale)}
+                  <Price cents={item.priceCents * item.quantity} currency={item.currency} locale={locale} />
                 </span>
               </li>
             ))}
           </ul>
           <p className="mt-4 border-t border-border pt-4 text-base">
-            {dict.cart.total}: {formatPrice(subtotalCents, items[0].currency, locale)}
+            {dict.cart.total}: <Price cents={subtotalCents} currency={items[0].currency} locale={locale} showBase />
           </p>
         </aside>
       </div>

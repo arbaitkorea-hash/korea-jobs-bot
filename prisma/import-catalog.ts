@@ -14,6 +14,7 @@ import { PrismaClient, type Locale, type Technique } from "@prisma/client";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { slugify, uniqueSlug } from "../src/lib/slugify";
+import { orientationFromSides } from "../src/lib/dimensions";
 
 const prisma = new PrismaClient();
 
@@ -56,12 +57,9 @@ async function main() {
       technique: row.technique,
       widthCm: row.widthCm,
       heightCm: row.heightCm,
-      orientation:
-        row.widthCm === row.heightCm
-          ? ("SQUARE" as const)
-          : row.widthCm > row.heightCm
-            ? ("LANDSCAPE" as const)
-            : ("PORTRAIT" as const),
+      // Пока фотографии нет — ориентация из размеров; при загрузке снимка
+      // она уточнится по его пропорциям (см. src/lib/dimensions.ts).
+      orientation: orientationFromSides(row.widthCm, row.heightCm),
       priceOriginalCents: Math.round(row.price * 100),
       currency: catalog.currency,
       position: index,

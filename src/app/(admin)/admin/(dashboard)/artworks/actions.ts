@@ -8,6 +8,7 @@ import { artworkAdminSchema } from "@/lib/validation";
 import { LOCALES, toPrismaLocale, type AppLocale } from "@/lib/i18n/config";
 import type { UploadedImage } from "@/components/admin/image-uploader";
 import { colorFamilyOf } from "@/lib/color";
+import { alignSidesToPhoto } from "@/lib/dimensions";
 
 export type ArtworkTranslationInput = {
   slug: string;
@@ -83,12 +84,19 @@ export async function saveArtwork(id: string | null, input: ArtworkFormInput) {
     }
   }
 
+  // Фотография — источник истины про ориентацию: в перечнях размер пишут то
+  // «ширина × высота», то наоборот, и вручную это каждый раз не выверить.
+  const primary = input.images[0];
+  const sides = primary
+    ? alignSidesToPhoto(data.widthCm, data.heightCm, primary.width, primary.height)
+    : { widthCm: data.widthCm, heightCm: data.heightCm, orientation: data.orientation };
+
   const core = {
     year: data.year ?? null,
     technique: data.technique,
-    widthCm: data.widthCm,
-    heightCm: data.heightCm,
-    orientation: data.orientation,
+    widthCm: sides.widthCm,
+    heightCm: sides.heightCm,
+    orientation: sides.orientation,
     dominantColor: data.dominantColor,
     colorFamily: colorFamilyOf(data.dominantColor),
     status: data.status,

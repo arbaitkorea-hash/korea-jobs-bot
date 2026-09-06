@@ -41,8 +41,35 @@ export default auth((request: NextAuthRequest) => {
     }
   }
 
-  return applySecurityHeaders(NextResponse.next());
+  return applySecurityHeaders(withCountryCookie(NextResponse.next(), request));
 });
+
+/** Кука со страной посетителя — её читает клиентский компонент цены. */
+const COUNTRY_COOKIE = "jst_country";
+
+/**
+ * Страну знает только хостинг и только в момент запроса, а страницы галереи
+ * закешированы и отдаются всем одинаковыми. Поэтому страну кладём в куку:
+ * серверный HTML остаётся общим (и кешируемым), а цену в валюте посетителя
+ * подставляет уже клиент. Кука не httpOnly намеренно — её и должен читать
+ * браузерный код; ничего чувствительного в ней нет.
+ */
+function withCountryCookie(response: NextResponse, request: NextRequest) {
+  const country =
+    request.headers.get("x-vercel-ip-country") ?? request.headers.get("cf-ipcountry") ?? "";
+
+  // Двухбуквенный код ISO-3166 и ничего больше: значение уходит в куку,
+  // а оттуда в разметку — произвольную строку из заголовка туда пускать нельзя.
+  if (/^[A-Za-z]{2}$/.test(country)) {
+    response.cookies.set(COUNTRY_COOKIE, country.toUpperCase(), {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  }
+
+  return response;
+}
 
 /** Выбор языка по заголовку Accept-Language с откатом на русский. */
 function detectLocale(request: NextRequest): AppLocale {

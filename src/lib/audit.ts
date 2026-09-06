@@ -10,7 +10,8 @@ export type AuditEvent =
   | "SUSPICIOUS_ORDER"
   | "UPLOAD_REJECTED"
   | "CSRF_BLOCKED"
-  | "BULK_CREATE";
+  | "BULK_CREATE"
+  | "SETTINGS_CHANGED";
 
 type Severity = "info" | "warning" | "critical";
 

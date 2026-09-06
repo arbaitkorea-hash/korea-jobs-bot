@@ -22,6 +22,7 @@
 | Авто-обложки для соцсетей (OG) | `src/lib/og.tsx` + `opengraph-image.tsx` в трёх местах: раздел языка, карточка работы, статья блога |
 | Разметка выставок (`ExhibitionEvent`) | `src/app/(public)/[lang]/exhibitions/page.tsx` |
 | Фильтр по цвету как индексируемый URL | `?color=` в `gallery/page.tsx`, значения из белого списка |
+| Цена в валюте посетителя | `src/lib/currency.ts` + компонент `Price`; в JSON-LD остаётся исходная валюта работы |
 
 ### Про Naver
 

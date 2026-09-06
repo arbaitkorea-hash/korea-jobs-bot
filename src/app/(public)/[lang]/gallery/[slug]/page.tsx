@@ -14,10 +14,11 @@ import { ImageZoom } from "@/components/artwork/image-zoom";
 import { AddToCartForm } from "@/components/artwork/add-to-cart-form";
 import { ArtworkCard } from "@/components/artwork/artwork-card";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Price } from "@/components/ui/price";
 import { SetAlternates } from "@/lib/i18n/alternates-context";
 import { artworkJsonLd, breadcrumbJsonLd, productJsonLd } from "@/lib/jsonld";
 import { buildAlternates } from "@/lib/seo";
-import { formatPrice, parseTags } from "@/lib/utils";
+import { parseTags } from "@/lib/utils";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -158,7 +159,12 @@ export default async function ArtworkPage({ params }: Props) {
           </p>
 
           <p className="mt-6 text-2xl">
-            {formatPrice(artwork.priceOriginalCents, artwork.currency, lang)}
+            <Price
+              cents={artwork.priceOriginalCents}
+              currency={artwork.currency}
+              locale={lang}
+              showBase
+            />
           </p>
 
           <div className="mt-8">

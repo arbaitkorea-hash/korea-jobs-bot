@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ArtworkView } from "@/lib/data/artworks";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
-import { formatPrice } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 
 export function ArtworkCard({
   artwork,
@@ -55,7 +55,7 @@ export function ArtworkCard({
             </p>
           </div>
           <p className="shrink-0 text-sm text-fg-muted">
-            {formatPrice(artwork.priceOriginalCents, artwork.currency, locale)}
+            <Price cents={artwork.priceOriginalCents} currency={artwork.currency} locale={locale} />
           </p>
         </figcaption>
       </figure>

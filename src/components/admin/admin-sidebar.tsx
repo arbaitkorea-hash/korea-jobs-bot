@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin/exhibitions", label: "Выставки" },
   { href: "/admin/blog", label: "Блог" },
   { href: "/admin/keywords", label: "Ключевые слова" },
+  { href: "/admin/rates", label: "Курсы валют" },
   { href: "/admin/orders", label: "Заказы" },
   { href: "/admin/messages", label: "Сообщения" },
   { href: "/admin/analytics", label: "Аналитика" },

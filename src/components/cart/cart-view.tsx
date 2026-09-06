@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
@@ -49,7 +49,7 @@ export function CartView({ locale, dict }: { locale: AppLocale; dict: Dictionary
                   </p>
                 </div>
                 <p className="text-sm">
-                  {formatPrice(item.priceCents * item.quantity, item.currency, locale)}
+                  <Price cents={item.priceCents * item.quantity} currency={item.currency} locale={locale} />
                 </p>
               </div>
               <div className="flex items-center gap-4 text-sm">
@@ -78,7 +78,7 @@ export function CartView({ locale, dict }: { locale: AppLocale; dict: Dictionary
 
       <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
         <p className="text-lg">
-          {dict.cart.total}: {formatPrice(subtotalCents, items[0].currency, locale)}
+          {dict.cart.total}: <Price cents={subtotalCents} currency={items[0].currency} locale={locale} showBase />
         </p>
         <Link href={`/${locale}/checkout`}>
           <Button>{dict.cart.checkout}</Button>

@@ -204,6 +204,24 @@ export const exhibitionAdminSchema = z
     path: ["endDate"],
   });
 
+/**
+ * Курсы валют из админки. Курс приходит строкой из поля ввода: пустое поле и
+ * ноль означают «курса нет» — тогда цена показывается в исходной валюте.
+ * Верхняя граница отсекает опечатку вроде лишних нулей, из-за которой картина
+ * стоила бы миллиарды.
+ */
+export const exchangeRatesSchema = z.array(
+  z.object({
+    base: z.enum(["RUB", "KRW", "USD"]),
+    quote: z.enum(["RUB", "KRW", "USD"]),
+    rate: z
+      .string()
+      .trim()
+      .transform((v) => (v === "" ? 0 : Number(v.replace(",", "."))))
+      .refine((v) => Number.isFinite(v) && v >= 0 && v < 100_000, "курс должен быть числом от 0"),
+  }),
+).max(12);
+
 export const siteKeywordsSchema = z.object({
   ru: z.object({ keywords: z.string().max(2000), hashtags: z.string().max(2000) }),
   en: z.object({ keywords: z.string().max(2000), hashtags: z.string().max(2000) }),

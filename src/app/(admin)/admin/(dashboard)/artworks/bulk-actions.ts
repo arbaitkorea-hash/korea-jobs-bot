@@ -8,6 +8,7 @@ import { LOCALES, toPrismaLocale } from "@/lib/i18n/config";
 import { slugify, uniqueSlug } from "@/lib/slugify";
 import { logAudit } from "@/lib/audit";
 import { colorFamilyOf } from "@/lib/color";
+import { alignSidesToPhoto } from "@/lib/dimensions";
 
 export type BulkArtworkRow = {
   title: string;
@@ -58,14 +59,15 @@ export async function createArtworksBulk(rows: BulkArtworkRow[]) {
 
     // Транзакция на работу: если упадёт перевод или картинка, не останется
     // «половинчатой» работы без переводов, которую потом руками чистить.
+    const sides = alignSidesToPhoto(row.widthCm, row.heightCm, row.image.width, row.image.height);
+
     await prisma.$transaction(async (tx) => {
       const artwork = await tx.artwork.create({
         data: {
           technique: row.technique,
-          widthCm: row.widthCm,
-          heightCm: row.heightCm,
-          orientation:
-            row.widthCm === row.heightCm ? "SQUARE" : row.widthCm > row.heightCm ? "LANDSCAPE" : "PORTRAIT",
+          widthCm: sides.widthCm,
+          heightCm: sides.heightCm,
+          orientation: sides.orientation,
           dominantColor: row.dominantColor,
           colorFamily: colorFamilyOf(row.dominantColor),
           priceOriginalCents: row.priceOriginalCents,
