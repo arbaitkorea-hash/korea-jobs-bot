@@ -4,17 +4,33 @@ import type { ArtworkView } from "@/lib/data/artworks";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { Price } from "@/components/ui/price";
+import { cn } from "@/lib/utils";
 
+/**
+ * Карточка работы.
+ *
+ * Работа показывается в своих пропорциях и без обрезки: кадр — часть работы,
+ * а не иллюстрация к тексту. Ряды из-за этого получаются неровными по низу —
+ * и это правильнее, чем загонять живопись в одинаковые квадраты: в квадрате
+ * горизонтальный холст становится вдвое мельче вертикального, а подпись
+ * отрывается от работы пустым полем.
+ *
+ * Тень под холстом мягкая и смещена вниз: она читается как предмет на стене,
+ * а не как карточка товара с обводкой.
+ */
 export function ArtworkCard({
   artwork,
   locale,
   dict,
   priority = false,
+  hero = false,
 }: {
   artwork: ArtworkView;
   locale: AppLocale;
   dict: Dictionary;
   priority?: boolean;
+  /** Главная работа блока: крупнее прочих, но с потолком по высоте. */
+  hero?: boolean;
 }) {
   const image = artwork.images[0];
   const statusLabel =
@@ -27,7 +43,7 @@ export function ArtworkCard({
   return (
     <Link href={`/${locale}/gallery/${artwork.slug}`} className="group block">
       <figure className="relative">
-        <div className="relative overflow-hidden bg-bg-elevated">
+        <div className="relative overflow-hidden">
           {image && (
             <Image
               src={image.url}
@@ -35,8 +51,17 @@ export function ArtworkCard({
               width={image.width}
               height={image.height}
               priority={priority}
-              className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className={cn(
+                "h-auto w-full object-contain shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition-transform duration-700 group-hover:scale-[1.02]",
+                // Потолок по высоте нужен только главной работе: вертикальный
+                // холст без него растягивает блок на два экрана.
+                hero && "max-h-[68vh] w-auto",
+              )}
+              sizes={
+                hero
+                  ? "(max-width: 1024px) 100vw, 55vw"
+                  : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              }
             />
           )}
           {statusLabel && (

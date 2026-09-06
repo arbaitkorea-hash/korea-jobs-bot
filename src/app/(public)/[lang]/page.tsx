@@ -97,12 +97,23 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             </Link>
           </div>
 
-          <div className="grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((artwork, i) => (
-              <FadeIn key={artwork.id} delay={(i % 3) * 90}>
-                <ArtworkCard artwork={artwork} locale={lang} dict={dict} />
+          {/* Первая работа крупнее остальных. Три одинаковых карточки читаются
+              как каталог; неравный вес превращает блок в высказывание — вот
+              главная работа, а вот что рядом с ней. */}
+          <div className="grid gap-x-10 gap-y-16 lg:grid-cols-[1.15fr_1fr]">
+            {featured.slice(0, 1).map((artwork) => (
+              <FadeIn key={artwork.id}>
+                <ArtworkCard artwork={artwork} locale={lang} dict={dict} hero priority />
               </FadeIn>
             ))}
+
+            <div className="grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:self-center">
+              {featured.slice(1, 3).map((artwork, i) => (
+                <FadeIn key={artwork.id} delay={(i + 1) * 90}>
+                  <ArtworkCard artwork={artwork} locale={lang} dict={dict} />
+                </FadeIn>
+              ))}
+            </div>
           </div>
         </Container>
       </section>
