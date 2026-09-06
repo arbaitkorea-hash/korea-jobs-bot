@@ -43,7 +43,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <p className="text-xs uppercase tracking-[0.28em] text-white/75">
                 {siteConfig.artistName}
               </p>
-              <h1 className="mt-4 font-serif text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
+              <h1 className="mt-4 font-serif text-display">
                 {dict.home.storyTitle}
               </h1>
               <p className="mt-5 max-w-lg text-base leading-relaxed text-white/85">
@@ -68,7 +68,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <section id="story" className="border-b border-border">
         <Container className="py-28">
           <FadeIn className="mx-auto max-w-2xl text-center">
-            <h2 className="font-serif text-3xl sm:text-4xl">{dict.home.storyTitle}</h2>
+            <h2 className="font-serif text-section">{dict.home.storyTitle}</h2>
             <p className="mt-8 text-lg leading-[1.8] text-fg">{dict.home.storyLead}</p>
             <p className="mt-6 text-base leading-[1.9] text-fg-muted">{dict.home.storyBody}</p>
             <Link
@@ -86,7 +86,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <Container className="py-24">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="font-serif text-3xl sm:text-4xl">{dict.home.galleryTitle}</h2>
+              <h2 className="font-serif text-section">{dict.home.galleryTitle}</h2>
               <p className="mt-3 max-w-md text-fg-muted">{dict.home.gallerySubtitle}</p>
             </div>
             <Link
@@ -122,7 +122,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <section id="shipping" className="border-y border-border bg-bg-elevated/40">
         <Container className="py-24">
           <FadeIn>
-            <h2 className="font-serif text-3xl sm:text-4xl">{dict.home.shippingTitle}</h2>
+            <h2 className="font-serif text-section">{dict.home.shippingTitle}</h2>
             <p className="mt-3 max-w-md text-fg-muted">{dict.home.shippingSubtitle}</p>
 
             <div className="mt-12 grid gap-10 md:grid-cols-3">
@@ -161,7 +161,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <Container className="py-24">
           <div className="grid gap-14 lg:grid-cols-2">
             <FadeIn>
-              <h2 className="font-serif text-3xl sm:text-4xl">{dict.home.contactTitle}</h2>
+              <h2 className="font-serif text-section">{dict.home.contactTitle}</h2>
               <p className="mt-4 max-w-md leading-relaxed text-fg-muted">
                 {dict.home.contactSubtitle}
               </p>

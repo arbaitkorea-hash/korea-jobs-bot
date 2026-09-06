@@ -35,7 +35,7 @@ export default async function ShippingPage({ params }: Props) {
   return (
     <Container className="py-16">
       <article className="mx-auto max-w-2xl">
-        <h1 className="font-serif text-4xl">{dict.shipping.title}</h1>
+        <h1 className="font-serif text-section">{dict.shipping.title}</h1>
 
         <div className="mt-12 space-y-12">
           {sections.map((section) => (

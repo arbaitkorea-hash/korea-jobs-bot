@@ -57,7 +57,7 @@ export function ArtworkViewer({
       </div>
 
       {view === "photo" ? (
-        <div className="shadow-[0_18px_40px_-24px_rgba(0,0,0,0.55)]">
+        <div className="artwork-shadow">
           <ImageZoom
             src={src}
             alt={alt}

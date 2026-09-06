@@ -76,7 +76,7 @@ export default async function GalleryPage({ params, searchParams }: Props) {
   return (
     <Container className="py-16">
       <header className="mb-10 max-w-2xl">
-        <h1 className="font-serif text-4xl">{dict.gallery.title}</h1>
+        <h1 className="font-serif text-section">{dict.gallery.title}</h1>
         <p className="mt-4 text-fg-muted">
           {artworks.length} {dict.gallery.countLabel}
         </p>

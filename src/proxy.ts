@@ -16,14 +16,19 @@ export default auth((request: NextAuthRequest) => {
     if (!request.auth?.user) {
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
-      return applySecurityHeaders(NextResponse.redirect(loginUrl));
+      return applySecurityHeaders(NextResponse.redirect(loginUrl), request);
     }
   }
 
   // 2. Языковой префикс для публичных страниц
-  const isNonLocalized = NON_LOCALIZED.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
+  // Файл с расширением — это статика из /public (скрипт темы, og-картинка,
+  // манифест). Такие адреса нельзя гнать через языковой редирект: браузер
+  // получает 307 вместо файла и молча остаётся без него. Именно так однажды
+  // перестал применяться скрипт темы — тема мигала при каждой загрузке.
+  const isFile = /\.[a-z0-9]+$/i.test(pathname);
+
+  const isNonLocalized =
+    isFile || NON_LOCALIZED.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   if (!isNonLocalized) {
     const hasLocale = LOCALES.some(
@@ -37,11 +42,11 @@ export default auth((request: NextAuthRequest) => {
       // 307: временный редирект. Постоянный (308) закрепил бы у поисковика
       // "/" → "/ru" даже для англоязычного посетителя, а язык мы выбираем
       // по Accept-Language и он у разных пользователей разный.
-      return applySecurityHeaders(NextResponse.redirect(target, 307));
+      return applySecurityHeaders(NextResponse.redirect(target, 307), request);
     }
   }
 
-  return applySecurityHeaders(withCountryCookie(NextResponse.next(), request));
+  return applySecurityHeaders(withCountryCookie(NextResponse.next(), request), request);
 });
 
 /** Кука со страной посетителя — её читает клиентский компонент цены. */
@@ -102,8 +107,13 @@ function detectLocale(request: NextRequest): AppLocale {
  * умолчанию, HTML в блоге чистится DOMPurify и на сохранении, и на рендере,
  * JSON-LD экранирует "<". См. SECURITY.md, раздел "CSP".
  */
-function applySecurityHeaders(response: NextResponse) {
+function applySecurityHeaders(response: NextResponse, request?: NextRequest) {
   const isDev = process.env.NODE_ENV !== "production";
+  // upgrade-insecure-requests на http://localhost ломает собственные же
+  // ресурсы: браузер переписывает их на https, которого локально нет, и
+  // страница молча теряет, например, скрипт темы. На боевом домене (https)
+  // директива ничего не меняет, поэтому просто не выдаём её на http.
+  const isPlainHttp = request?.nextUrl.protocol === "http:";
 
   const csp = [
     `default-src 'self'`,
@@ -116,7 +126,7 @@ function applySecurityHeaders(response: NextResponse) {
     `img-src 'self' data: https:`,
     `font-src 'self' data:`,
     `connect-src 'self' ${isDev ? "ws:" : ""}`,
-    `upgrade-insecure-requests`,
+    ...(isPlainHttp ? [] : ["upgrade-insecure-requests"]),
   ].join("; ");
 
   response.headers.set("Content-Security-Policy", csp);

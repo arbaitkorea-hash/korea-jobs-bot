@@ -84,7 +84,7 @@ export default async function BlogPostPage({ params }: Props) {
       </nav>
 
       <article className="mx-auto max-w-2xl">
-        <h1 className="font-serif text-4xl leading-tight">{post.title}</h1>
+        <h1 className="font-serif text-section">{post.title}</h1>
         {post.publishedAt && (
           <time
             dateTime={post.publishedAt.toISOString()}

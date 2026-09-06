@@ -30,7 +30,7 @@ export default async function ContactPage({ params }: Props) {
     <Container className="py-16">
       <div className="grid gap-16 lg:grid-cols-2">
         <div>
-          <h1 className="font-serif text-4xl">{dict.contact.title}</h1>
+          <h1 className="font-serif text-section">{dict.contact.title}</h1>
           <p className="mt-6 max-w-md leading-relaxed text-fg-muted">{dict.contact.intro}</p>
           <a
             href={siteConfig.social.instagram}

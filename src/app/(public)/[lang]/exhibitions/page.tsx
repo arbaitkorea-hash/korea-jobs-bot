@@ -67,7 +67,7 @@ export default async function ExhibitionsPage({ params }: Props) {
       ))}
 
       <header className="max-w-2xl">
-        <h1 className="font-serif text-4xl">{dict.exhibitions.title}</h1>
+        <h1 className="font-serif text-section">{dict.exhibitions.title}</h1>
         <p className="mt-4 text-fg-muted">{dict.exhibitions.subtitle}</p>
       </header>
 

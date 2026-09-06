@@ -28,7 +28,7 @@ export default async function PrivacyPolicyPage({ params }: Props) {
   return (
     <Container className="py-16">
       <article className="mx-auto max-w-2xl">
-        <h1 className="font-serif text-4xl">{dict.policies.privacyTitle}</h1>
+        <h1 className="font-serif text-section">{dict.policies.privacyTitle}</h1>
         <div className="mt-8 space-y-6 leading-[1.85] text-fg-muted">
           {dict.policies.privacyBody.map((p) => (
             <p key={p.slice(0, 32)}>{p}</p>

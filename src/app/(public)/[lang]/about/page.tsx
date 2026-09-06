@@ -28,7 +28,7 @@ export default async function AboutPage({ params }: Props) {
   return (
     <Container className="py-16">
       <article className="mx-auto max-w-2xl">
-        <h1 className="font-serif text-4xl">
+        <h1 className="font-serif text-section">
           {lang === "ko" ? siteConfig.artistNameKo : siteConfig.artistName}
         </h1>
         <p className="mt-2 text-fg-muted">{dict.about.role}</p>

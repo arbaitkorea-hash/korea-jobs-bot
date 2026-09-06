@@ -52,7 +52,7 @@ export function ArtworkCard({
               height={image.height}
               priority={priority}
               className={cn(
-                "h-auto w-full object-contain shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition-transform duration-700 group-hover:scale-[1.02]",
+                "artwork-shadow h-auto w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]",
                 // Потолок по высоте нужен только главной работе: вертикальный
                 // холст без него растягивает блок на два экрана.
                 hero && "max-h-[68vh] w-auto",

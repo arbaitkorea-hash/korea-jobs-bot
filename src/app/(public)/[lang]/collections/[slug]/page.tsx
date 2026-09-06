@@ -68,7 +68,7 @@ export default async function CollectionPage({ params }: Props) {
       </nav>
 
       <header className="max-w-2xl">
-        <h1 className="font-serif text-4xl">{collection.title}</h1>
+        <h1 className="font-serif text-section">{collection.title}</h1>
         {collection.description && (
           <p className="mt-4 leading-relaxed text-fg-muted">{collection.description}</p>
         )}

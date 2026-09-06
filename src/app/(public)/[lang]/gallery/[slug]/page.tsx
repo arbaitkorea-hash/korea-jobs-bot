@@ -18,7 +18,7 @@ import { Price } from "@/components/ui/price";
 import { SetAlternates } from "@/lib/i18n/alternates-context";
 import { artworkJsonLd, breadcrumbJsonLd, productJsonLd } from "@/lib/jsonld";
 import { buildAlternates } from "@/lib/seo";
-import { parseTags } from "@/lib/utils";
+import { cn, parseTags } from "@/lib/utils";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -74,6 +74,9 @@ export default async function ArtworkPage({ params }: Props) {
   const related = await getRelatedArtworks(lang, artwork.id, artwork.collection?.slug ?? null);
   const primaryImage = artwork.images[0];
   const url = `/${lang}/gallery/${artwork.slug}`;
+  // Порог 1.15, а не просто «шире, чем выше»: у почти квадратной работы
+  // разворот на всю ширину ничего не добавляет, только ломает ритм страницы.
+  const isWide = artwork.widthCm > artwork.heightCm * 1.15;
   const available = artwork.status === "AVAILABLE";
 
   return (
@@ -127,8 +130,12 @@ export default async function ArtworkPage({ params }: Props) {
         / {artwork.title}
       </nav>
 
-      <article className="grid gap-12 lg:grid-cols-2">
-        <figure>
+      {/* Широкой работе тесно в половине экрана: морской пейзаж 70×50 в узкой
+          колонке теряет и панораму, и детали. Поэтому такие работы идут во всю
+          ширину, а текст уходит под них двумя колонками. Вертикальные и
+          квадратные остаются рядом с текстом — им ширина не нужна. */}
+      <article className={cn("grid gap-12", !isWide && "lg:grid-cols-2")}>
+        <figure className={cn(isWide && "mx-auto w-full max-w-5xl")}>
           {primaryImage && (
             <ArtworkViewer
               src={primaryImage.url}
@@ -143,7 +150,8 @@ export default async function ArtworkPage({ params }: Props) {
           <figcaption className="sr-only">{artwork.altText || artwork.title}</figcaption>
         </figure>
 
-        <div>
+        <div className={cn(isWide && "grid gap-x-16 gap-y-8 lg:grid-cols-[1fr_1fr]")}>
+          <div>
           {artwork.collection && (
             <Link
               href={`/${lang}/collections/${artwork.collection.slug}`}
@@ -152,7 +160,7 @@ export default async function ArtworkPage({ params }: Props) {
               {artwork.collection.title}
             </Link>
           )}
-          <h1 className="mt-3 font-serif text-4xl leading-tight">{artwork.title}</h1>
+          <h1 className="mt-3 font-serif text-section">{artwork.title}</h1>
           <p className="mt-3 text-fg-muted">
             {artwork.year ? `${artwork.year}, ` : ""}
             {dict.technique[artwork.technique]}, {artwork.widthCm}×{artwork.heightCm}{" "}
@@ -183,16 +191,22 @@ export default async function ArtworkPage({ params }: Props) {
             />
           </div>
 
-          {artwork.description && (
-            <p className="mt-10 leading-relaxed text-fg-muted">{artwork.description}</p>
-          )}
+          </div>
 
-          {artwork.story && (
-            <section className="mt-10 border-t border-border pt-8">
-              <h2 className="font-serif text-xl">{dict.artwork.storyTitle}</h2>
-              <p className="mt-4 leading-relaxed text-fg-muted">{artwork.story}</p>
-            </section>
-          )}
+          <div>
+            {artwork.description && (
+              <p className={cn("leading-relaxed text-fg-muted", !isWide && "mt-10")}>
+                {artwork.description}
+              </p>
+            )}
+
+            {artwork.story && (
+              <section className="mt-10 border-t border-border pt-8">
+                <h2 className="font-serif text-xl">{dict.artwork.storyTitle}</h2>
+                <p className="mt-4 leading-relaxed text-fg-muted">{artwork.story}</p>
+              </section>
+            )}
+          </div>
         </div>
       </article>
 

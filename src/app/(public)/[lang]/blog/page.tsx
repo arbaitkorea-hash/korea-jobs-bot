@@ -35,7 +35,7 @@ export default async function BlogPage({ params }: Props) {
   return (
     <Container className="py-16">
       <header className="max-w-2xl">
-        <h1 className="font-serif text-4xl">{dict.blog.title}</h1>
+        <h1 className="font-serif text-section">{dict.blog.title}</h1>
         <p className="mt-4 text-fg-muted">{dict.blog.subtitle}</p>
       </header>
 
