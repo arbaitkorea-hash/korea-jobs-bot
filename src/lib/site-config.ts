@@ -2,7 +2,9 @@ export const siteConfig = {
   name: "JST ART",
   artistName: "Jung Sen Tek",
   artistNameKo: "정성택",
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://jst-art.example.com").replace(/\/$/, ""),
+  // Канонический адрес — апекс без www. Переменную задаём и в продакшене:
+  // запасное значение здесь только чтобы сборка не падала без окружения.
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://jungst.art").replace(/\/$/, ""),
   locale: "ru_RU",
   defaultOgImage: "/og-default.jpg",
   social: {

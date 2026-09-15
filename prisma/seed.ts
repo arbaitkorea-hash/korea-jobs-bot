@@ -465,10 +465,10 @@ async function main() {
   const passwordHash = await bcrypt.hash(adminPassword, 12);
 
   await prisma.adminUser.upsert({
-    where: { email: "admin@jst-art.example.com" },
+    where: { email: "admin@jungst.art" },
     update: {},
     create: {
-      email: "admin@jst-art.example.com",
+      email: "admin@jungst.art",
       passwordHash,
       name: "Jung Sen Tek",
       role: "OWNER",
@@ -649,7 +649,7 @@ async function main() {
   }
 
   console.log("Seed complete.");
-  console.log("Admin login: admin@jst-art.example.com /", adminPassword);
+  console.log("Admin login: admin@jungst.art /", adminPassword);
   console.log(`Artworks: ${artworks.length} × 3 языка, коллекций: ${collections.length}`);
 }
 

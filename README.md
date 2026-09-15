@@ -81,7 +81,7 @@ prisma/
    Секреты генерируются командой `openssl rand -base64 32`.
 3. `npx prisma migrate dev` — создаст таблицы.
 4. `npm run db:seed` — демо-работы на трёх языках и первый администратор
-   (`admin@jst-art.example.com`, пароль из `SEED_ADMIN_PASSWORD`).
+   (`admin@jungst.art`, пароль из `SEED_ADMIN_PASSWORD`).
 5. `npm run dev` → http://localhost:3000 (редиректит на язык браузера),
    админка — http://localhost:3000/admin/login
 
@@ -101,7 +101,12 @@ prisma/
    npx prisma migrate deploy
    npm run db:seed        # только при первом запуске
    ```
-5. **HTTPS** включается Vercel автоматически, в том числе для своего домена.
+5. **Домен — `jungst.art`.** В настройках проекта Vercel добавить оба имени:
+   `jungst.art` как основное и `www.jungst.art` с редиректом на него. Канон —
+   апекс, без `www`: если оба адреса отвечают содержимым, поисковик видит два
+   сайта-близнеца и делит между ними вес. В `NEXT_PUBLIC_SITE_URL` пишем ровно
+   `https://jungst.art` — отсюда берутся canonical, hreflang, sitemap и JSON-LD.
+   HTTPS Vercel выпускает сам.
 6. **Хранилище картин.** Файловая система на Vercel эфемерна — папка
    `storage/uploads` подходит только для разработки. Перед реальным запуском
    подключите Supabase Storage (или Cloudinary) и замените реализацию

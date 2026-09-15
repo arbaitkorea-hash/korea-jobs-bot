@@ -178,7 +178,12 @@ oil painting 80x60 cm original
 
 ## 4. Что нужно сделать руками после деплоя
 
+Домен проекта — **`jungst.art`**, канонический адрес `https://jungst.art`
+(апекс, без `www`). Везде ниже подтверждаем именно его.
+
 1. **Google Search Console** — подтвердить домен, подать `sitemap.xml`.
+   Подтверждать лучше как **Domain property** (запись в DNS), а не как
+   URL-prefix: тогда одна запись покрывает и апекс, и `www`, и оба протокола.
 2. **Naver Search Advisor** — зарегистрировать сайт, получить код верификации,
    положить его в `NEXT_PUBLIC_NAVER_VERIFICATION`, подать sitemap вручную.
 3. **Bing Webmaster Tools** — можно импортировать настройки прямо из Search Console.
