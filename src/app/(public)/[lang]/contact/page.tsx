@@ -32,14 +32,25 @@ export default async function ContactPage({ params }: Props) {
         <div>
           <h1 className="font-serif text-section">{dict.contact.title}</h1>
           <p className="mt-6 max-w-md leading-relaxed text-fg-muted">{dict.contact.intro}</p>
-          <a
-            href={siteConfig.social.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-block text-sm underline underline-offset-4"
-          >
-            Instagram
-          </a>
+          {/* Живой адрес рядом с формой: часть покупателей форме не доверяет
+              и хочет написать письмо сама — особенно когда речь о покупке
+              оригинала за границей. */}
+          <div className="mt-8 flex flex-col items-start gap-3 text-sm">
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="underline underline-offset-4"
+            >
+              {siteConfig.email}
+            </a>
+            <a
+              href={siteConfig.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4"
+            >
+              Instagram
+            </a>
+          </div>
         </div>
         <ContactForm locale={lang} dict={dict} />
       </div>

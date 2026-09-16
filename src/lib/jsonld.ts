@@ -9,6 +9,15 @@ export function organizationJsonLd() {
     name: siteConfig.name,
     url: siteConfig.url,
     logo: absoluteUrl("/icon.png"),
+    email: siteConfig.email,
+    // Явный контакт для покупателей: Google показывает его в карточке
+    // организации, и это снимает частое возражение «а живой ли это магазин».
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      email: siteConfig.email,
+      availableLanguage: ["ru", "en", "ko"],
+    },
     sameAs: Object.values(siteConfig.social),
   };
 }
