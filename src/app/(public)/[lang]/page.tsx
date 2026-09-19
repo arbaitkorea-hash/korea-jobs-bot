@@ -165,14 +165,21 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <p className="mt-4 max-w-md leading-relaxed text-fg-muted">
                 {dict.home.contactSubtitle}
               </p>
-              <a
-                href={siteConfig.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-block text-sm underline underline-offset-4"
-              >
-                Instagram
-              </a>
+              {/* Тот же набор контактов, что и на странице «Контакты»:
+                  адрес должен быть виден и тому, кто до неё не дошёл. */}
+              <div className="mt-6 flex flex-col items-start gap-3 text-sm">
+                <a href={`mailto:${siteConfig.email}`} className="underline underline-offset-4">
+                  {siteConfig.email}
+                </a>
+                <a
+                  href={siteConfig.social.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4"
+                >
+                  Instagram
+                </a>
+              </div>
             </FadeIn>
             <FadeIn delay={120}>
               <ContactForm locale={lang} dict={dict} />
