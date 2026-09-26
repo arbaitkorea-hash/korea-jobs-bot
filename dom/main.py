@@ -1,25 +1,34 @@
-"""VIP-консьерж Нячанг — интерактивное меню агентов.
+"""«Дом» — премиальный консьерж-сервис в Нячанге. Меню персонала Дома.
 
 Запуск:  python main.py
 """
 from datetime import datetime
 
 import config
+from agents.analyst.pricing import UNIT_NAMES
 from agents.analyst import audit_providers, calculate_package, generate_usp, write_proposal
 from agents.llm import AgentError, ask
-from knowledge_base import all_providers, as_context, load_directions, validate
+from knowledge_base import all_providers, as_context, load_rooms, validate
 from prompts import CONTENT_PROMPT, PLANNER_PROMPT
 
 MENU = """
-════════════ VIP-консьерж Нячанг ════════════
- 1. Аудит поставщиков (риски и узкие места)
- 2. Рассчитать VIP-пакет (B2B / B2C / маржа)
- 3. УТП под запрос гостя
- 4. Программа пребывания (Агент-Планировщик)
- 5. Пост для соцсетей (Агент-Контентмейкер)
- 6. Показать базу знаний
- 0. Выход
-═════════════════════════════════════════════"""
+╔═══════════════════════════════════════════════╗
+║                     Д О М                     ║
+║        частная вилла · Нячанг · Вьетнам       ║
+╚═══════════════════════════════════════════════╝
+  Холл · Покои · Обеденный зал · Причал · Терраса
+
+  Управляющий
+   1. Обход Дома — аудит партнёров и рисков
+   2. Собрать пребывание — цена B2B / B2C и маржа
+   3. Предложение гостю — 3 варианта под запрос
+  Мажордом
+   4. Сценарий пребывания по дням
+  Голос Дома
+   5. Пост для соцсетей
+  ─────────────────────────────────────────────
+   6. Комнаты Дома и партнёры
+   0. Закрыть дверь"""
 
 
 def read_multiline(prompt: str) -> str:
@@ -56,23 +65,24 @@ def pick_input_file() -> str:
     return ""
 
 
-def show_knowledge_base() -> None:
-    for d in load_directions():
-        print(f"\n■ {d['direction_name']}")
-        for p in d["providers"]:
+def show_rooms() -> None:
+    for room in load_rooms():
+        print(f"\n■ {room['room_name'].upper()} — {room['direction']}")
+        print(f"  {room['room_description']}")
+        for p in room["providers"]:
             b2b, b2c = p["pricing_b2b"], p["pricing_b2c"]
             mark = "" if p.get("price_verified") else "  (цена не подтверждена)"
-            print(f"   {p['id']:<26} {p['provider_name']:<32} "
+            print(f"    {p['id']:<26} {p['provider_name']:<32} "
                   f"B2B {b2b['amount']:>6} / B2C {b2c['amount']:>6} {b2c['currency']} "
-                  f"за {b2c['unit']}{mark}")
+                  f"за {UNIT_NAMES.get(b2c['unit'], b2c['unit'])}{mark}")
 
 
 def run_package() -> None:
     providers = all_providers()
-    print("\nВведите услуги построчно: <id> <количество>")
+    print("\nСоберите пребывание гостя из комнат Дома: <id> <количество>")
     print("Количество — в единицах прайса: ночи, часы, люди или поездки.")
     print("Пример:  amanoi-villa 5   |   maybach-transfer 2   |   cxr-fasttrack-arrival 2")
-    print("Список id — пункт 6 меню. Пустая строка — расчёт.")
+    print("Список id — пункт 6 «Комнаты Дома». Пустая строка — расчёт.")
     items = []
     while line := input("> ").strip():
         parts = line.split()
@@ -92,16 +102,16 @@ def run_package() -> None:
         config.REPORTS_DIR / f"{datetime.now():%Y%m%d_%H%M%S}_package.csv")
     print(f"\n✅ Таблица для Excel: {csv_path.relative_to(config.BASE_DIR)}")
 
-    if input("\nСоставить текст КП для гостя через Claude? (y/n): ").strip().lower() in {"y", "д", "да"}:
+    if input("\nПодготовить приглашение в Дом (текст КП) через Claude? (y/n): ").strip().lower() in {"y", "д", "да"}:
         request = read_multiline("Кратко о госте и его пожеланиях")
-        print("\n⏳ Агент-Аналитик пишет КП...")
+        print("\n⏳ Управляющий готовит приглашение...")
         show_result("kp", write_proposal(package, request))
 
 
 def main() -> None:
     errors = validate()
     if errors:
-        print("⚠ Ошибки в базе знаний (data/):")
+        print("⚠ Ошибки в описании комнат (data/):")
         for e in errors:
             print("  -", e)
 
@@ -111,28 +121,29 @@ def main() -> None:
         try:
             if choice == "1":
                 extra = pick_input_file()
-                print("\n⏳ Агент-Аналитик проводит аудит (1–3 минуты)...")
+                print("\n⏳ Управляющий обходит комнаты (1–3 минуты)...")
                 show_result("audit", audit_providers(extra))
             elif choice == "2":
                 run_package()
             elif choice == "3":
                 request = read_multiline("\nОпишите запрос гостя: кто, сколько человек, даты, бюджет, пожелания")
                 if request:
-                    print("\n⏳ Агент-Аналитик готовит предложения...")
+                    print("\n⏳ Управляющий готовит предложения...")
                     show_result("usp", generate_usp(request))
             elif choice == "4":
                 request = read_multiline("\nЗапрос гостя для программы: даты, рейсы, состав, интересы")
                 if request:
-                    print("\n⏳ Агент-Планировщик составляет программу...")
+                    print("\n⏳ Мажордом составляет сценарий...")
                     show_result("plan", ask(PLANNER_PROMPT, as_context(), request))
             elif choice == "5":
                 topic = read_multiline("\nТема поста (например: закатный круиз на яхте для пар)")
                 if topic:
-                    print("\n⏳ Агент-Контентмейкер пишет пост...")
+                    print("\n⏳ Голос Дома пишет пост...")
                     show_result("post", ask(CONTENT_PROMPT, as_context(), topic))
             elif choice == "6":
-                show_knowledge_base()
+                show_rooms()
             elif choice == "0":
+                print("\nДом ждёт гостей.")
                 break
             else:
                 print("Нет такого пункта")

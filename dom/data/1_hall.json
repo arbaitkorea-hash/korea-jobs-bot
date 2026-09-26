@@ -1,13 +1,23 @@
 {
-  "direction_id": "transfers_fasttrack",
-  "direction_name": "Fast Track и премиальный трансфер (аэропорт Камрань)",
+  "room_id": "hall",
+  "room_name": "Холл",
+  "room_description": "Встреча и проводы гостя: Fast Track в аэропорту Камрань и премиальный трансфер. Первое и последнее впечатление о Доме.",
+  "direction": "Fast Track и премиальный трансфер (аэропорт Камрань)",
   "providers": [
     {
       "id": "cxr-fasttrack-arrival",
       "provider_name": "VIP Arrival Fast Track (CXR)",
       "service_type": "Встреча у выхода из самолёта, ускоренный паспортный контроль",
-      "pricing_b2b": {"amount": 35, "currency": "USD", "unit": "per_person"},
-      "pricing_b2c": {"amount": 60, "currency": "USD", "unit": "per_person"},
+      "pricing_b2b": {
+        "amount": 35,
+        "currency": "USD",
+        "unit": "per_person"
+      },
+      "pricing_b2c": {
+        "amount": 60,
+        "currency": "USD",
+        "unit": "per_person"
+      },
       "price_verified": false,
       "service_standards": [
         "Табличка с именем гостя у выхода из рукава",
@@ -24,8 +34,16 @@
       "id": "cxr-fasttrack-departure",
       "provider_name": "VIP Departure Fast Track (CXR)",
       "service_type": "Ускоренная регистрация и досмотр при вылете",
-      "pricing_b2b": {"amount": 30, "currency": "USD", "unit": "per_person"},
-      "pricing_b2c": {"amount": 50, "currency": "USD", "unit": "per_person"},
+      "pricing_b2b": {
+        "amount": 30,
+        "currency": "USD",
+        "unit": "per_person"
+      },
+      "pricing_b2c": {
+        "amount": 50,
+        "currency": "USD",
+        "unit": "per_person"
+      },
       "price_verified": false,
       "service_standards": [
         "Встреча у входа в терминал",
@@ -39,8 +57,16 @@
       "id": "maybach-transfer",
       "provider_name": "Mercedes-Maybach (партнёрский автопарк)",
       "service_type": "Трансфер аэропорт Камрань ↔ отель на Maybach S-Class",
-      "pricing_b2b": {"amount": 180, "currency": "USD", "unit": "per_trip"},
-      "pricing_b2c": {"amount": 260, "currency": "USD", "unit": "per_trip"},
+      "pricing_b2b": {
+        "amount": 180,
+        "currency": "USD",
+        "unit": "per_trip"
+      },
+      "pricing_b2c": {
+        "amount": 260,
+        "currency": "USD",
+        "unit": "per_trip"
+      },
       "price_verified": false,
       "service_standards": [
         "Водитель в форме, вода и холодные полотенца",
@@ -56,8 +82,16 @@
       "id": "dcar-limousine",
       "provider_name": "DCar Limousine",
       "service_type": "Лимузин-вэн для семьи / группы до 9 человек",
-      "pricing_b2b": {"amount": 70, "currency": "USD", "unit": "per_trip"},
-      "pricing_b2c": {"amount": 110, "currency": "USD", "unit": "per_trip"},
+      "pricing_b2b": {
+        "amount": 70,
+        "currency": "USD",
+        "unit": "per_trip"
+      },
+      "pricing_b2c": {
+        "amount": 110,
+        "currency": "USD",
+        "unit": "per_trip"
+      },
       "price_verified": false,
       "service_standards": [
         "Кресла повышенной комфортности, Wi-Fi",

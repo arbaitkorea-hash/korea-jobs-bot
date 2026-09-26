@@ -1,13 +1,23 @@
 {
-  "direction_id": "elite_leisure",
-  "direction_name": "Экстремальный и элитный досуг",
+  "room_id": "terrace",
+  "room_name": "Терраса",
+  "room_description": "Элитный досуг: гольф, вертолётные чартеры, приватный дайвинг в Хон Мун.",
+  "direction": "Экстремальный и элитный досуг",
   "providers": [
     {
       "id": "kn-golf-links",
       "provider_name": "KN Golf Links Cam Ranh",
       "service_type": "Раунд 18 лунок (грин-фи, кэдди, гольф-кар)",
-      "pricing_b2b": {"amount": 170, "currency": "USD", "unit": "per_person"},
-      "pricing_b2c": {"amount": 230, "currency": "USD", "unit": "per_person"},
+      "pricing_b2b": {
+        "amount": 170,
+        "currency": "USD",
+        "unit": "per_person"
+      },
+      "pricing_b2c": {
+        "amount": 230,
+        "currency": "USD",
+        "unit": "per_person"
+      },
       "price_verified": false,
       "service_standards": [
         "Приоритетный тии-тайм",
@@ -22,8 +32,16 @@
       "id": "vinpearl-golf",
       "provider_name": "Vinpearl Golf Nha Trang",
       "service_type": "Раунд 18 лунок на острове Хон Че",
-      "pricing_b2b": {"amount": 130, "currency": "USD", "unit": "per_person"},
-      "pricing_b2c": {"amount": 180, "currency": "USD", "unit": "per_person"},
+      "pricing_b2b": {
+        "amount": 130,
+        "currency": "USD",
+        "unit": "per_person"
+      },
+      "pricing_b2c": {
+        "amount": 180,
+        "currency": "USD",
+        "unit": "per_person"
+      },
       "price_verified": false,
       "service_standards": [
         "Трансфер на остров включён",
@@ -37,8 +55,16 @@
       "id": "helicopter-charter",
       "provider_name": "Вертолётный чартер",
       "service_type": "Обзорный полёт над заливом / трансфер на вилла-резорт",
-      "pricing_b2b": {"amount": 2500, "currency": "USD", "unit": "per_hour"},
-      "pricing_b2c": {"amount": 3400, "currency": "USD", "unit": "per_hour"},
+      "pricing_b2b": {
+        "amount": 2500,
+        "currency": "USD",
+        "unit": "per_hour"
+      },
+      "pricing_b2c": {
+        "amount": 3400,
+        "currency": "USD",
+        "unit": "per_hour"
+      },
       "price_verified": false,
       "service_standards": [
         "Лицензированный оператор, страховка пассажиров",
@@ -54,8 +80,16 @@
       "id": "hon-mun-diving",
       "provider_name": "Приватный дайвинг в Хон Мун",
       "service_type": "Приватный выход на дайв с инструктором (2 погружения)",
-      "pricing_b2b": {"amount": 220, "currency": "USD", "unit": "per_person"},
-      "pricing_b2c": {"amount": 320, "currency": "USD", "unit": "per_person"},
+      "pricing_b2b": {
+        "amount": 220,
+        "currency": "USD",
+        "unit": "per_person"
+      },
+      "pricing_b2c": {
+        "amount": 320,
+        "currency": "USD",
+        "unit": "per_person"
+      },
       "price_verified": false,
       "service_standards": [
         "Индивидуальный инструктор (PADI / SSI)",

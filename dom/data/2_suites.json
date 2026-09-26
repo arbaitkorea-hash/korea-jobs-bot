@@ -1,13 +1,23 @@
 {
-  "direction_id": "villas_wellness",
-  "direction_name": "Эксклюзивные вилла-резорты и Wellness",
+  "room_id": "suites",
+  "room_name": "Покои",
+  "room_description": "Вилла-резорты и Wellness: где гость живёт, отдыхает и восстанавливается.",
+  "direction": "Эксклюзивные вилла-резорты и Wellness",
   "providers": [
     {
       "id": "amanoi-villa",
       "provider_name": "Amanoi",
       "service_type": "Вилла с бассейном, национальный парк Нуйчуа (Винь Хи)",
-      "pricing_b2b": {"amount": 1600, "currency": "USD", "unit": "per_night"},
-      "pricing_b2c": {"amount": 2100, "currency": "USD", "unit": "per_night"},
+      "pricing_b2b": {
+        "amount": 1600,
+        "currency": "USD",
+        "unit": "per_night"
+      },
+      "pricing_b2c": {
+        "amount": 2100,
+        "currency": "USD",
+        "unit": "per_night"
+      },
       "price_verified": false,
       "service_standards": [
         "Персональный хост на весь период проживания",
@@ -24,8 +34,16 @@
       "id": "six-senses-ninh-van",
       "provider_name": "Six Senses Ninh Van Bay",
       "service_type": "Вилла на воде / на скале, доступ только по морю",
-      "pricing_b2b": {"amount": 900, "currency": "USD", "unit": "per_night"},
-      "pricing_b2c": {"amount": 1200, "currency": "USD", "unit": "per_night"},
+      "pricing_b2b": {
+        "amount": 900,
+        "currency": "USD",
+        "unit": "per_night"
+      },
+      "pricing_b2c": {
+        "amount": 1200,
+        "currency": "USD",
+        "unit": "per_night"
+      },
       "price_verified": false,
       "service_standards": [
         "Катер резорта от приватного пирса",
@@ -41,8 +59,16 @@
       "id": "lalya-ninh-van",
       "provider_name": "L'Alya Ninh Van Bay",
       "service_type": "Бутик-вилла на полуострове Нинь Ван",
-      "pricing_b2b": {"amount": 450, "currency": "USD", "unit": "per_night"},
-      "pricing_b2c": {"amount": 620, "currency": "USD", "unit": "per_night"},
+      "pricing_b2b": {
+        "amount": 450,
+        "currency": "USD",
+        "unit": "per_night"
+      },
+      "pricing_b2c": {
+        "amount": 620,
+        "currency": "USD",
+        "unit": "per_night"
+      },
       "price_verified": false,
       "service_standards": [
         "Приватный катер от пирса",
@@ -56,8 +82,16 @@
       "id": "gran-melia",
       "provider_name": "Gran Meliá Nha Trang",
       "service_type": "Вилла / люкс с доступом в Red Level",
-      "pricing_b2b": {"amount": 380, "currency": "USD", "unit": "per_night"},
-      "pricing_b2c": {"amount": 520, "currency": "USD", "unit": "per_night"},
+      "pricing_b2b": {
+        "amount": 380,
+        "currency": "USD",
+        "unit": "per_night"
+      },
+      "pricing_b2c": {
+        "amount": 520,
+        "currency": "USD",
+        "unit": "per_night"
+      },
       "price_verified": false,
       "service_standards": [
         "Red Level: приватный лаунж и отдельная регистрация",
@@ -71,8 +105,16 @@
       "id": "vinpearl-luxury",
       "provider_name": "Vinpearl Luxury Nha Trang",
       "service_type": "Вилла с бассейном на острове Хон Че",
-      "pricing_b2b": {"amount": 350, "currency": "USD", "unit": "per_night"},
-      "pricing_b2c": {"amount": 480, "currency": "USD", "unit": "per_night"},
+      "pricing_b2b": {
+        "amount": 350,
+        "currency": "USD",
+        "unit": "per_night"
+      },
+      "pricing_b2c": {
+        "amount": 480,
+        "currency": "USD",
+        "unit": "per_night"
+      },
       "price_verified": false,
       "service_standards": [
         "Доступ к инфраструктуре острова (парк, гольф)",

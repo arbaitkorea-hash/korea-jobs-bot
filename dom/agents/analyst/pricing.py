@@ -20,6 +20,7 @@ UNIT_NAMES = {
 
 @dataclass
 class Line:
+    room: str
     provider: str
     service: str
     qty: float
@@ -82,7 +83,7 @@ class Package:
         return [
             ("Себестоимость (B2B-прайсы партнёров)", self.cost, ""),
             ("Розничная стоимость услуг (B2C-прайсы)", self.retail, ""),
-            (f"Сервисный сбор консьержа {config.CONCIERGE_FEE_PCT}%", self.concierge_fee, ""),
+            (f"Сервисный сбор Дома {config.CONCIERGE_FEE_PCT}%", self.concierge_fee, ""),
             ("ЦЕНА ДЛЯ ГОСТЯ (B2C)", self.price_b2c, f"маржа {self.margin_b2c_pct:.1f}%"),
             (
                 f"ЦЕНА ДЛЯ АГЕНТСТВА (B2B, −{config.AGENT_COMMISSION_PCT}%)",
@@ -112,15 +113,15 @@ class Package:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", newline="", encoding="utf-8-sig") as f:
             w = csv.writer(f, delimiter=";")
-            w.writerow(["Партнёр", "Услуга", "Кол-во", "Ед.", "B2B за ед.", "B2C за ед.",
+            w.writerow(["Комната", "Партнёр", "Услуга", "Кол-во", "Ед.", "B2B за ед.", "B2C за ед.",
                         "Себестоимость", "Розница", "Валюта"])
             for l in self.lines:
-                w.writerow([l.provider, l.service, f"{l.qty:g}", UNIT_NAMES.get(l.unit, l.unit),
+                w.writerow([l.room, l.provider, l.service, f"{l.qty:g}", UNIT_NAMES.get(l.unit, l.unit),
                             l.b2b_unit, l.b2c_unit, round(l.cost, 2), round(l.retail, 2),
                             self.currency])
             w.writerow([])
             for label, value, note in self.summary_rows():
-                w.writerow([label, "", "", "", "", "", "", round(value, 2), note])
+                w.writerow([label, "", "", "", "", "", "", "", round(value, 2), note])
         return path
 
 
@@ -135,6 +136,7 @@ def calculate_package(items: list[tuple[str, float]], providers: dict[str, dict]
         b2b, b2c = p["pricing_b2b"], p["pricing_b2c"]
         currencies.update({b2b["currency"], b2c["currency"]})
         package.lines.append(Line(
+            room=p.get("room_name", ""),
             provider=p["provider_name"],
             service=p["service_type"],
             qty=qty,

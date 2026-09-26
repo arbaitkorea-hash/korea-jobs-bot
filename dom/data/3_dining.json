@@ -1,13 +1,23 @@
 {
-  "direction_id": "fine_dining",
-  "direction_name": "Гастрономия Fine Dining и закрытые ивенты",
+  "room_id": "dining",
+  "room_name": "Обеденный зал",
+  "room_description": "Fine Dining, приватные шеф-повара и закрытые ивенты.",
+  "direction": "Гастрономия Fine Dining и закрытые ивенты",
   "providers": [
     {
       "id": "private-chef-villa",
       "provider_name": "Приватный шеф-повар на виллу",
       "service_type": "Ужин-дегустация на вилле (до 8 гостей)",
-      "pricing_b2b": {"amount": 90, "currency": "USD", "unit": "per_person"},
-      "pricing_b2c": {"amount": 140, "currency": "USD", "unit": "per_person"},
+      "pricing_b2b": {
+        "amount": 90,
+        "currency": "USD",
+        "unit": "per_person"
+      },
+      "pricing_b2c": {
+        "amount": 140,
+        "currency": "USD",
+        "unit": "per_person"
+      },
       "price_verified": false,
       "service_standards": [
         "Согласование меню и аллергий за 48 ч",
@@ -23,8 +33,16 @@
       "id": "exclusive-table",
       "provider_name": "Бронирование эксклюзивных столов",
       "service_type": "Лучший стол / chef's table в топ-ресторанах Нячанга",
-      "pricing_b2b": {"amount": 0, "currency": "USD", "unit": "per_booking"},
-      "pricing_b2c": {"amount": 50, "currency": "USD", "unit": "per_booking"},
+      "pricing_b2b": {
+        "amount": 0,
+        "currency": "USD",
+        "unit": "per_booking"
+      },
+      "pricing_b2c": {
+        "amount": 50,
+        "currency": "USD",
+        "unit": "per_booking"
+      },
       "price_verified": false,
       "service_standards": [
         "Подтверждение брони за 24 ч",
@@ -39,8 +57,16 @@
       "id": "private-event",
       "provider_name": "Закрытые ивенты (пляж / вилла / яхта)",
       "service_type": "Организация частного мероприятия под ключ",
-      "pricing_b2b": {"amount": 3000, "currency": "USD", "unit": "per_event"},
-      "pricing_b2c": {"amount": 4500, "currency": "USD", "unit": "per_event"},
+      "pricing_b2b": {
+        "amount": 3000,
+        "currency": "USD",
+        "unit": "per_event"
+      },
+      "pricing_b2c": {
+        "amount": 4500,
+        "currency": "USD",
+        "unit": "per_event"
+      },
       "price_verified": false,
       "service_standards": [
         "Координатор на площадке",

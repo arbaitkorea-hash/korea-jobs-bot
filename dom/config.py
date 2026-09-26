@@ -26,6 +26,6 @@ MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-5")
 EFFORT = os.getenv("CLAUDE_EFFORT", "high")
 
 # Коммерческие параметры пакета
-CONCIERGE_FEE_PCT = 10   # сервисный сбор консьержа сверх B2C-цены, %
+CONCIERGE_FEE_PCT = 10   # сервисный сбор Дома сверх B2C-цены, %
 AGENT_COMMISSION_PCT = 15  # скидка турагентствам от итоговой B2C-цены, %
 MIN_MARGIN_PCT = 20      # ниже этой маржи пакет помечается как «низкая маржа», %
