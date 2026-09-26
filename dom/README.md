@@ -93,6 +93,7 @@ dom/
 │   └── analyst/
 │       ├── agent.py         # аудит, КП, УТП
 │       └── pricing.py       # расчёт цен и маржи (без ИИ)
+├── site/                    # сайт для домена (см. site/README.md)
 ├── web/                     # 3D-витрина: template.html → build_site.py → index.html
 ├── inputs/                  # сюда кладите отзывы и логи (.txt/.md/.csv/.json)
 └── reports/                 # готовые отчёты
