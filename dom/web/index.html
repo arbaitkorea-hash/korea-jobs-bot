@@ -1,0 +1,876 @@
+<title>Дом · Нячанг</title>
+<meta name="description" content="Частная вилла над заливом Нячанг: пять комнат премиального сервиса.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #efe6d6;
+    --muted: #b8ad99;
+    --faint: #857c6d;
+    --brass: #d6ad5f;
+    --brass-soft: rgba(214, 173, 95, 0.16);
+    --lagoon: #07181b;
+    --panel: rgba(8, 22, 26, 0.74);
+    --line: rgba(239, 230, 214, 0.14);
+    --display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+    --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --gutter: 16px;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--lagoon);
+    color: var(--ink);
+    font: 15px/1.55 var(--body);
+    overflow: hidden;
+  }
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 6px; }
+
+  .ui {
+    position: fixed; inset: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding-inline: max(var(--gutter), 2.4vw);
+    padding-block: calc(env(safe-area-inset-top, 0px) + 18px) calc(env(safe-area-inset-bottom, 0px) + 16px);
+    pointer-events: none;
+  }
+  .ui > * { pointer-events: auto; }
+
+  /* ---------- top bar ---------- */
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; pointer-events: none; }
+  .top > * { pointer-events: auto; }
+  .mark { display: grid; gap: 2px; text-shadow: 0 1px 18px rgba(0,0,0,.45); }
+  .mark b { font: 400 34px/1 var(--display); letter-spacing: .42em; margin-right: -.42em; }
+  .mark span { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .top-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 14px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    font-size: 13px; white-space: nowrap;
+  }
+  .chip:hover { border-color: rgba(214,173,95,.5); }
+  .chip .count { font-family: var(--mono); color: var(--brass); }
+  .chip[aria-pressed="true"] { border-color: var(--brass); color: var(--brass); }
+
+  /* ---------- room card ---------- */
+  .stage { position: relative; min-height: 0; }
+  .card {
+    position: absolute; right: 0; top: 18px; bottom: 18px;
+    width: min(390px, 100%);
+    display: flex; flex-direction: column;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    overflow: hidden;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .card.swap { opacity: 0; transform: translateY(8px); }
+  .card-head { padding: 22px 24px 14px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--brass); }
+  .card h1 { font: 400 38px/1.05 var(--display); margin: 8px 0 10px; text-wrap: balance; }
+  .card-head p { margin: 0; color: var(--muted); font-size: 14px; }
+  .card-toggle { display: none; }
+  .card-body { overflow-y: auto; padding: 8px 24px 20px; display: grid; gap: 0; }
+  .svc { display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .svc:last-child { border-bottom: 0; }
+  .svc h3 { margin: 0; font-size: 15px; font-weight: 700; }
+  .svc .what { grid-column: 1 / 2; color: var(--muted); font-size: 13px; }
+  .svc .std { grid-column: 1 / -1; font-size: 12px; color: var(--faint); }
+  .svc .price { font-family: var(--mono); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+  .svc .price small { display: block; color: var(--faint); font-size: 11px; }
+  .add {
+    grid-column: 2; grid-row: 2; justify-self: end; align-self: start;
+    font-size: 12px; padding: 5px 11px; border-radius: 999px;
+    border: 1px solid rgba(214,173,95,.45); color: var(--brass);
+  }
+  .add:hover { background: var(--brass-soft); }
+  .add[aria-pressed="true"] { background: var(--brass); color: #1c1407; border-color: var(--brass); }
+  .note { font-size: 12px; color: var(--faint); margin: 14px 0 0; }
+  .intro p { color: var(--ink); font-size: 15px; margin: 14px 0 0; max-width: 60ch; }
+  .intro ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .intro li { display: grid; grid-template-columns: 92px 1fr; gap: 10px; font-size: 13px; color: var(--muted); }
+  .intro li b { color: var(--ink); font-weight: 500; font-family: var(--display); font-size: 15px; }
+
+  /* ---------- bottom bar ---------- */
+  .bottom { display: grid; gap: 12px; }
+  .rooms {
+    display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    padding: 5px; width: max-content; max-width: 100%;
+  }
+  .rooms::-webkit-scrollbar { display: none; }
+  .room-btn {
+    padding: 9px 16px; border-radius: 999px; white-space: nowrap;
+    font-family: var(--display); font-size: 15px; letter-spacing: .03em; color: var(--muted);
+  }
+  .room-btn:hover { color: var(--ink); }
+  .room-btn[aria-current="true"] { background: var(--ink); color: #13191a; }
+
+  .clock { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .clock-panel {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    padding: 6px 16px 6px 6px; flex: 1 1 320px; max-width: 560px;
+  }
+  .play { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; flex: none; }
+  .play svg { width: 12px; height: 12px; fill: var(--ink); }
+  .time { font-family: var(--mono); font-size: 15px; min-width: 48px; font-variant-numeric: tabular-nums; }
+  .phase { font-size: 12px; color: var(--muted); min-width: 64px; }
+  #hour { flex: 1; min-width: 80px; accent-color: var(--brass); }
+
+  /* ---------- basket ---------- */
+  .basket {
+    position: fixed; top: calc(env(safe-area-inset-top, 0px) + 70px); right: max(var(--gutter), 2.4vw);
+    width: min(360px, calc(100% - 2 * var(--gutter)));
+    background: rgba(8, 22, 26, 0.94); border: 1px solid var(--line); border-radius: 16px;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    padding: 20px 22px; z-index: 5; display: grid; gap: 12px;
+    max-height: calc(100% - 180px); overflow-y: auto;
+  }
+  .basket h2 { font: 400 24px/1.1 var(--display); margin: 0; }
+  .steppers { display: flex; gap: 10px; flex-wrap: wrap; }
+  .stepper { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 6px 4px 12px; font-size: 13px; color: var(--muted); }
+  .stepper output { font-family: var(--mono); color: var(--ink); min-width: 18px; text-align: center; }
+  .stepper button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); line-height: 1; }
+  .lines { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .lines li { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: baseline; font-size: 13px; }
+  .lines .room { color: var(--faint); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; display: block; }
+  .lines .sum { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .lines .rm { color: var(--faint); font-size: 16px; padding: 0 4px; }
+  .totals { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+  .totals div { display: flex; justify-content: space-between; gap: 12px; }
+  .totals .grand { color: var(--ink); font-size: 17px; }
+  .totals span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .empty { color: var(--muted); font-size: 13px; margin: 0; }
+  .primary { background: var(--brass); color: #1c1407; border-radius: 999px; padding: 11px 16px; font-weight: 700; font-size: 14px; }
+  .primary:hover { filter: brightness(1.08); }
+  .copied { font-size: 12px; color: var(--brass); min-height: 1em; margin: 0; }
+  textarea.fallback { width: 100%; min-height: 120px; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font: 12px/1.4 var(--mono); }
+
+  .nowebgl { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; background: radial-gradient(120% 80% at 50% 110%, #c9774a 0%, #3b2c4a 38%, #07181b 75%); }
+
+  @media (max-width: 760px) {
+    .mark b { font-size: 26px; }
+    .card {
+      top: auto; bottom: 8px; left: 0; right: 0; width: auto;
+      max-height: 46vh;
+    }
+    .card.collapsed .card-body, .card.collapsed .card-head p { display: none; }
+    .card-head { padding: 16px 18px 12px; display: grid; grid-template-columns: 1fr auto; gap: 0 10px; }
+    .card-head > :not(.card-toggle) { grid-column: 1; }
+    .card-toggle { display: block; grid-column: 2; grid-row: 1 / span 2; align-self: start; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; }
+    .card h1 { font-size: 28px; margin: 6px 0 6px; }
+    .card-body { padding: 4px 18px 16px; }
+    .phase { display: none; }
+    .clock-panel { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition: none; }
+  }
+</style>
+
+<canvas id="scene" aria-label="Трёхмерная вилла Дом над заливом Нячанг"></canvas>
+
+<div class="ui">
+  <header class="top">
+    <div class="mark"><b>ДОМ</b><span>Частная вилла · Нячанг</span></div>
+    <div class="top-actions">
+      <button class="chip" id="soundBtn" aria-pressed="false">Звук моря</button>
+      <button class="chip" id="basketBtn" aria-expanded="false" aria-controls="basket">Пребывание <span class="count" id="basketCount">0</span></button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <article class="card" id="card" aria-live="polite"></article>
+  </main>
+
+  <footer class="bottom">
+    <nav class="rooms" id="rooms" aria-label="Комнаты Дома"></nav>
+    <div class="clock">
+      <div class="clock-panel">
+        <button class="play" id="playBtn" aria-label="Пауза"><svg viewBox="0 0 12 12" id="playIcon"><rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/></svg></button>
+        <span class="time" id="timeLabel">18:15</span>
+        <span class="phase" id="phaseLabel">закат</span>
+        <input type="range" id="hour" min="5" max="23.9" step="0.05" value="18.25" aria-label="Время суток">
+      </div>
+    </div>
+  </footer>
+</div>
+
+<section class="basket" id="basket" hidden aria-label="Пребывание">
+  <h2>Ваше пребывание</h2>
+  <div class="steppers">
+    <div class="stepper">Гостей <button data-step="guests" data-d="-1" aria-label="Меньше гостей">−</button><output id="guestsOut">2</output><button data-step="guests" data-d="1" aria-label="Больше гостей">+</button></div>
+    <div class="stepper">Ночей <button data-step="nights" data-d="-1" aria-label="Меньше ночей">−</button><output id="nightsOut">5</output><button data-step="nights" data-d="1" aria-label="Больше ночей">+</button></div>
+  </div>
+  <ul class="lines" id="lines"></ul>
+  <p class="empty" id="emptyNote">Пока пусто. Откройте комнату и нажмите «Добавить» у нужной услуги.</p>
+  <div class="totals" id="totals" hidden>
+    <div><span>Услуги</span><span id="subTotal"></span></div>
+    <div><span>Сервисный сбор Дома 10%</span><span id="feeTotal"></span></div>
+    <div class="grand"><span>Итого</span><span id="grandTotal"></span></div>
+  </div>
+  <button class="primary" id="copyBtn">Скопировать заявку для менеджера</button>
+  <p class="copied" id="copied"></p>
+  <p class="note">Цены ориентировочные. Точную стоимость менеджер подтвердит у партнёров.</p>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const ROOMS = [{"room_id": "hall", "room_name": "Холл", "room_description": "Встреча и проводы гостя: Fast Track в аэропорту Камрань и премиальный трансфер. Первое и последнее впечатление о Доме.", "providers": [{"id": "cxr-fasttrack-arrival", "name": "VIP Arrival Fast Track (CXR)", "service": "Встреча у выхода из самолёта, ускоренный паспортный контроль", "price": 60, "unit": "per_person", "standard": "Табличка с именем гостя у выхода из рукава"}, {"id": "cxr-fasttrack-departure", "name": "VIP Departure Fast Track (CXR)", "service": "Ускоренная регистрация и досмотр при вылете", "price": 50, "unit": "per_person", "standard": "Встреча у входа в терминал"}, {"id": "maybach-transfer", "name": "Mercedes-Maybach (партнёрский автопарк)", "service": "Трансфер аэропорт Камрань ↔ отель на Maybach S-Class", "price": 260, "unit": "per_trip", "standard": "Водитель в форме, вода и холодные полотенца"}, {"id": "dcar-limousine", "name": "DCar Limousine", "service": "Лимузин-вэн для семьи / группы до 9 человек", "price": 110, "unit": "per_trip", "standard": "Кресла повышенной комфортности, Wi-Fi"}]}, {"room_id": "suites", "room_name": "Покои", "room_description": "Вилла-резорты и Wellness: где гость живёт, отдыхает и восстанавливается.", "providers": [{"id": "amanoi-villa", "name": "Amanoi", "service": "Вилла с бассейном, национальный парк Нуйчуа (Винь Хи)", "price": 2100, "unit": "per_night", "standard": "Персональный хост на весь период проживания"}, {"id": "six-senses-ninh-van", "name": "Six Senses Ninh Van Bay", "service": "Вилла на воде / на скале, доступ только по морю", "price": 1200, "unit": "per_night", "standard": "Катер резорта от приватного пирса"}, {"id": "lalya-ninh-van", "name": "L'Alya Ninh Van Bay", "service": "Бутик-вилла на полуострове Нинь Ван", "price": 620, "unit": "per_night", "standard": "Приватный катер от пирса"}, {"id": "gran-melia", "name": "Gran Meliá Nha Trang", "service": "Вилла / люкс с доступом в Red Level", "price": 520, "unit": "per_night", "standard": "Red Level: приватный лаунж и отдельная регистрация"}, {"id": "vinpearl-luxury", "name": "Vinpearl Luxury Nha Trang", "service": "Вилла с бассейном на острове Хон Че", "price": 480, "unit": "per_night", "standard": "Доступ к инфраструктуре острова (парк, гольф)"}]}, {"room_id": "dining", "room_name": "Обеденный зал", "room_description": "Fine Dining, приватные шеф-повара и закрытые ивенты.", "providers": [{"id": "private-chef-villa", "name": "Приватный шеф-повар на виллу", "service": "Ужин-дегустация на вилле (до 8 гостей)", "price": 140, "unit": "per_person", "standard": "Согласование меню и аллергий за 48 ч"}, {"id": "exclusive-table", "name": "Бронирование эксклюзивных столов", "service": "Лучший стол / chef's table в топ-ресторанах Нячанга", "price": 50, "unit": "per_booking", "standard": "Подтверждение брони за 24 ч"}, {"id": "private-event", "name": "Закрытые ивенты (пляж / вилла / яхта)", "service": "Организация частного мероприятия под ключ", "price": 4500, "unit": "per_event", "standard": "Координатор на площадке"}]}, {"room_id": "pier", "room_name": "Причал", "room_description": "Яхтинг и частный морской чартер.", "providers": [{"id": "emperor-cruises-day", "name": "Emperor Cruises", "service": "Дневной круиз по заливу Нячанг (группа / приватный формат)", "price": 2400, "unit": "per_trip", "standard": "Приветственный напиток и полотенца при посадке"}, {"id": "ana-marina-charter", "name": "Ana Marina", "service": "Аренда частной яхты с экипажем (4–8 часов)", "price": 600, "unit": "per_hour", "standard": "Капитан и 2 матроса, спасательное оборудование на всех гостей", "min_hours": 4}, {"id": "nemo-yacht-sunset", "name": "Nemo Yacht", "service": "Закатный круиз / приватный ужин на яхте", "price": 1300, "unit": "per_trip", "standard": "Декор под событие (день рождения, предложение руки)"}]}, {"room_id": "terrace", "room_name": "Терраса", "room_description": "Элитный досуг: гольф, вертолётные чартеры, приватный дайвинг в Хон Мун.", "providers": [{"id": "kn-golf-links", "name": "KN Golf Links Cam Ranh", "service": "Раунд 18 лунок (грин-фи, кэдди, гольф-кар)", "price": 230, "unit": "per_person", "standard": "Приоритетный тии-тайм"}, {"id": "vinpearl-golf", "name": "Vinpearl Golf Nha Trang", "service": "Раунд 18 лунок на острове Хон Че", "price": 180, "unit": "per_person", "standard": "Трансфер на остров включён"}, {"id": "helicopter-charter", "name": "Вертолётный чартер", "service": "Обзорный полёт над заливом / трансфер на вилла-резорт", "price": 3400, "unit": "per_hour", "standard": "Лицензированный оператор, страховка пассажиров", "min_hours": 1}, {"id": "hon-mun-diving", "name": "Приватный дайвинг в Хон Мун", "service": "Приватный выход на дайв с инструктором (2 погружения)", "price": 320, "unit": "per_person", "standard": "Индивидуальный инструктор (PADI / SSI)"}]}];
+
+const STAY_MOMENT = {
+  hall: "Прибытие и отъезд",
+  suites: "Жизнь на вилле",
+  dining: "Вечер",
+  pier: "Море",
+  terrace: "Впечатления",
+};
+const UNIT = {
+  per_night: "ночь", per_person: "гость", per_trip: "поездка",
+  per_hour: "час", per_booking: "бронь", per_event: "ивент",
+};
+const fmt = n => Math.round(n).toLocaleString("ru-RU").replace(/,/g, " ") + " $";
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ============================== UI ============================== */
+const state = { room: "home", guests: 2, nights: 5, basket: [] };
+try {
+  const saved = JSON.parse(localStorage.getItem("dom-stay") || "null");
+  if (saved) Object.assign(state, { guests: saved.guests, nights: saved.nights, basket: saved.basket || [] });
+} catch (e) {}
+const save = () => { try { localStorage.setItem("dom-stay", JSON.stringify({ guests: state.guests, nights: state.nights, basket: state.basket })); } catch (e) {} };
+
+const providers = {};
+ROOMS.forEach(r => r.providers.forEach(p => { providers[p.id] = { ...p, room: r.room_name }; }));
+const ORDER = ["home", ...ROOMS.map(r => r.room_id)];
+
+function qtyFor(p) {
+  switch (p.unit) {
+    case "per_night": return state.nights;
+    case "per_person": return state.guests;
+    case "per_hour": return p.min_hours || 1;
+    default: return 1;
+  }
+}
+function qtyLabel(p) {
+  const q = qtyFor(p);
+  const words = { per_night: "ноч.", per_person: "гост.", per_hour: "ч", per_trip: "поездка", per_booking: "бронь", per_event: "ивент" };
+  return `${q} ${words[p.unit] || ""}`;
+}
+
+const roomsNav = document.getElementById("rooms");
+ORDER.forEach(id => {
+  const b = document.createElement("button");
+  b.className = "room-btn";
+  b.dataset.room = id;
+  b.textContent = id === "home" ? "Дом" : ROOMS.find(r => r.room_id === id).room_name;
+  b.addEventListener("click", () => goTo(id));
+  roomsNav.appendChild(b);
+});
+
+const card = document.getElementById("card");
+function renderCard() {
+  const id = state.room;
+  let html;
+  if (id === "home") {
+    html = `
+      <div class="card-head">
+        <div class="eyebrow">Залив Нячанг · Южно-Китайское море</div>
+        <h1>Добро пожаловать в Дом</h1>
+        <button class="card-toggle" type="button">Свернуть</button>
+        <p>Вилла над заливом, где каждая комната — часть вашего отдыха. Мы продумываем всё от трапа самолёта до последнего вечера на яхте.</p>
+      </div>
+      <div class="card-body intro">
+        <ul>
+          ${ROOMS.map(r => `<li><b>${r.room_name}</b><span>${r.room_description}</span></li>`).join("")}
+        </ul>
+        <p class="note">Выберите комнату внизу, листайте колёсиком или стрелками. Ползунок времени меняет свет: в Нячанге солнце встаёт из моря и садится за горами.</p>
+      </div>`;
+  } else {
+    const r = ROOMS.find(x => x.room_id === id);
+    const idx = ORDER.indexOf(id);
+    html = `
+      <div class="card-head">
+        <div class="eyebrow">Комната ${idx} из ${ROOMS.length} · ${STAY_MOMENT[id] || ""}</div>
+        <h1>${r.room_name}</h1>
+        <button class="card-toggle" type="button">Свернуть</button>
+        <p>${r.room_description}</p>
+      </div>
+      <div class="card-body">
+        ${r.providers.map(p => {
+          const inBasket = state.basket.includes(p.id);
+          return `<div class="svc">
+            <h3>${p.name}</h3>
+            <div class="price">от ${fmt(p.price)}<small>за ${UNIT[p.unit] || p.unit}</small></div>
+            <div class="what">${p.service}</div>
+            <button class="add" data-id="${p.id}" aria-pressed="${inBasket}">${inBasket ? "В пребывании" : "Добавить"}</button>
+            ${p.standard ? `<div class="std">Стандарт Дома: ${p.standard}</div>` : ""}
+          </div>`;
+        }).join("")}
+        <p class="note">Цены ориентировочные, в долларах США.</p>
+      </div>`;
+  }
+  card.innerHTML = html;
+  card.querySelectorAll(".add").forEach(b => b.addEventListener("click", () => toggleItem(b.dataset.id)));
+  const t = card.querySelector(".card-toggle");
+  t.addEventListener("click", () => {
+    card.classList.toggle("collapsed");
+    t.textContent = card.classList.contains("collapsed") ? "Открыть" : "Свернуть";
+  });
+  roomsNav.querySelectorAll(".room-btn").forEach(b => b.setAttribute("aria-current", b.dataset.room === id));
+}
+
+function toggleItem(id) {
+  const i = state.basket.indexOf(id);
+  if (i >= 0) state.basket.splice(i, 1); else state.basket.push(id);
+  save(); renderCard(); renderBasket();
+}
+
+const basketEl = document.getElementById("basket");
+const basketBtn = document.getElementById("basketBtn");
+basketBtn.addEventListener("click", () => {
+  basketEl.hidden = !basketEl.hidden;
+  basketBtn.setAttribute("aria-expanded", String(!basketEl.hidden));
+});
+basketEl.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
+  const k = b.dataset.step;
+  const max = k === "guests" ? 20 : 30;
+  state[k] = Math.min(max, Math.max(1, state[k] + Number(b.dataset.d)));
+  save(); renderBasket();
+}));
+
+function basketTotals() {
+  const items = state.basket.map(id => providers[id]).filter(Boolean);
+  const sub = items.reduce((s, p) => s + p.price * qtyFor(p), 0);
+  return { items, sub, fee: sub * 0.1, total: sub * 1.1 };
+}
+function renderBasket() {
+  document.getElementById("guestsOut").textContent = state.guests;
+  document.getElementById("nightsOut").textContent = state.nights;
+  const { items, sub, fee, total } = basketTotals();
+  document.getElementById("basketCount").textContent = items.length;
+  document.getElementById("lines").innerHTML = items.map(p => `
+    <li><span><span class="room">${p.room}</span>${p.name}</span>
+    <span class="sum">${qtyLabel(p)} · ${fmt(p.price * qtyFor(p))}</span>
+    <button class="rm" data-id="${p.id}" aria-label="Убрать ${p.name}">×</button></li>`).join("");
+  document.querySelectorAll("#lines .rm").forEach(b => b.addEventListener("click", () => toggleItem(b.dataset.id)));
+  document.getElementById("emptyNote").hidden = items.length > 0;
+  document.getElementById("totals").hidden = items.length === 0;
+  document.getElementById("subTotal").textContent = fmt(sub);
+  document.getElementById("feeTotal").textContent = fmt(fee);
+  document.getElementById("grandTotal").textContent = fmt(total);
+}
+
+document.getElementById("copyBtn").addEventListener("click", () => {
+  const { items, sub, fee, total } = basketTotals();
+  const out = document.getElementById("copied");
+  if (!items.length) { out.textContent = "Добавьте хотя бы одну услугу."; return; }
+  const text = [
+    "Заявка — ДОМ, Нячанг",
+    `Гостей: ${state.guests}, ночей: ${state.nights}`,
+    "",
+    ...items.map(p => `${p.room} — ${p.name} (${qtyLabel(p)}): ${fmt(p.price * qtyFor(p))}`),
+    "",
+    `Услуги: ${fmt(sub)}`,
+    `Сервисный сбор 10%: ${fmt(fee)}`,
+    `Итого (ориентировочно): ${fmt(total)}`,
+  ].join("\n");
+  const fallback = () => {
+    out.textContent = "Скопируйте текст вручную:";
+    let ta = basketEl.querySelector("textarea.fallback");
+    if (!ta) { ta = document.createElement("textarea"); ta.className = "fallback"; ta.readOnly = true; out.after(ta); }
+    ta.value = text; ta.focus(); ta.select();
+  };
+  try {
+    navigator.clipboard.writeText(text).then(() => { out.textContent = "Скопировано. Отправьте менеджеру в Telegram или WhatsApp."; }, fallback);
+  } catch (e) { fallback(); }
+});
+
+/* ======================= time of day (4D) ======================= */
+const KEYS = [
+  { h: 5.0,  top: 0x0b1630, hor: 0x3a3552, sun: 0xff9a6b, si: 0.0,  hemi: 0.28, night: 0.9 },
+  { h: 6.3,  top: 0x3b5a8c, hor: 0xf3a683, sun: 0xffb07a, si: 0.7,  hemi: 0.5,  night: 0.25 },
+  { h: 9.0,  top: 0x3f86c9, hor: 0xbfe0ef, sun: 0xfff1dc, si: 1.25, hemi: 0.8,  night: 0 },
+  { h: 13.0, top: 0x2f7fd0, hor: 0xcfe8f3, sun: 0xffffff, si: 1.45, hemi: 0.9,  night: 0 },
+  { h: 16.8, top: 0x3c6fb0, hor: 0xf6d2a2, sun: 0xffd29a, si: 1.2,  hemi: 0.75, night: 0 },
+  { h: 18.2, top: 0x2c3f75, hor: 0xf08a5d, sun: 0xff7a45, si: 0.75, hemi: 0.5,  night: 0.25 },
+  { h: 19.3, top: 0x1a2250, hor: 0x7b4a78, sun: 0xff6a50, si: 0.15, hemi: 0.35, night: 0.7 },
+  { h: 20.8, top: 0x0a1230, hor: 0x26294a, sun: 0xff6a50, si: 0.0,  hemi: 0.24, night: 1 },
+  { h: 24.0, top: 0x050a1c, hor: 0x151a33, sun: 0xff6a50, si: 0.0,  hemi: 0.2,  night: 1 },
+];
+function sampleTime(h) {
+  let a = KEYS[0], b = KEYS[KEYS.length - 1];
+  for (let i = 0; i < KEYS.length - 1; i++) if (h >= KEYS[i].h && h <= KEYS[i + 1].h) { a = KEYS[i]; b = KEYS[i + 1]; break; }
+  const t = b.h === a.h ? 0 : (h - a.h) / (b.h - a.h);
+  const c = (x, y) => new THREE.Color(x).lerp(new THREE.Color(y), t);
+  const l = (x, y) => x + (y - x) * t;
+  return { top: c(a.top, b.top), hor: c(a.hor, b.hor), sun: c(a.sun, b.sun), si: l(a.si, b.si), hemi: l(a.hemi, b.hemi), night: l(a.night, b.night) };
+}
+function phaseName(h) {
+  if (h < 6.8) return "рассвет";
+  if (h < 11) return "утро";
+  if (h < 16) return "день";
+  if (h < 19.3) return "закат";
+  if (h < 21) return "сумерки";
+  return "ночь";
+}
+const hourInput = document.getElementById("hour");
+let hour = Number(hourInput.value);
+let playing = !reduceMotion;
+const playBtn = document.getElementById("playBtn");
+function setPlayIcon() {
+  document.getElementById("playIcon").innerHTML = playing
+    ? '<rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/>'
+    : '<path d="M2 1 L11 6 L2 11 Z"/>';
+  playBtn.setAttribute("aria-label", playing ? "Пауза" : "Запустить время");
+}
+setPlayIcon();
+playBtn.addEventListener("click", () => { playing = !playing; setPlayIcon(); });
+hourInput.addEventListener("input", () => { hour = Number(hourInput.value); playing = false; setPlayIcon(); });
+function updateClockLabel() {
+  const hh = Math.floor(hour) % 24, mm = Math.floor((hour % 1) * 60);
+  document.getElementById("timeLabel").textContent = `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+  document.getElementById("phaseLabel").textContent = phaseName(hour);
+}
+
+/* ========================== sound (5D) ========================== */
+let audio = null;
+const soundBtn = document.getElementById("soundBtn");
+function startAudio() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const len = ctx.sampleRate * 3;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; }
+  const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+  const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 600;
+  const surf = ctx.createGain(); surf.gain.value = 0.35;
+  const lfo = ctx.createOscillator(); lfo.frequency.value = 0.09;
+  const lfoGain = ctx.createGain(); lfoGain.gain.value = 0.3;
+  lfo.connect(lfoGain).connect(surf.gain);
+  const master = ctx.createGain(); master.gain.value = 0;
+  src.connect(lp).connect(surf).connect(master).connect(ctx.destination);
+  // цикады ночью
+  const cic = ctx.createOscillator(); cic.frequency.value = 4700;
+  const cicAm = ctx.createGain(); cicAm.gain.value = 0;
+  const pulse = ctx.createOscillator(); pulse.type = "square"; pulse.frequency.value = 38;
+  const pulseGain = ctx.createGain(); pulseGain.gain.value = 0.5;
+  pulse.connect(pulseGain).connect(cicAm.gain);
+  const cicLevel = ctx.createGain(); cicLevel.gain.value = 0;
+  cic.connect(cicAm).connect(cicLevel).connect(master);
+  [src, lfo, cic, pulse].forEach(n => n.start());
+  master.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 2);
+  return { ctx, master, cicLevel };
+}
+soundBtn.addEventListener("click", () => {
+  try {
+    if (!audio) audio = startAudio();
+    const on = soundBtn.getAttribute("aria-pressed") !== "true";
+    soundBtn.setAttribute("aria-pressed", String(on));
+    soundBtn.textContent = on ? "Звук моря · вкл" : "Звук моря";
+    if (on) audio.ctx.resume(); else audio.ctx.suspend();
+  } catch (e) { soundBtn.textContent = "Звук недоступен"; }
+});
+
+/* ============================ 3D scene ============================ */
+const WAYPOINTS = {
+  home:    { pos: [46, 30, 64],  look: [0, 7, -8] },
+  hall:    { pos: [22, 11, -52], look: [5, 7.5, -26] },
+  suites:  { pos: [-8, 11, 16],  look: [0, 8.5, -9] },
+  dining:  { pos: [30, 12, 10],  look: [16, 7.5, -4] },
+  pier:    { pos: [46, 7, 44],   look: [29, 1.5, 22] },
+  terrace: { pos: [-46, 17, 18], look: [-27, 7, -10] },
+};
+
+let renderer, scene, camera, sky, sea, sunLight, hemi, stars, yacht, glassMat, poolMat, lampMat, lanternLights = [], padLights;
+const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
+let flight = null;
+const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
+
+function initScene() {
+  const canvas = document.getElementById("scene");
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0xf08a5d, 90, 520);
+  camera = new THREE.PerspectiveCamera(48, 1, 0.5, 2000);
+
+  // --- sky ---
+  sky = new THREE.Mesh(
+    new THREE.SphereGeometry(900, 32, 16),
+    new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false, fog: false,
+      uniforms: { uTop: { value: new THREE.Color() }, uHor: { value: new THREE.Color() }, uSun: { value: new THREE.Color() }, uSunDir: { value: new THREE.Vector3() }, uNight: { value: 0 } },
+      vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+      fragmentShader: `
+        uniform vec3 uTop, uHor, uSun, uSunDir; uniform float uNight; varying vec3 vDir;
+        void main(){
+          vec3 d = normalize(vDir);
+          float h = d.y;
+          vec3 col = mix(uHor, uTop, pow(clamp(h,0.0,1.0), 0.55));
+          if (h < 0.0) col = mix(uHor, uHor*0.55, clamp(-h*4.0,0.0,1.0));
+          float s = dot(d, normalize(uSunDir));
+          col += uSun * (smoothstep(0.9993, 0.9997, s) * 1.6 + pow(max(s,0.0), 48.0) * 0.45 + pow(max(s,0.0), 5.0) * 0.12) * (1.0 - uNight*0.9);
+          float m = dot(d, normalize(vec3(-0.35, 0.55, 0.75)));
+          col += vec3(0.85,0.88,0.95) * smoothstep(0.9990, 0.9994, m) * uNight;
+          col += vec3(0.5,0.55,0.7) * pow(max(m,0.0), 90.0) * 0.25 * uNight;
+          gl_FragColor = vec4(col, 1.0);
+        }`,
+    })
+  );
+  sky.renderOrder = -2;
+  scene.add(sky);
+
+  // --- stars ---
+  const sp = [];
+  for (let i = 0; i < 1400; i++) {
+    const u = Math.random() * Math.PI * 2, v = Math.random() * 0.9 + 0.08;
+    const r = 850;
+    sp.push(Math.cos(u) * Math.sqrt(1 - v * v) * r, v * r, Math.sin(u) * Math.sqrt(1 - v * v) * r);
+  }
+  const sg = new THREE.BufferGeometry();
+  sg.setAttribute("position", new THREE.Float32BufferAttribute(sp, 3));
+  stars = new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 1.6, sizeAttenuation: false, transparent: true, opacity: 0, fog: false, depthWrite: false }));
+  stars.renderOrder = -1;
+  scene.add(stars);
+
+  // --- sea ---
+  const seaGeo = new THREE.PlaneGeometry(1400, 1400, 220, 220);
+  seaGeo.rotateX(-Math.PI / 2);
+  sea = new THREE.Mesh(seaGeo, new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 }, uDeep: { value: new THREE.Color(0x0b3b44) }, uSky: { value: new THREE.Color() }, uSun: { value: new THREE.Color() }, uSunDir: { value: new THREE.Vector3() }, uFog: { value: new THREE.Color() }, uNight: { value: 0 } },
+    vertexShader: `
+      uniform float uTime; varying vec3 vWorld; varying vec3 vN;
+      float h(vec2 p){ return sin(p.x*0.075+uTime*0.8)*0.32 + sin(p.y*0.11+uTime*1.05)*0.26 + sin((p.x+p.y)*0.23+uTime*1.6)*0.10 + sin((p.x-p.y*0.6)*0.41+uTime*2.3)*0.05; }
+      void main(){
+        vec4 wp = modelMatrix * vec4(position,1.0);
+        float e = 0.6;
+        float hx = h(wp.xz+vec2(e,0.0)) - h(wp.xz-vec2(e,0.0));
+        float hz = h(wp.xz+vec2(0.0,e)) - h(wp.xz-vec2(0.0,e));
+        vN = normalize(vec3(-hx, 2.0*e, -hz));
+        wp.y += h(wp.xz);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }`,
+    fragmentShader: `
+      uniform vec3 uDeep, uSky, uSun, uSunDir, uFog; uniform float uNight;
+      varying vec3 vWorld; varying vec3 vN;
+      void main(){
+        vec3 V = normalize(cameraPosition - vWorld);
+        vec3 N = normalize(vN);
+        float fres = pow(1.0 - max(dot(N,V),0.0), 3.0);
+        vec3 deep = uDeep * (1.0 - uNight*0.75);
+        vec3 col = mix(deep, uSky, fres*0.85 + 0.06);
+        vec3 R = reflect(-normalize(uSunDir), N);
+        col += uSun * pow(max(dot(R,V),0.0), 140.0) * 1.8 * (1.0-uNight);
+        vec3 Rm = reflect(-normalize(vec3(-0.35,0.55,0.75)), N);
+        col += vec3(0.7,0.75,0.9) * pow(max(dot(Rm,V),0.0), 220.0) * uNight;
+        float d = length(cameraPosition.xz - vWorld.xz);
+        col = mix(col, uFog, smoothstep(90.0, 520.0, d));
+        gl_FragColor = vec4(col, 1.0);
+      }`,
+  }));
+  scene.add(sea);
+
+  // --- lights ---
+  hemi = new THREE.HemisphereLight(0xcfe8f3, 0x3a3226, 0.6);
+  scene.add(hemi);
+  sunLight = new THREE.DirectionalLight(0xffffff, 1);
+  sunLight.castShadow = true;
+  sunLight.shadow.mapSize.set(2048, 2048);
+  Object.assign(sunLight.shadow.camera, { left: -70, right: 70, top: 70, bottom: -70, near: 1, far: 400 });
+  sunLight.shadow.bias = -0.0005;
+  scene.add(sunLight, sunLight.target);
+
+  buildWorld();
+  const w = WAYPOINTS.home;
+  camPos.set(...w.pos); camLook.set(...w.look);
+}
+
+function mat(color, extra = {}) { return new THREE.MeshStandardMaterial({ color, roughness: 0.85, ...extra }); }
+function box(w, h, d, m, x, y, z, parent = scene) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  mesh.position.set(x, y, z); mesh.castShadow = true; mesh.receiveShadow = true;
+  parent.add(mesh); return mesh;
+}
+
+function palm(x, z, h = 7, lean = 0.12) {
+  const g = new THREE.Group();
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.3, h, 7), mat(0x7a6048));
+  trunk.position.y = h / 2; trunk.castShadow = true; g.add(trunk);
+  const leafMat = mat(0x3f6b3a, { flatShading: true, side: THREE.DoubleSide });
+  for (let i = 0; i < 7; i++) {
+    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.55, 4.2, 4, 1, true), leafMat);
+    leaf.geometry.translate(0, 2.1, 0);
+    leaf.position.y = h;
+    leaf.rotation.set(Math.PI / 2 - 0.55, i / 7 * Math.PI * 2, 0, "YXZ");
+    leaf.castShadow = true; g.add(leaf);
+  }
+  g.position.set(x, 6, z); g.rotation.z = lean; g.rotation.y = Math.random() * 6;
+  scene.add(g);
+}
+
+function lounger(x, z, ry = 0) {
+  const g = new THREE.Group();
+  box(0.9, 0.18, 2.1, mat(0xf2ede4), 0, 0.45, 0, g);
+  const back = box(0.9, 0.16, 0.9, mat(0xf2ede4), 0, 0.75, -0.95, g);
+  back.rotation.x = -0.7;
+  g.position.set(x, 6, z); g.rotation.y = ry; scene.add(g);
+}
+
+function buildWorld() {
+  const stone = mat(0xe9e1d3);
+  const stoneWarm = mat(0xd9ccb6);
+  const wood = mat(0x6e4c34, { roughness: 0.7 });
+  const dark = mat(0x23282c, { roughness: 0.5 });
+  glassMat = mat(0x1b3640, { roughness: 0.12, metalness: 0.35, emissive: new THREE.Color(0xffc07a), emissiveIntensity: 0 });
+  poolMat = mat(0x2bb5c8, { roughness: 0.08, metalness: 0.1, emissive: new THREE.Color(0x19a7c4), emissiveIntensity: 0.1 });
+  lampMat = new THREE.MeshBasicMaterial({ color: 0xffc98a });
+
+  // land and cliff
+  box(160, 9, 100, mat(0x8c7a62, { flatShading: true }), 0, 1.5, -50);
+  box(160, 0.3, 100, mat(0x5b7446), 0, 6.1, -50).position.z = -52;
+  const rockMat = mat(0x9a8a74, { flatShading: true, roughness: 1 });
+  for (let i = 0; i < 46; i++) {
+    const r = new THREE.Mesh(new THREE.DodecahedronGeometry(1.2 + Math.random() * 2.2, 0), rockMat);
+    r.position.set(-78 + i * 3.5 + Math.random() * 2, Math.random() * 2.5, 0.6 + Math.random() * 2);
+    if (Math.abs(r.position.x - 26) < 4) continue;
+    r.rotation.set(Math.random() * 3, Math.random() * 3, 0); r.castShadow = r.receiveShadow = true;
+    scene.add(r);
+  }
+  // beach at the pier
+  const sand = box(16, 1.2, 9, mat(0xe2cfa6), 27, 0.2, 3);
+  sand.rotation.x = 0.08;
+
+  // --- Покои: main villa ---
+  box(34, 0.35, 24, stoneWarm, 0, 6.35, -11);
+  box(18, 3.2, 10, glassMat, 0, 8.1, -15);
+  box(0.6, 3.4, 10.4, stone, -9.3, 8.1, -15);
+  box(0.6, 3.4, 10.4, stone, 9.3, 8.1, -15);
+  box(26, 0.55, 15, stone, 0, 10, -14);
+  box(12, 3, 8.5, glassMat, -3.5, 11.8, -15);
+  box(5.2, 3, 8.5, stone, 5.4, 11.8, -15);
+  box(19, 0.45, 11.5, stone, -1, 13.5, -14.6);
+  box(8, 0.25, 0.25, wood, -3.5, 10.5, -10.6);
+  // pool
+  box(18, 0.5, 5.4, stone, 0, 6.5, -2.2);
+  box(16.8, 0.3, 4.4, poolMat, 0, 6.72, -2.2);
+  [-6, -3.5, 3.5, 6].forEach((x, i) => lounger(x, -6.4, i < 2 ? 0.1 : -0.1));
+  palm(-12, -4, 8); palm(11.5, -3, 7, -0.15); palm(-14, -22, 9, 0.08);
+
+  // --- Холл: arrival on the land side ---
+  box(9, 0.08, 22, dark, 6, 6.42, -34);
+  box(7, 0.3, 4.5, stone, 4.5, 10.1, -22.4);
+  [[1.5, -24.3], [7.5, -24.3]].forEach(([x, z]) => box(0.3, 3.5, 0.3, stone, x, 8.2, z));
+  const car = new THREE.Group();
+  const carBody = mat(0x0c0d10, { roughness: 0.25, metalness: 0.7 });
+  box(2.1, 0.75, 5.2, carBody, 0, 0.7, 0, car);
+  box(1.85, 0.6, 2.8, mat(0x121820, { roughness: 0.1, metalness: 0.6 }), 0, 1.35, -0.2, car);
+  [[-0.7, 2.6], [0.7, 2.6]].forEach(([x, z]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.12, 0.05), lampMat); l.position.set(x, 0.8, z); car.add(l); });
+  car.position.set(6, 6.4, -30); car.rotation.y = Math.PI; scene.add(car);
+  // lanterns along the drive
+  for (let i = 0; i < 5; i++) {
+    const s = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), lampMat); s.position.set(1.2, 7.1, -28 - i * 4); scene.add(s);
+    box(0.08, 0.7, 0.08, dark, 1.2, 6.8, -28 - i * 4);
+  }
+
+  // --- Обеденный зал: pavilion ---
+  box(9, 0.3, 9, wood, 16, 6.4, -4);
+  [[12.2, -7.8], [19.8, -7.8], [12.2, -0.2], [19.8, -0.2]].forEach(([x, z]) => box(0.3, 3.2, 0.3, wood, x, 8.1, z));
+  box(10.4, 0.35, 10.4, mat(0x4a3526), 16, 9.8, -4);
+  box(4.6, 0.12, 1.5, mat(0xf4efe6), 16, 7.45, -4);
+  box(0.3, 0.8, 0.3, wood, 16, 6.95, -4);
+  for (let i = 0; i < 3; i++) {
+    const s = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 8), lampMat); s.position.set(14.3 + i * 1.7, 8.9, -4); scene.add(s);
+  }
+  const pl = new THREE.PointLight(0xffb870, 0, 22, 2); pl.position.set(16, 8.7, -4); scene.add(pl); lanternLights.push(pl);
+  palm(21, -10, 7.5, -0.1);
+
+  // --- Причал: stairs, pier, yacht ---
+  for (let i = 0; i < 6; i++) box(3, 0.4, 1.2, stoneWarm, 26, 5.6 - i * 0.9, -0.2 + i * 1.1);
+  box(3.2, 0.3, 34, wood, 26, 1.3, 18);
+  for (let z = 4; z <= 34; z += 5) [24.5, 27.5].forEach(x => box(0.3, 2.4, 0.3, wood, x, 0.2, z));
+  for (let z = 6; z <= 34; z += 7) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6), lampMat); s.position.set(27.4, 1.9, z); scene.add(s); }
+  yacht = new THREE.Group();
+  const hull = new THREE.Shape();
+  hull.moveTo(-1.7, -6.5); hull.lineTo(1.7, -6.5); hull.lineTo(1.7, 3); hull.quadraticCurveTo(1.7, 6.2, 0, 8); hull.quadraticCurveTo(-1.7, 6.2, -1.7, 3); hull.closePath();
+  const hullGeo = new THREE.ExtrudeGeometry(hull, { depth: 1.7, bevelEnabled: true, bevelSize: 0.25, bevelThickness: 0.25, bevelSegments: 2 });
+  hullGeo.rotateX(-Math.PI / 2);
+  const hullMesh = new THREE.Mesh(hullGeo, mat(0xf7f5f0, { roughness: 0.3 }));
+  hullMesh.castShadow = true; yacht.add(hullMesh);
+  box(3.1, 0.12, 13, mat(0x9a7350, { roughness: 0.6 }), 0, 1.8, 0.5, yacht);
+  box(2.6, 1.1, 5.5, mat(0xf7f5f0, { roughness: 0.3 }), 0, 2.4, -1.2, yacht);
+  box(2.62, 0.45, 4.4, mat(0x0f1a22, { roughness: 0.1, metalness: 0.6 }), 0, 2.55, -0.9, yacht);
+  box(2.1, 0.7, 2.6, mat(0xf7f5f0, { roughness: 0.3 }), 0, 3.3, -1.8, yacht);
+  const nav = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 6), new THREE.MeshBasicMaterial({ color: 0x9dffb0 })); nav.position.set(0, 3.8, -1.8); yacht.add(nav);
+  yacht.position.set(31, -0.3, 24); yacht.rotation.y = Math.PI;
+  scene.add(yacht);
+
+  // --- Терраса: helipad, golf green, loungers ---
+  box(20, 0.35, 18, stoneWarm, -27, 6.35, -10);
+  const pad = new THREE.Mesh(new THREE.CylinderGeometry(4.6, 4.6, 0.14, 48), dark);
+  pad.position.set(-29, 6.6, -12); pad.receiveShadow = true; scene.add(pad);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(3.7, 4.0, 48), new THREE.MeshBasicMaterial({ color: 0xf1ede4 }));
+  ring.rotation.x = -Math.PI / 2; ring.position.set(-29, 6.69, -12); scene.add(ring);
+  const white = mat(0xf1ede4);
+  box(0.45, 0.04, 2.8, white, -30, 6.7, -12); box(0.45, 0.04, 2.8, white, -28, 6.7, -12); box(1.6, 0.04, 0.45, white, -29, 6.7, -12);
+  padLights = new THREE.MeshBasicMaterial({ color: 0x9fd4ff });
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; const s = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 5), padLights); s.position.set(-29 + Math.cos(a) * 4.4, 6.75, -12 + Math.sin(a) * 4.4); scene.add(s); }
+  const green = new THREE.Mesh(new THREE.CylinderGeometry(6, 6.5, 0.2, 32), mat(0x6f9a4e)); green.position.set(-46, 6.3, -26); green.receiveShadow = true; scene.add(green);
+  box(0.06, 2.4, 0.06, white, -45, 7.5, -25);
+  const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.55), new THREE.MeshStandardMaterial({ color: 0xc8553d, side: THREE.DoubleSide }));
+  flag.position.set(-44.55, 8.4, -25); scene.add(flag);
+  [-22, -19].forEach(x => lounger(x, -3, Math.PI));
+  palm(-17, -1.5, 8, 0.15); palm(-36, -4, 9, -0.1); palm(-40, -15, 7.5, 0.1);
+
+  // islands in the bay
+  const isl = mat(0x2f4a3a, { flatShading: true, roughness: 1 });
+  [[-150, -6, 280, 70, 24, 36], [140, -5, 320, 60, 20, 30], [55, -3, 170, 20, 9, 14], [-40, -3, 360, 38, 15, 20]].forEach(([x, y, z, sx, sy, sz]) => {
+    const m = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 1), isl);
+    m.scale.set(sx, sy, sz); m.position.set(x, y, z); scene.add(m);
+  });
+  // hills behind the villa
+  const hill = mat(0x4d6a43, { flatShading: true, roughness: 1 });
+  [[-60, -140, 70, 40, 40], [30, -170, 90, 55, 50], [110, -130, 60, 34, 40]].forEach(([x, z, sx, sy, sz]) => {
+    const m = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 1), hill);
+    m.scale.set(sx, sy, sz); m.position.set(x, 0, z); scene.add(m);
+  });
+}
+
+function applyTime(h, t) {
+  const s = sampleTime(h);
+  const a = (h - 6) / 12 * Math.PI;
+  const sunDir = new THREE.Vector3(0.35, Math.sin(a), Math.cos(a)).normalize();
+  const moonDir = new THREE.Vector3(-0.35, 0.55, 0.75).normalize();
+  sky.material.uniforms.uTop.value.copy(s.top);
+  sky.material.uniforms.uHor.value.copy(s.hor);
+  sky.material.uniforms.uSun.value.copy(s.sun);
+  sky.material.uniforms.uSunDir.value.copy(sunDir);
+  sky.material.uniforms.uNight.value = s.night;
+  scene.fog.color.copy(s.hor);
+  const su = sea.material.uniforms;
+  su.uTime.value = t; su.uSky.value.copy(s.hor).lerp(s.top, 0.35); su.uSun.value.copy(s.sun); su.uSunDir.value.copy(sunDir); su.uFog.value.copy(s.hor); su.uNight.value = s.night;
+  stars.material.opacity = Math.max(0, s.night - 0.3) * 1.3;
+
+  const useMoon = sunDir.y < 0.02;
+  sunLight.position.copy(useMoon ? moonDir : sunDir).multiplyScalar(160).add(new THREE.Vector3(0, 0, -10));
+  sunLight.target.position.set(0, 0, -10);
+  sunLight.color.copy(useMoon ? new THREE.Color(0x9fb4e0) : s.sun);
+  sunLight.intensity = useMoon ? 0.22 * s.night : s.si;
+  hemi.intensity = s.hemi;
+  hemi.color.copy(s.top).lerp(new THREE.Color(0xffffff), 0.4);
+
+  glassMat.emissiveIntensity = s.night * 0.9;
+  poolMat.emissiveIntensity = 0.1 + s.night * 1.1;
+  lanternLights.forEach(l => { l.intensity = s.night * 2.2; });
+  lampMat.color.setRGB(1, 0.79, 0.54).multiplyScalar(0.35 + s.night * 0.9);
+  padLights.color.setRGB(0.62, 0.83, 1).multiplyScalar(0.3 + s.night);
+  if (audio) audio.cicLevel.gain.setTargetAtTime(Math.max(0, s.night - 0.4) * 0.035, audio.ctx.currentTime, 0.5);
+}
+
+/* ========================= navigation ========================= */
+function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function goTo(id) {
+  if (!WAYPOINTS[id]) return;
+  state.room = id;
+  card.classList.add("swap");
+  setTimeout(() => { renderCard(); card.classList.remove("swap"); }, reduceMotion ? 0 : 260);
+  if (!renderer) return;
+  const w = WAYPOINTS[id];
+  const toPos = new THREE.Vector3(...w.pos), toLook = new THREE.Vector3(...w.look);
+  if (reduceMotion) { camPos.copy(toPos); camLook.copy(toLook); flight = null; return; }
+  flight = { fromPos: camPos.clone(), fromLook: camLook.clone(), toPos, toLook, start: performance.now(), dur: 2400 };
+}
+function step(dir) {
+  const i = ORDER.indexOf(state.room);
+  goTo(ORDER[(i + dir + ORDER.length) % ORDER.length]);
+}
+addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "ArrowRight") step(1);
+  if (e.key === "ArrowLeft") step(-1);
+});
+let wheelLock = 0;
+document.getElementById("scene").addEventListener("wheel", e => {
+  const now = performance.now();
+  if (now < wheelLock || Math.abs(e.deltaY) < 12) return;
+  wheelLock = now + 1400;
+  step(e.deltaY > 0 ? 1 : -1);
+}, { passive: true });
+addEventListener("pointermove", e => {
+  mouse.x = e.clientX / innerWidth * 2 - 1;
+  mouse.y = e.clientY / innerHeight * 2 - 1;
+});
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.fov = w / h < 0.8 ? 64 : 48;
+  camera.updateProjectionMatrix();
+}
+
+let lastT = performance.now();
+function frame(now) {
+  const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
+  const t = now / 1000;
+  if (playing) {
+    hour += dt / 7;
+    if (hour > 23.9) hour = 5;
+    hourInput.value = hour;
+  }
+  updateClockLabel();
+  applyTime(hour, t);
+
+  if (flight) {
+    const k = Math.min(1, (now - flight.start) / flight.dur), e = ease(k);
+    camPos.lerpVectors(flight.fromPos, flight.toPos, e);
+    camPos.y += Math.sin(Math.PI * e) * 9;
+    camLook.lerpVectors(flight.fromLook, flight.toLook, e);
+    if (k >= 1) flight = null;
+  }
+  const m = reduceMotion ? 0 : 1;
+  mouse.sx += (mouse.x - mouse.sx) * 0.04; mouse.sy += (mouse.y - mouse.sy) * 0.04;
+  const drift = m * Math.sin(t * 0.12) * 1.6;
+  camera.position.set(camPos.x + mouse.sx * 2.5 * m + drift, camPos.y - mouse.sy * 1.2 * m, camPos.z);
+  camera.lookAt(camLook.x + mouse.sx * 1.2 * m, camLook.y - mouse.sy * 0.6 * m, camLook.z);
+  sky.position.copy(camera.position);
+  stars.position.copy(camera.position);
+
+  yacht.position.y = -0.3 + Math.sin(t * 0.9) * 0.12 * m;
+  yacht.rotation.z = Math.sin(t * 0.7) * 0.025 * m;
+  yacht.rotation.x = Math.sin(t * 0.55) * 0.015 * m;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+renderCard();
+renderBasket();
+updateClockLabel();
+try {
+  if (typeof THREE === "undefined") throw new Error("three.js не загрузился");
+  initScene();
+  resize();
+  addEventListener("resize", resize);
+  requestAnimationFrame(frame);
+} catch (e) {
+  const d = document.createElement("div");
+  d.className = "nowebgl";
+  d.textContent = "Ваш браузер не показывает 3D. Комнаты и расчёт пребывания работают как обычно.";
+  document.body.prepend(d);
+}
+</script>
