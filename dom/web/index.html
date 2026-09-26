@@ -2,19 +2,19 @@
 <meta name="description" content="Частная вилла над заливом Нячанг: пять комнат премиального сервиса.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
   :root {
     color-scheme: dark;
-    --ink: #efe6d6;
-    --muted: #b8ad99;
-    --faint: #857c6d;
-    --brass: #d6ad5f;
-    --brass-soft: rgba(214, 173, 95, 0.16);
-    --lagoon: #07181b;
-    --panel: rgba(8, 22, 26, 0.74);
-    --line: rgba(239, 230, 214, 0.14);
-    --display: "Marcellus", "Cormorant Garamond", Georgia, serif;
+    --ink: #ede5d6;
+    --muted: #b9ae9a;
+    --faint: #9f957f;
+    --brass: #d4ad63;
+    --brass-soft: rgba(212, 173, 99, 0.16);
+    --lagoon: #081619;
+    --panel: rgba(6, 20, 23, 0.78);
+    --line: rgba(237, 229, 214, 0.16);
+    --display: "Cormorant Garamond", Georgia, serif;
     --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
     --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
     --gutter: 16px;
@@ -46,17 +46,18 @@
   .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; pointer-events: none; }
   .top > * { pointer-events: auto; }
   .mark { display: grid; gap: 2px; text-shadow: 0 1px 18px rgba(0,0,0,.45); }
-  .mark b { font: 400 34px/1 var(--display); letter-spacing: .42em; margin-right: -.42em; }
-  .mark span { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .mark b { font: 400 30px/1 var(--display); letter-spacing: .5em; margin-right: -.5em; }
+  .mark span { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
   .top-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
   .chip {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 9px 14px; border-radius: 999px;
+    padding: 12px 18px; border-radius: 0;
     background: var(--panel); border: 1px solid var(--line);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    font-size: 13px; white-space: nowrap;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
   }
-  .chip:hover { border-color: rgba(214,173,95,.5); }
+  .chip:hover { border-color: rgba(212,173,99,.6); }
+  #basketBtn { border-color: var(--brass); color: var(--brass); }
   .chip .count { font-family: var(--mono); color: var(--brass); }
   .chip[aria-pressed="true"] { border-color: var(--brass); color: var(--brass); }
 
@@ -66,62 +67,67 @@
     position: absolute; right: 0; top: 18px; bottom: 18px;
     width: min(390px, 100%);
     display: flex; flex-direction: column;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 0;
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     overflow: hidden;
     transition: opacity .5s ease, transform .5s ease;
   }
   .card.swap { opacity: 0; transform: translateY(8px); }
   .card-head { padding: 22px 24px 14px; border-bottom: 1px solid var(--line); }
-  .eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--brass); }
-  .card h1 { font: 400 38px/1.05 var(--display); margin: 8px 0 10px; text-wrap: balance; }
+  .eyebrow { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--brass); }
+  .card h1 { font: 300 46px/1 var(--display); margin: 8px 0 10px; text-wrap: balance; }
   .card-head p { margin: 0; color: var(--muted); font-size: 14px; }
   .card-toggle { display: none; }
   .card-body { overflow-y: auto; padding: 8px 24px 20px; display: grid; gap: 0; }
   .svc { display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
   .svc:last-child { border-bottom: 0; }
-  .svc h3 { margin: 0; font-size: 15px; font-weight: 700; }
+  .svc h3 { margin: 0; font: 400 22px/1.15 var(--display); }
   .svc .what { grid-column: 1 / 2; color: var(--muted); font-size: 13px; }
   .svc .std { grid-column: 1 / -1; font-size: 12px; color: var(--faint); }
   .svc .price { font-family: var(--mono); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
   .svc .price small { display: block; color: var(--faint); font-size: 11px; }
   .add {
     grid-column: 2; grid-row: 2; justify-self: end; align-self: start;
-    font-size: 12px; padding: 5px 11px; border-radius: 999px;
-    border: 1px solid rgba(214,173,95,.45); color: var(--brass);
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 7px 12px; border-radius: 0;
+    border: 1px solid rgba(212,173,99,.55); color: var(--brass);
   }
   .add:hover { background: var(--brass-soft); }
-  .add[aria-pressed="true"] { background: var(--brass); color: #1c1407; border-color: var(--brass); }
+  .add[aria-pressed="true"] { background: var(--brass); color: #15110a; border-color: var(--brass); }
   .note { font-size: 12px; color: var(--faint); margin: 14px 0 0; }
   .intro p { color: var(--ink); font-size: 15px; margin: 14px 0 0; max-width: 60ch; }
   .intro ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
   .intro li { display: grid; grid-template-columns: 92px 1fr; gap: 10px; font-size: 13px; color: var(--muted); }
-  .intro li b { color: var(--ink); font-weight: 500; font-family: var(--display); font-size: 15px; }
+  .intro li b { color: var(--ink); font-weight: 400; font-family: var(--display); font-size: 19px; line-height: 1.2; }
 
   /* ---------- bottom bar ---------- */
   .bottom { display: grid; gap: 12px; }
   .rooms {
     display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 0;
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    padding: 5px; width: max-content; max-width: 100%;
+    padding: 0; width: max-content; max-width: 100%; gap: 0;
   }
   .rooms::-webkit-scrollbar { display: none; }
   .room-btn {
-    padding: 9px 16px; border-radius: 999px; white-space: nowrap;
-    font-family: var(--display); font-size: 15px; letter-spacing: .03em; color: var(--muted);
+    display: grid; gap: 2px; text-align: left;
+    padding: 12px 24px 14px; border-radius: 0; white-space: nowrap;
+    border-right: 1px solid var(--line);
+    font-family: var(--display); font-size: 22px; line-height: 1.1; color: var(--muted);
   }
+  .room-btn:last-child { border-right: 0; }
+  .room-btn small { font: 500 10px/1.4 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
   .room-btn:hover { color: var(--ink); }
-  .room-btn[aria-current="true"] { background: var(--ink); color: #13191a; }
+  .room-btn[aria-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--brass); }
+  .room-btn[aria-current="true"] small { color: var(--brass); }
 
   .clock { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .clock-panel {
     display: flex; align-items: center; gap: 12px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 0;
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     padding: 6px 16px 6px 6px; flex: 1 1 320px; max-width: 560px;
   }
-  .play { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; flex: none; }
+  .play { width: 34px; height: 34px; border-radius: 0; border: 1px solid var(--line); display: grid; place-items: center; flex: none; }
   .play svg { width: 12px; height: 12px; fill: var(--ink); }
   .time { font-family: var(--mono); font-size: 15px; min-width: 48px; font-variant-numeric: tabular-nums; }
   .phase { font-size: 12px; color: var(--muted); min-width: 64px; }
@@ -131,16 +137,16 @@
   .basket {
     position: fixed; top: calc(env(safe-area-inset-top, 0px) + 70px); right: max(var(--gutter), 2.4vw);
     width: min(360px, calc(100% - 2 * var(--gutter)));
-    background: rgba(8, 22, 26, 0.94); border: 1px solid var(--line); border-radius: 16px;
+    background: rgba(6, 20, 23, 0.95); border: 1px solid var(--line); border-radius: 0;
     backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
     padding: 20px 22px; z-index: 5; display: grid; gap: 12px;
     max-height: calc(100% - 180px); overflow-y: auto;
   }
-  .basket h2 { font: 400 24px/1.1 var(--display); margin: 0; }
+  .basket h2 { font: 300 32px/1.05 var(--display); margin: 0; }
   .steppers { display: flex; gap: 10px; flex-wrap: wrap; }
-  .stepper { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 6px 4px 12px; font-size: 13px; color: var(--muted); }
+  .stepper { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 0; padding: 4px 6px 4px 12px; font-size: 13px; color: var(--muted); }
   .stepper output { font-family: var(--mono); color: var(--ink); min-width: 18px; text-align: center; }
-  .stepper button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); line-height: 1; }
+  .stepper button { width: 26px; height: 26px; border-radius: 0; border: 1px solid var(--line); line-height: 1; }
   .lines { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
   .lines li { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: baseline; font-size: 13px; }
   .lines .room { color: var(--faint); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; display: block; }
@@ -151,7 +157,7 @@
   .totals .grand { color: var(--ink); font-size: 17px; }
   .totals span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .empty { color: var(--muted); font-size: 13px; margin: 0; }
-  .primary { background: var(--brass); color: #1c1407; border-radius: 999px; padding: 11px 16px; font-weight: 700; font-size: 14px; }
+  .primary { background: var(--brass); color: #15110a; border-radius: 0; padding: 15px 18px; font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
   .primary:hover { filter: brightness(1.08); }
   .copied { font-size: 12px; color: var(--brass); min-height: 1em; margin: 0; }
   textarea.fallback { width: 100%; min-height: 120px; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font: 12px/1.4 var(--mono); }
@@ -159,7 +165,8 @@
   .nowebgl { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; background: radial-gradient(120% 80% at 50% 110%, #c9774a 0%, #3b2c4a 38%, #07181b 75%); }
 
   @media (max-width: 760px) {
-    .mark b { font-size: 26px; }
+    .mark b { font-size: 24px; }
+    .room-btn { font-size: 18px; padding: 10px 16px 12px; }
     .card {
       top: auto; bottom: 8px; left: 0; right: 0; width: auto;
       max-height: 46vh;
@@ -167,8 +174,8 @@
     .card.collapsed .card-body, .card.collapsed .card-head p { display: none; }
     .card-head { padding: 16px 18px 12px; display: grid; grid-template-columns: 1fr auto; gap: 0 10px; }
     .card-head > :not(.card-toggle) { grid-column: 1; }
-    .card-toggle { display: block; grid-column: 2; grid-row: 1 / span 2; align-self: start; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; }
-    .card h1 { font-size: 28px; margin: 6px 0 6px; }
+    .card-toggle { display: block; grid-column: 2; grid-row: 1 / span 2; align-self: start; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 0; padding: 6px 10px; }
+    .card h1 { font-size: 32px; margin: 6px 0 6px; }
     .card-body { padding: 4px 18px 16px; }
     .phase { display: none; }
     .clock-panel { max-width: none; }
@@ -198,9 +205,9 @@
     <div class="clock">
       <div class="clock-panel">
         <button class="play" id="playBtn" aria-label="Пауза"><svg viewBox="0 0 12 12" id="playIcon"><rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/></svg></button>
-        <span class="time" id="timeLabel">18:15</span>
-        <span class="phase" id="phaseLabel">закат</span>
-        <input type="range" id="hour" min="5" max="23.9" step="0.05" value="18.25" aria-label="Время суток">
+        <span class="time" id="timeLabel">20:40</span>
+        <span class="phase" id="phaseLabel">ночь</span>
+        <input type="range" id="hour" min="5" max="23.9" step="0.05" value="20.66" aria-label="Время суток">
       </div>
     </div>
   </footer>
@@ -273,7 +280,9 @@ ORDER.forEach(id => {
   const b = document.createElement("button");
   b.className = "room-btn";
   b.dataset.room = id;
-  b.textContent = id === "home" ? "Дом" : ROOMS.find(r => r.room_id === id).room_name;
+  const small = document.createElement("small");
+  small.textContent = id === "home" ? "Обзор" : STAY_MOMENT[id];
+  b.append(small, id === "home" ? "Дом" : ROOMS.find(r => r.room_id === id).room_name);
   b.addEventListener("click", () => goTo(id));
   roomsNav.appendChild(b);
 });
@@ -285,10 +294,10 @@ function renderCard() {
   if (id === "home") {
     html = `
       <div class="card-head">
-        <div class="eyebrow">Залив Нячанг · Южно-Китайское море</div>
-        <h1>Добро пожаловать в Дом</h1>
+        <div class="eyebrow">Нячанг · залив Камрань · по приглашению</div>
+        <h1>Вилла, где о вас уже позаботились</h1>
         <button class="card-toggle" type="button">Свернуть</button>
-        <p>Вилла над заливом, где каждая комната — часть вашего отдыха. Мы продумываем всё от трапа самолёта до последнего вечера на яхте.</p>
+        <p>От трапа самолёта до последнего вечера на яхте — пять комнат Дома, один управляющий и ни одной очереди.</p>
       </div>
       <div class="card-body intro">
         <ul>
@@ -524,8 +533,8 @@ function initScene() {
           if (h < 0.0) col = mix(uHor, uHor*0.55, clamp(-h*4.0,0.0,1.0));
           float s = dot(d, normalize(uSunDir));
           col += uSun * (smoothstep(0.9993, 0.9997, s) * 1.6 + pow(max(s,0.0), 48.0) * 0.45 + pow(max(s,0.0), 5.0) * 0.12) * (1.0 - uNight*0.9);
-          float m = dot(d, normalize(vec3(-0.35, 0.55, 0.75)));
-          col += vec3(0.85,0.88,0.95) * smoothstep(0.9990, 0.9994, m) * uNight;
+          float m = dot(d, normalize(vec3(-0.3, 0.3, -0.9)));
+          col += vec3(0.85,0.88,0.95) * smoothstep(0.9982, 0.9987, m) * uNight;
           col += vec3(0.5,0.55,0.7) * pow(max(m,0.0), 90.0) * 0.25 * uNight;
           gl_FragColor = vec4(col, 1.0);
         }`,
@@ -576,7 +585,7 @@ function initScene() {
         vec3 col = mix(deep, uSky, fres*0.85 + 0.06);
         vec3 R = reflect(-normalize(uSunDir), N);
         col += uSun * pow(max(dot(R,V),0.0), 140.0) * 1.8 * (1.0-uNight);
-        vec3 Rm = reflect(-normalize(vec3(-0.35,0.55,0.75)), N);
+        vec3 Rm = reflect(-normalize(vec3(-0.3,0.3,-0.9)), N);
         col += vec3(0.7,0.75,0.9) * pow(max(dot(Rm,V),0.0), 220.0) * uNight;
         float d = length(cameraPosition.xz - vWorld.xz);
         col = mix(col, uFog, smoothstep(90.0, 520.0, d));
@@ -754,7 +763,7 @@ function applyTime(h, t) {
   const s = sampleTime(h);
   const a = (h - 6) / 12 * Math.PI;
   const sunDir = new THREE.Vector3(0.35, Math.sin(a), Math.cos(a)).normalize();
-  const moonDir = new THREE.Vector3(-0.35, 0.55, 0.75).normalize();
+  const moonDir = new THREE.Vector3(-0.3, 0.3, -0.9).normalize();
   sky.material.uniforms.uTop.value.copy(s.top);
   sky.material.uniforms.uHor.value.copy(s.hor);
   sky.material.uniforms.uSun.value.copy(s.sun);
@@ -774,7 +783,7 @@ function applyTime(h, t) {
   hemi.color.copy(s.top).lerp(new THREE.Color(0xffffff), 0.4);
 
   glassMat.emissiveIntensity = s.night * 0.9;
-  poolMat.emissiveIntensity = 0.1 + s.night * 1.1;
+  poolMat.emissiveIntensity = 0.1 + s.night * 0.55;
   lanternLights.forEach(l => { l.intensity = s.night * 2.2; });
   lampMat.color.setRGB(1, 0.79, 0.54).multiplyScalar(0.35 + s.night * 0.9);
   padLights.color.setRGB(0.62, 0.83, 1).multiplyScalar(0.3 + s.night);
