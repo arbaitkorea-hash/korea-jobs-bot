@@ -1,0 +1,71 @@
+{
+  "direction_id": "transfers_fasttrack",
+  "direction_name": "Fast Track и премиальный трансфер (аэропорт Камрань)",
+  "providers": [
+    {
+      "id": "cxr-fasttrack-arrival",
+      "provider_name": "VIP Arrival Fast Track (CXR)",
+      "service_type": "Встреча у выхода из самолёта, ускоренный паспортный контроль",
+      "pricing_b2b": {"amount": 35, "currency": "USD", "unit": "per_person"},
+      "pricing_b2c": {"amount": 60, "currency": "USD", "unit": "per_person"},
+      "price_verified": false,
+      "service_standards": [
+        "Табличка с именем гостя у выхода из рукава",
+        "Сопровождение до автомобиля",
+        "Помощь с багажом"
+      ],
+      "risk_factors": [
+        "Нужны данные паспорта и номер рейса за 24–48 ч",
+        "Ночные рейсы — проверять наличие смены сопровождающих",
+        "Электронная виза: проверить заранее, Fast Track не решает проблемы с визой"
+      ]
+    },
+    {
+      "id": "cxr-fasttrack-departure",
+      "provider_name": "VIP Departure Fast Track (CXR)",
+      "service_type": "Ускоренная регистрация и досмотр при вылете",
+      "pricing_b2b": {"amount": 30, "currency": "USD", "unit": "per_person"},
+      "pricing_b2c": {"amount": 50, "currency": "USD", "unit": "per_person"},
+      "price_verified": false,
+      "service_standards": [
+        "Встреча у входа в терминал",
+        "Сопровождение до гейта / бизнес-лаунжа"
+      ],
+      "risk_factors": [
+        "Опоздание трансфера до аэропорта обнуляет ценность услуги"
+      ]
+    },
+    {
+      "id": "maybach-transfer",
+      "provider_name": "Mercedes-Maybach (партнёрский автопарк)",
+      "service_type": "Трансфер аэропорт Камрань ↔ отель на Maybach S-Class",
+      "pricing_b2b": {"amount": 180, "currency": "USD", "unit": "per_trip"},
+      "pricing_b2c": {"amount": 260, "currency": "USD", "unit": "per_trip"},
+      "price_verified": false,
+      "service_standards": [
+        "Водитель в форме, вода и холодные полотенца",
+        "Ожидание рейса бесплатно до 60 минут",
+        "Детские кресла по запросу"
+      ],
+      "risk_factors": [
+        "Мало машин в автопарке — бронировать заранее, иметь резервное авто",
+        "Трансфер в Amanoi / Винь Хи ~1–1,5 ч — доплата за дальность"
+      ]
+    },
+    {
+      "id": "dcar-limousine",
+      "provider_name": "DCar Limousine",
+      "service_type": "Лимузин-вэн для семьи / группы до 9 человек",
+      "pricing_b2b": {"amount": 70, "currency": "USD", "unit": "per_trip"},
+      "pricing_b2c": {"amount": 110, "currency": "USD", "unit": "per_trip"},
+      "price_verified": false,
+      "service_standards": [
+        "Кресла повышенной комфортности, Wi-Fi",
+        "Много места для багажа (гольф-сумки, коляски)"
+      ],
+      "risk_factors": [
+        "Уровень ниже, чем Maybach — позиционировать для групп, не для VIP-одиночек"
+      ]
+    }
+  ]
+}

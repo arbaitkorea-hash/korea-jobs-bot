@@ -1,0 +1,59 @@
+{
+  "direction_id": "yachting",
+  "direction_name": "Яхтинг и частный морской чартер",
+  "providers": [
+    {
+      "id": "emperor-cruises-day",
+      "provider_name": "Emperor Cruises",
+      "service_type": "Дневной круиз по заливу Нячанг (группа / приватный формат)",
+      "pricing_b2b": {"amount": 1800, "currency": "USD", "unit": "per_trip"},
+      "pricing_b2c": {"amount": 2400, "currency": "USD", "unit": "per_trip"},
+      "price_verified": false,
+      "service_standards": [
+        "Приветственный напиток и полотенца при посадке",
+        "Англоязычный гид на борту",
+        "Обед из морепродуктов с сет-меню"
+      ],
+      "risk_factors": [
+        "Сезон штормов окт–дек: высокая вероятность отмены выхода",
+        "Решение портовой полиции о закрытии выхода принимается утром в день рейса",
+        "Нужен план Б на суше для гостей при отмене"
+      ]
+    },
+    {
+      "id": "ana-marina-charter",
+      "provider_name": "Ana Marina",
+      "service_type": "Аренда частной яхты с экипажем (4–8 часов)",
+      "pricing_b2b": {"amount": 450, "currency": "USD", "unit": "per_hour"},
+      "pricing_b2c": {"amount": 600, "currency": "USD", "unit": "per_hour"},
+      "price_verified": false,
+      "service_standards": [
+        "Капитан и 2 матроса, спасательное оборудование на всех гостей",
+        "Возможность кейтеринга от партнёрского ресторана",
+        "Подача трансфера к причалу марины"
+      ],
+      "risk_factors": [
+        "Минимальный заказ — 4 часа",
+        "Топливный сбор может начисляться отдельно (уточнять в договоре)",
+        "Отмена менее чем за 48 часов — штраф"
+      ]
+    },
+    {
+      "id": "nemo-yacht-sunset",
+      "provider_name": "Nemo Yacht",
+      "service_type": "Закатный круиз / приватный ужин на яхте",
+      "pricing_b2b": {"amount": 950, "currency": "USD", "unit": "per_trip"},
+      "pricing_b2c": {"amount": 1300, "currency": "USD", "unit": "per_trip"},
+      "price_verified": false,
+      "service_standards": [
+        "Декор под событие (день рождения, предложение руки)",
+        "Сет-ужин + вино, фотограф по запросу",
+        "Длительность 3 часа"
+      ],
+      "risk_factors": [
+        "Вечерний ветер и волна в сезон муссонов",
+        "Ограниченный размер яхты — до 10 гостей"
+      ]
+    }
+  ]
+}

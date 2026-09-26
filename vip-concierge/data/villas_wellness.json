@@ -1,0 +1,87 @@
+{
+  "direction_id": "villas_wellness",
+  "direction_name": "Эксклюзивные вилла-резорты и Wellness",
+  "providers": [
+    {
+      "id": "amanoi-villa",
+      "provider_name": "Amanoi",
+      "service_type": "Вилла с бассейном, национальный парк Нуйчуа (Винь Хи)",
+      "pricing_b2b": {"amount": 1600, "currency": "USD", "unit": "per_night"},
+      "pricing_b2c": {"amount": 2100, "currency": "USD", "unit": "per_night"},
+      "price_verified": false,
+      "service_standards": [
+        "Персональный хост на весь период проживания",
+        "Встреча гостя в аэропорту силами резорта (по запросу)",
+        "Wellness-программы и йога включены частично"
+      ],
+      "risk_factors": [
+        "Удалённость: ~1–1,5 ч от аэропорта Камрань — нужен комфортный трансфер",
+        "Мало внешней инфраструктуры рядом — всё через резорт",
+        "Высокий сезон: бронирование за 2–3 месяца"
+      ]
+    },
+    {
+      "id": "six-senses-ninh-van",
+      "provider_name": "Six Senses Ninh Van Bay",
+      "service_type": "Вилла на воде / на скале, доступ только по морю",
+      "pricing_b2b": {"amount": 900, "currency": "USD", "unit": "per_night"},
+      "pricing_b2c": {"amount": 1200, "currency": "USD", "unit": "per_night"},
+      "price_verified": false,
+      "service_standards": [
+        "Катер резорта от приватного пирса",
+        "Батлер-сервис",
+        "Spa-меню и детокс-программы"
+      ],
+      "risk_factors": [
+        "Доступ только по воде: при шторме заезд/выезд может сдвигаться",
+        "Рейс гостя и время катера нужно синхронизировать с запасом 2+ ч"
+      ]
+    },
+    {
+      "id": "lalya-ninh-van",
+      "provider_name": "L'Alya Ninh Van Bay",
+      "service_type": "Бутик-вилла на полуострове Нинь Ван",
+      "pricing_b2b": {"amount": 450, "currency": "USD", "unit": "per_night"},
+      "pricing_b2c": {"amount": 620, "currency": "USD", "unit": "per_night"},
+      "price_verified": false,
+      "service_standards": [
+        "Приватный катер от пирса",
+        "Spa и йога на территории"
+      ],
+      "risk_factors": [
+        "Доступ по морю — те же погодные риски, что у Six Senses"
+      ]
+    },
+    {
+      "id": "gran-melia",
+      "provider_name": "Gran Meliá Nha Trang",
+      "service_type": "Вилла / люкс с доступом в Red Level",
+      "pricing_b2b": {"amount": 380, "currency": "USD", "unit": "per_night"},
+      "pricing_b2c": {"amount": 520, "currency": "USD", "unit": "per_night"},
+      "price_verified": false,
+      "service_standards": [
+        "Red Level: приватный лаунж и отдельная регистрация",
+        "Собственный пляж"
+      ],
+      "risk_factors": [
+        "Удалённость от центра города ~20–30 мин"
+      ]
+    },
+    {
+      "id": "vinpearl-luxury",
+      "provider_name": "Vinpearl Luxury Nha Trang",
+      "service_type": "Вилла с бассейном на острове Хон Че",
+      "pricing_b2b": {"amount": 350, "currency": "USD", "unit": "per_night"},
+      "pricing_b2c": {"amount": 480, "currency": "USD", "unit": "per_night"},
+      "price_verified": false,
+      "service_standards": [
+        "Доступ к инфраструктуре острова (парк, гольф)",
+        "Трансфер катером / канатной дорогой"
+      ],
+      "risk_factors": [
+        "Большой поток туристов на острове — не всегда VIP-приватность",
+        "Логистика на остров зависит от погоды и расписания"
+      ]
+    }
+  ]
+}

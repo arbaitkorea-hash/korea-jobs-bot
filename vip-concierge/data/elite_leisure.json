@@ -1,0 +1,71 @@
+{
+  "direction_id": "elite_leisure",
+  "direction_name": "Экстремальный и элитный досуг",
+  "providers": [
+    {
+      "id": "kn-golf-links",
+      "provider_name": "KN Golf Links Cam Ranh",
+      "service_type": "Раунд 18 лунок (грин-фи, кэдди, гольф-кар)",
+      "pricing_b2b": {"amount": 170, "currency": "USD", "unit": "per_person"},
+      "pricing_b2c": {"amount": 230, "currency": "USD", "unit": "per_person"},
+      "price_verified": false,
+      "service_standards": [
+        "Приоритетный тии-тайм",
+        "Аренда премиум-клюшек по запросу"
+      ],
+      "risk_factors": [
+        "Сильный ветер на побережье — предупреждать гостя",
+        "Дресс-код гольф-клуба"
+      ]
+    },
+    {
+      "id": "vinpearl-golf",
+      "provider_name": "Vinpearl Golf Nha Trang",
+      "service_type": "Раунд 18 лунок на острове Хон Че",
+      "pricing_b2b": {"amount": 130, "currency": "USD", "unit": "per_person"},
+      "pricing_b2c": {"amount": 180, "currency": "USD", "unit": "per_person"},
+      "price_verified": false,
+      "service_standards": [
+        "Трансфер на остров включён",
+        "Кэдди и гольф-кар"
+      ],
+      "risk_factors": [
+        "Логистика на остров зависит от погоды"
+      ]
+    },
+    {
+      "id": "helicopter-charter",
+      "provider_name": "Вертолётный чартер",
+      "service_type": "Обзорный полёт над заливом / трансфер на вилла-резорт",
+      "pricing_b2b": {"amount": 2500, "currency": "USD", "unit": "per_hour"},
+      "pricing_b2c": {"amount": 3400, "currency": "USD", "unit": "per_hour"},
+      "price_verified": false,
+      "service_standards": [
+        "Лицензированный оператор, страховка пассажиров",
+        "Брифинг по безопасности"
+      ],
+      "risk_factors": [
+        "Разрешение на полёт оформляется заранее (срок уточнять у оператора)",
+        "Отмена при плохой видимости / ветре",
+        "Ограничение по весу пассажиров и багажа"
+      ]
+    },
+    {
+      "id": "hon-mun-diving",
+      "provider_name": "Приватный дайвинг в Хон Мун",
+      "service_type": "Приватный выход на дайв с инструктором (2 погружения)",
+      "pricing_b2b": {"amount": 220, "currency": "USD", "unit": "per_person"},
+      "pricing_b2c": {"amount": 320, "currency": "USD", "unit": "per_person"},
+      "price_verified": false,
+      "service_standards": [
+        "Индивидуальный инструктор (PADI / SSI)",
+        "Приватный катер, оборудование премиум-класса"
+      ],
+      "risk_factors": [
+        "Видимость под водой падает в сезон дождей",
+        "Нужна медицинская анкета, запрет на полёт 18–24 ч после погружения",
+        "Хон Мун — морской заповедник: правила и сборы парка"
+      ]
+    }
+  ]
+}
